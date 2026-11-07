@@ -357,6 +357,7 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.187.0/build/three.m
   };
 
   const onPointer = event => {
+    if (reduceMotion) return;
     const rect = section.getBoundingClientRect();
     pointerX = ((event.clientX - rect.left) / rect.width - 0.5) * 2;
     pointerY = ((event.clientY - rect.top) / rect.height - 0.5) * 2;
@@ -366,8 +367,9 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.187.0/build/three.m
 
   const animate = () => {
     if (!active) return;
+    if (reduceMotion) { render(); return; }
     frame = requestAnimationFrame(animate);
-    if (!reduceMotion) {
+    {
       const time = performance.now() * 0.00018;
       inputGroup.children.forEach(child => {
         if (child.userData.phase !== undefined) {
