@@ -20,3 +20,5 @@
 .film-legend i{width:22px;height:1px;background:#424b37}
 @media(max-width:700px){.scroll-film{height:280vh}.film-sticky{min-height:580px}.film-top{top:25px;left:6vw;right:6vw;font-size:6px}.film-copy{left:6vw;right:6vw;top:39%}.film-copy h2{font-size:clamp(48px,12vw,76px)}.film-copy>p:last-child{font-size:11px;max-width:280px}.film-counter{right:7vw;bottom:15%}.film-counter strong{font-size:32px}.film-progress{left:6vw;right:6vw;bottom:10%}.film-legend{left:6vw;bottom:4%;gap:8px;font-size:6px}.film-legend i{width:12px}}
 @media(prefers-reduced-motion:reduce){.scroll-film{height:auto;min-height:620px}.film-sticky{position:relative;height:620px}.film-copy{opacity:1}}
+
+.closing-cta-disabled{cursor:default;user-select:none}.closing-cta-disabled:hover{background:#151912;transform:none}
