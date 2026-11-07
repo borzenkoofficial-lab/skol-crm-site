@@ -123,19 +123,20 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.187.0/build/three.m
     return texture;
   };
   const makeCard = (parent, title, meta, position, rotation, variant) => {
+    // Keep the screen and its frame in one transform rig so their alignment survives float and scale motion.
+    const rig = new THREE.Group();
+    rig.position.set(position[0], position[1], position[2]);
+    rig.rotation.set(rotation[0], rotation[1], rotation[2]);
     const material = new THREE.MeshBasicMaterial({ map: makeLabelTexture(title, meta, variant), transparent: true, side: THREE.DoubleSide, toneMapped: false });
     const card = new THREE.Mesh(new THREE.PlaneGeometry(1.65, 0.96), material);
-    card.position.set(position[0], position[1], position[2]);
-    card.rotation.set(rotation[0], rotation[1], rotation[2]);
-    parent.add(card);
+    rig.add(card);
     const frame = new THREE.LineSegments(
       new THREE.EdgesGeometry(new THREE.BoxGeometry(1.72, 1.03, 0.035)),
       new THREE.LineBasicMaterial({ color: 0xc8f169, transparent: true, opacity: 0.65 })
     );
-    frame.position.copy(card.position);
-    frame.rotation.copy(card.rotation);
-    parent.add(frame);
-    return card;
+    rig.add(frame);
+    parent.add(rig);
+    return rig;
   };
 
   const input = new THREE.Group();
@@ -339,7 +340,8 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.187.0/build/three.m
     const target = targetPath.getPointAt(p);
     camera.position.set(pos.x + pointerX * (mobile ? 0.06 : 0.18), pos.y - pointerY * (mobile ? 0.04 : 0.12), pos.z);
     camera.lookAt(target);
-    camera.rotation.z += Math.sin(p * Math.PI * 2) * 0.012;
+    // Set roll from scroll progress; accumulating onto the previous frame causes unbounded camera drift.
+    camera.rotation.z = Math.sin(p * Math.PI * 2) * 0.012;
     camera.fov = mix(39, 32, smooth(Math.sin(p * Math.PI)));
     camera.updateProjectionMatrix();
     groups.forEach((group, i) => setGroupOpacity(i, opacityAt(p, visibility[i])));
