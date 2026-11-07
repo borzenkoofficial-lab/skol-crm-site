@@ -28,7 +28,7 @@ test('cinematic camera follows a continuous spline path', () => {
 });
 
 test('scene includes a detailed architectural construction model', () => {
-  assert.ok(motion.includes('Tower crane'));
+  assert.ok(motion.includes('tower crane'));
   assert.ok(motion.includes('Glass curtain wall'));
   assert.ok(motion.includes('level < 5'));
 });
