@@ -25,7 +25,7 @@
 
 
 /* Scroll-driven 3D experience */
-.experience-scroll{height:360vh;position:relative;background:#0b0f0a;color:#f1f3eb;isolation:isolate}
+.experience-scroll{height:420vh;position:relative;background:#0b0f0a;color:#f1f3eb;isolation:isolate}
 .experience-sticky{height:100svh;min-height:650px;position:sticky;top:0;overflow:hidden;background:radial-gradient(ellipse at 72% 48%,rgba(146,184,85,.14),transparent 43%),radial-gradient(ellipse at 50% 110%,rgba(64,82,44,.2),transparent 50%),#0b0f0a}
 #motion-canvas{position:absolute;inset:0;width:100%;height:100%;display:block;z-index:0}
 .experience-grid{position:absolute;inset:0;z-index:1;pointer-events:none;opacity:.22;background-image:linear-gradient(rgba(210,230,190,.055) 1px,transparent 1px),linear-gradient(90deg,rgba(210,230,190,.055) 1px,transparent 1px);background-size:64px 64px;mask-image:linear-gradient(90deg,transparent,#000 35%,#000 100%)}
