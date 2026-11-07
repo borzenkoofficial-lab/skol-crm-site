@@ -30,7 +30,7 @@ test('cinematic camera follows a continuous spline path', () => {
 test('scene includes a detailed architectural construction model', () => {
   assert.match(motion, /Tower crane/);
   assert.match(motion, /Glass curtain wall/);
-  assert.match(motion, /levels = 5/);
+  assert.match(motion, /level < 5/);
 });
 
 test('mobile menu exposes an initial accessible state', () => {

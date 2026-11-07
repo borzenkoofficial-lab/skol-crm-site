@@ -159,6 +159,7 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.187.0/build/three.m
     const pos = [Math.cos(angle) * radius, Math.sin(angle * 2) * 0.95, Math.sin(angle) * radius * 0.68];
     const card = makeCard(input, inputTitles[i][0], inputTitles[i][1], pos, [0, -angle * 0.18, Math.cos(angle) * 0.12], i);
     card.userData.phase = i * 0.9;
+    card.userData.baseY = pos[1];
     line(input, [[0, 0, 0], pos], 0xa9d875, 0.18);
     const node = new THREE.Mesh(new THREE.IcosahedronGeometry(0.085, 1), mats.lime);
     node.position.set(pos[0], pos[1], pos[2]);
@@ -234,6 +235,7 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.187.0/build/three.m
     const pos = [Math.cos(a) * 3.1, Math.sin(a * 2) * 1.2, Math.sin(a) * 2.7];
     const node = new THREE.Mesh(new THREE.IcosahedronGeometry(0.12, 1), i % 3 === 0 ? mats.lime : mats.white);
     node.position.set(pos[0], pos[1], pos[2]);
+    node.userData.baseY = pos[1];
     control.add(node);
     line(control, [[0, 0, 0], pos], 0xc8f169, 0.28);
     controlNodes.push(node);
@@ -266,6 +268,10 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.187.0/build/three.m
   scene.add(floor);
 
   const groups = [input, building, finance, control];
+  groups.forEach(group => group.traverse(obj => {
+    if (!obj.material) return;
+    obj.material = Array.isArray(obj.material) ? obj.material.map(material => material.clone()) : obj.material.clone();
+  }));
   const materialsByGroup = groups.map(group => {
     const set = new Set();
     group.traverse(obj => {
@@ -348,7 +354,7 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.187.0/build/three.m
     controlCore.rotation.y = p * 1.5;
     controlCore.rotation.x = p * 0.6;
     coreWire.rotation.copy(controlCore.rotation);
-    controlNodes.forEach((node, i) => { node.position.y += Math.sin(performance.now() * 0.001 + i) * 0.0008; });
+    controlNodes.forEach((node, i) => { node.position.y = node.userData.baseY + Math.sin(performance.now() * 0.001 + i) * 0.14; });
     particleField.rotation.y = p * 0.12;
     particleField.rotation.x = Math.sin(p * Math.PI) * 0.035;
     limeLight.intensity = 26 + Math.sin(p * Math.PI * 4) * 8;
@@ -377,7 +383,7 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.187.0/build/three.m
     raf = requestAnimationFrame(animate);
     const time = performance.now() * 0.00045;
     input.children.forEach(child => {
-      if (child.userData.phase !== undefined) child.position.y += Math.sin(time * 3 + child.userData.phase) * 0.0006;
+      if (child.userData.phase !== undefined) child.position.y = child.userData.baseY + Math.sin(time * 3 + child.userData.phase) * 0.075;
     });
     control.children.forEach((child, i) => {
       if (child.geometry && child.geometry.type === 'TorusGeometry') child.rotation.z += (i % 2 ? -1 : 1) * 0.00045;
