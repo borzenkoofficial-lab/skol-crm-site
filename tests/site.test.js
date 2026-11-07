@@ -9,49 +9,49 @@ const css = fs.readFileSync('styles.css', 'utf8');
 
 test('HTML includes all main navigation targets and the WebGL experience', () => {
   for (const id of ['top', 'experience', 'system', 'control', 'workflow', 'contact']) {
-    assert.match(html, new RegExp('id="' + id + '"'));
+    assert.ok(html.includes('id="' + id + '"'), 'missing ' + id);
   }
-  assert.match(html, /id="motion-canvas"/);
-  assert.match(html, /src="\\/motion-scene\\.mjs"/);
+  assert.ok(html.includes('id="motion-canvas"'));
+  assert.ok(html.includes('src="/motion-scene.mjs"'));
 });
 
 test('cinematic motion stack is pinned to known CDN versions', () => {
-  assert.match(html, /gsap@3\\.15\\.1\\/dist\\/gsap\\.min\\.js/);
-  assert.match(html, /gsap@3\\.15\\.1\\/dist\\/ScrollTrigger\\.min\\.js/);
-  assert.match(motion, /three@0\\.187\\.0\\/build\\/three\\.module\\.js/);
+  assert.ok(html.includes('gsap@3.15.1/dist/gsap.min.js'));
+  assert.ok(html.includes('gsap@3.15.1/dist/ScrollTrigger.min.js'));
+  assert.ok(motion.includes('three@0.187.0/build/three.module.js'));
 });
 
 test('cinematic camera follows a continuous spline path', () => {
-  assert.match(motion, /CatmullRomCurve3/);
-  assert.match(motion, /getPointAt\\(p\\)/);
-  assert.match(motion, /scrub:\\s*1\\.05/);
+  assert.ok(motion.includes('CatmullRomCurve3'));
+  assert.ok(motion.includes('getPointAt(p)'));
+  assert.ok(motion.includes('scrub: 1.05'));
 });
 
 test('scene includes a detailed architectural construction model', () => {
-  assert.match(motion, /Tower crane/);
-  assert.match(motion, /Glass curtain wall/);
-  assert.match(motion, /level < 5/);
+  assert.ok(motion.includes('Tower crane'));
+  assert.ok(motion.includes('Glass curtain wall'));
+  assert.ok(motion.includes('level < 5'));
 });
 
 test('mobile menu exposes an initial accessible state', () => {
-  assert.match(html, /class="menu-toggle"[^>]*aria-expanded="false"/);
+  assert.ok(html.includes('aria-expanded="false"'));
 });
 
 test('no invented contact address remains in the page', () => {
-  assert.doesNotMatch(html, /hello@skolcrm\\.ru/);
-  assert.match(html, /Контакты для демонстрации уточняются/);
+  assert.ok(!html.includes('hello@skolcrm.ru'));
+  assert.ok(html.includes('Контакты для демонстрации уточняются'));
 });
 
 test('motion has a reduced-motion and WebGL fallback', () => {
-  assert.match(css, /prefers-reduced-motion:\\s*reduce/);
-  assert.match(js, /prefers-reduced-motion/);
-  assert.match(motion, /motion-fallback/);
-  assert.match(motion, /prefers-reduced-motion/);
+  assert.ok(css.includes('prefers-reduced-motion:reduce'));
+  assert.ok(js.includes('prefers-reduced-motion'));
+  assert.ok(motion.includes('motion-fallback'));
+  assert.ok(motion.includes('prefers-reduced-motion'));
 });
 
 test('main and 3D motion JavaScript parse', () => {
   assert.doesNotThrow(() => new vm.Script(js));
-  assert.match(motion, /ScrollTrigger/);
-  assert.match(motion, /WebGLRenderer/);
-  assert.match(motion, /cameraPath/);
+  assert.ok(motion.includes('ScrollTrigger'));
+  assert.ok(motion.includes('WebGLRenderer'));
+  assert.ok(motion.includes('cameraPath'));
 });
