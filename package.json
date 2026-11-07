@@ -1,0 +1,10 @@
+{
+  "name": "skol-crm-cinematic-site",
+  "version": "0.2.0",
+  "private": true,
+  "type": "commonjs",
+  "scripts": {
+    "test": "node --test",
+    "check:js": "node --check main.js"
+  }
+}
