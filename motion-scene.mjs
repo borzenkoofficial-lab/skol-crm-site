@@ -287,17 +287,23 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.187.0/build/three.m
     material.depthWrite = opacity > 0.92 && base > 0.95;
   });
 
+  // Seven camera beats: establish the data field, inspect the structure, skim the facade,
+  // move through the financial instrument, orbit the control core, then pull back to the whole system.
   const cameraPath = new THREE.CatmullRomCurve3([
-    new THREE.Vector3(-5.2, 4.1, 13.2),
-    new THREE.Vector3(2.5, 3.8, 10.5),
-    new THREE.Vector3(10.7, 4.2, 8.5),
-    new THREE.Vector3(-4.8, 5.1, 7.5),
+    new THREE.Vector3(-7.8, 2.8, 7.6),
+    new THREE.Vector3(-2.1, 3.0, 5.8),
+    new THREE.Vector3(3.8, 5.8, 5.6),
+    new THREE.Vector3(9.2, 2.7, 5.2),
+    new THREE.Vector3(4.8, 3.6, -8.4),
+    new THREE.Vector3(-4.2, 2.2, -1.8),
     new THREE.Vector3(0.4, 2.7, 14.2)
   ], false, 'centripetal', 0.45);
   const targetPath = new THREE.CatmullRomCurve3([
     new THREE.Vector3(-5.2, 0.3, 0),
-    new THREE.Vector3(0, 2.1, 0),
+    new THREE.Vector3(-0.5, 2.1, 0),
+    new THREE.Vector3(1.2, 3.2, 2.0),
     new THREE.Vector3(5.6, 0.8, 0),
+    new THREE.Vector3(0, 0.7, -5.3),
     new THREE.Vector3(0, 0.7, -5.3),
     new THREE.Vector3(0, 0.5, 0)
   ], false, 'centripetal', 0.45);
