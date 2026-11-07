@@ -67,7 +67,7 @@
       { kicker: '03 — ЭКОНОМИКА РАБОТ', title: 'Цифры обретают<br><em>контекст.</em>', description: 'Плановые и фактические показатели помогают видеть экономику проекта.' },
       { kicker: '04 — ЕДИНЫЙ КОНТРОЛЬ', title: 'Вы управляете<br><em>целой системой.</em>', description: 'Рабочий процесс становится прозрачным — от запроса до закрытия объекта.' }
     ];
-    let width = 0, height = 0, dpr = 1, lastScene = -1, frame = 0;
+    let width = 0, height = 0, dpr = 1, lastScene = -1;
     const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
     const smooth = v => { v = clamp(v, 0, 1); return v * v * (3 - 2 * v); };
     const resizeFilm = () => {
@@ -140,7 +140,6 @@
       }
       ctx.fillStyle = 'rgba(200,241,105,.65)'; ctx.font = '8px Manrope, Arial';
       ctx.fillText('SKOL / ' + String(scene + 1).padStart(2, '0'), cx - radius * 1.2, cy + radius * 1.55);
-      frame = requestAnimationFrame(() => {});
     };
     let filmTick = false;
     const requestFilmDraw = () => { if (!filmTick) { filmTick = true; requestAnimationFrame(() => { drawFilm(); filmTick = false; }); } };
