@@ -137,6 +137,7 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.187.0/build/three.m
     const y = ((i % 5) - 2) * 0.48;
     const panel = addBox(inputGroup, [0.72 + (i % 3) * 0.18, 0.055, 0.5], [x, y, z], i % 4 === 0 ? lime : glass, [0, -angle * 0.24, (i % 3 - 1) * 0.08]);
     panel.userData.phase = i * 0.7;
+    panel.userData.baseY = y;
     addLine(inputGroup, [[x, y, z], [x * 0.42, y * 0.3, z * 0.42], [0, 0, 0]], 0xb9dc83, 0.23, 0.009);
   }
 
@@ -222,8 +223,10 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.187.0/build/three.m
   // Architectural floor grid and distant reference rings.
   const grid = new THREE.GridHelper(30, 60, 0x61724d, 0x2d3926);
   grid.position.y = -2.2;
-  grid.material.transparent = true;
-  grid.material.opacity = 0.2;
+  (Array.isArray(grid.material) ? grid.material : [grid.material]).forEach(material => {
+    material.transparent = true;
+    material.opacity = 0.2;
+  });
   scene.add(grid);
   const horizon = new THREE.Mesh(
     new THREE.TorusGeometry(9, 0.008, 4, 180),
@@ -277,6 +280,7 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.187.0/build/three.m
         if (material.userData.baseOpacity === undefined) material.userData.baseOpacity = material.opacity;
         material.opacity = material.userData.baseOpacity * opacity;
         material.transparent = true;
+        material.depthWrite = material.opacity > 0.92;
       });
     });
   };
@@ -332,7 +336,8 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.187.0/build/three.m
     financeGroup.rotation.y = -0.22 + p * 0.45;
     controlGroup.rotation.y = p * 0.62;
     controlGroup.rotation.x = Math.sin(p * Math.PI) * 0.12;
-    trail.material.dashOffset = -p * 6;
+    trail.rotation.y = -p * 0.38;
+    trail.material.opacity = 0.38 + Math.sin(p * Math.PI) * 0.35;
     particles.rotation.y = p * 0.18;
     particles.rotation.x = Math.sin(p * Math.PI) * 0.04;
     limeLight.intensity = 22 + Math.sin(p * Math.PI * 3) * 5;
@@ -366,7 +371,7 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.187.0/build/three.m
       const time = performance.now() * 0.00018;
       inputGroup.children.forEach(child => {
         if (child.userData.phase !== undefined) {
-          child.position.y += Math.sin(time * 3 + child.userData.phase) * 0.0008;
+          child.position.y = child.userData.baseY + Math.sin(time * 3 + child.userData.phase) * 0.035;
         }
       });
       controlGroup.children.forEach((child, index) => {
