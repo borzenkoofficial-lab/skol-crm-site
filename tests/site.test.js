@@ -21,10 +21,19 @@ test('cinematic motion stack is pinned to known CDN versions', () => {
   assert.ok(motion.includes('three@0.187.0/build/three.module.js'));
 });
 
-test('cinematic camera follows a continuous spline path', () => {
+test('cinematic camera follows a continuous spline path without cumulative roll drift', () => {
   assert.ok(motion.includes('CatmullRomCurve3'));
   assert.ok(motion.includes('getPointAt(p)'));
   assert.ok(motion.includes('scrub: 1.05'));
+  assert.ok(motion.includes('camera.rotation.z = Math.sin(p * Math.PI * 2) * 0.012'));
+  assert.ok(!motion.includes('camera.rotation.z +='));
+});
+
+test('3D information cards keep their frame attached during motion', () => {
+  assert.ok(motion.includes('const rig = new THREE.Group()'));
+  assert.ok(motion.includes('rig.add(card)'));
+  assert.ok(motion.includes('rig.add(frame)'));
+  assert.ok(motion.includes('return rig'));
 });
 
 test('scene includes a detailed architectural construction model', () => {
