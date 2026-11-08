@@ -27,8 +27,11 @@ test('cinematic camera follows a continuous spline path without cumulative roll 
   assert.ok(motion.includes('CatmullRomCurve3'));
   assert.ok(motion.includes('getPointAt(p)'));
   assert.ok(motion.includes('scrub: 1.05'));
-  assert.ok(motion.includes('camera.rotation.z = Math.sin(p * Math.PI * 2) * 0.012'));
-  assert.ok(!motion.includes('camera.rotation.z +='));
+  assert.ok(motion.includes('camera.rotation.z = shot(2)'));
+  assert.ok(motion.includes('const shotTrack = ['));
+  assert.ok(motion.includes('const nextFov = shot(1)'));
+  assert.ok(motion.includes('camera.rotation.z +=') === false);
+  assert.ok(motion.includes('camera.updateProjectionMatrix()'));
 });
 
 test('3D information cards keep their frame attached during motion', () => {
@@ -104,4 +107,17 @@ test('marketing visuals do not imply fabricated object IDs, margin values or liv
   assert.ok(!html.includes('Маржинальность под контролем'));
   assert.ok(!html.includes('ЗАДАЧА ЗАКРЫТА'));
   assert.ok(html.includes('ДОКУМЕНТЫ ОБЪЕКТА'));
+});
+
+test('cinematic camera uses distinct close-up and wide master-shot lenses', () => {
+  assert.ok(motion.includes('[0.12, 27'));
+  assert.ok(motion.includes('[0.43, 25'));
+  assert.ok(motion.includes('[0.73, 24'));
+  assert.ok(motion.includes('[1, 43'));
+  assert.ok(motion.includes('sampleTrack(p, shotTrack, column)'));
+});
+test('camera framing includes restrained pointer parallax and no cumulative transform drift', () => {
+  assert.ok(motion.includes('pointerX * (mobile ? 0.035 : 0.11)'));
+  assert.ok(motion.includes('pointerY * (mobile ? 0.025 : 0.075)'));
+  assert.ok(!motion.includes('camera.rotation.z +='));
 });

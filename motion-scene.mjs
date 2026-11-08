@@ -307,24 +307,28 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.187.0/build/three.m
 
   // Seven camera beats: establish the data field, inspect the structure, skim the facade,
   // move through the financial instrument, orbit the control core, then pull back to the whole system.
+  // Eight deliberate shots: establish -> data push-in -> architectural reveal -> facade skim
+  // -> finance close-up -> orbit the core -> release into a wide master shot.
   const cameraPath = new THREE.CatmullRomCurve3([
-    new THREE.Vector3(-7.8, 2.8, 7.6),
-    new THREE.Vector3(-2.1, 3.0, 5.8),
-    new THREE.Vector3(3.8, 5.8, 5.6),
-    new THREE.Vector3(9.2, 2.7, 5.2),
-    new THREE.Vector3(4.8, 3.6, -8.4),
-    new THREE.Vector3(-4.2, 2.2, -1.8),
-    new THREE.Vector3(0.4, 2.7, 14.2)
-  ], false, 'centripetal', 0.45);
+    new THREE.Vector3(-8.2, 2.7, 8.2),
+    new THREE.Vector3(-4.9, 1.75, 4.25),
+    new THREE.Vector3(-1.9, 3.2, 6.1),
+    new THREE.Vector3(3.55, 3.55, 3.65),
+    new THREE.Vector3(8.1, 2.35, 4.5),
+    new THREE.Vector3(4.0, 1.55, -3.2),
+    new THREE.Vector3(-3.7, 1.95, -2.5),
+    new THREE.Vector3(0.4, 3.0, 14.2)
+  ], false, 'centripetal', 0.42);
   const targetPath = new THREE.CatmullRomCurve3([
     new THREE.Vector3(-5.2, 0.3, 0),
-    new THREE.Vector3(-0.5, 2.1, 0),
-    new THREE.Vector3(1.2, 3.2, 2.0),
-    new THREE.Vector3(5.6, 0.8, 0),
-    new THREE.Vector3(0, 0.7, -5.3),
+    new THREE.Vector3(-5.2, 0.5, 0),
+    new THREE.Vector3(0, 2.1, 0),
+    new THREE.Vector3(1.3, 3.0, 2.0),
+    new THREE.Vector3(5.6, 0.9, 0),
+    new THREE.Vector3(5.6, 0.65, 0),
     new THREE.Vector3(0, 0.7, -5.3),
     new THREE.Vector3(0, 0.5, 0)
-  ], false, 'centripetal', 0.45);
+  ], false, 'centripetal', 0.42);
   const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
   const smooth = v => { const x = clamp(v, 0, 1); return x * x * (3 - 2 * x); };
   const mix = (a, b, t) => a + (b - a) * t;
@@ -334,6 +338,24 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.187.0/build/three.m
     const a = points[i], b = points[i + 1];
     return mix(a[1], b[1], smooth((p - a[0]) / (b[0] - a[0])));
   };
+  const sampleTrack = (p, keys, column) => {
+    let i = 0;
+    while (i < keys.length - 2 && p > keys[i + 1][0]) i++;
+    const a = keys[i], b = keys[i + 1];
+    return mix(a[column], b[column], smooth((p - a[0]) / (b[0] - a[0])));
+  };
+  // p, focal length in degrees, roll, camera X/Y/Z offset, target X/Y/Z offset.
+  // Short focal lengths create deliberate close-ups; the final wide lens restores spatial context.
+  const shotTrack = [
+    [0, 42, -0.004, 0, 0, 0, 0, 0, 0],
+    [0.12, 27, 0.012, 0.12, -0.08, -0.12, 0.12, 0.04, 0],
+    [0.29, 36, -0.008, -0.08, 0.1, 0.18, 0, 0.12, 0],
+    [0.43, 25, 0.014, 0.1, -0.06, -0.16, 0.1, 0.08, 0.08],
+    [0.58, 31, -0.012, -0.12, 0.04, 0.12, 0.08, 0, 0],
+    [0.73, 24, 0.01, 0.08, -0.04, -0.1, 0, 0.04, 0],
+    [0.88, 34, -0.006, -0.06, 0.08, 0.16, 0, 0.12, 0],
+    [1, 43, 0, 0, 0, 0, 0, 0, 0]
+  ];
   const visibility = [
     [[0, 1], [0.12, 1], [0.28, 0.04], [1, 0]],
     [[0, 0.04], [0.18, 0.4], [0.3, 1], [0.47, 0.5], [0.72, 0.1], [1, 0.24]],
@@ -362,12 +384,20 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.187.0/build/three.m
     const p = state.progress;
     const pos = cameraPath.getPointAt(p);
     const target = targetPath.getPointAt(p);
-    camera.position.set(pos.x + pointerX * (mobile ? 0.06 : 0.18), pos.y - pointerY * (mobile ? 0.04 : 0.12), pos.z);
-    camera.lookAt(target);
-    // Set roll from scroll progress; accumulating onto the previous frame causes unbounded camera drift.
-    camera.rotation.z = Math.sin(p * Math.PI * 2) * 0.012;
-    camera.fov = mix(39, 32, smooth(Math.sin(p * Math.PI)));
-    camera.updateProjectionMatrix();
+    const shot = column => sampleTrack(p, shotTrack, column);
+    camera.position.set(
+      pos.x + shot(3) + pointerX * (mobile ? 0.035 : 0.11),
+      pos.y + shot(4) - pointerY * (mobile ? 0.025 : 0.075),
+      pos.z + shot(5)
+    );
+    camera.lookAt(target.x + shot(6), target.y + shot(7), target.z + shot(8));
+    // Shot roll and focal length are absolute scroll-driven values, never accumulated frame-to-frame.
+    camera.rotation.z = shot(2);
+    const nextFov = shot(1);
+    if (Math.abs(camera.fov - nextFov) > 0.015) {
+      camera.fov = nextFov;
+      camera.updateProjectionMatrix();
+    }
     groups.forEach((group, i) => setGroupOpacity(i, opacityAt(p, visibility[i])));
     input.rotation.y = -p * 1.5;
     input.rotation.z = Math.sin(p * Math.PI) * 0.08;
