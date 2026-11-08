@@ -53,6 +53,33 @@
 
 
   if (!reduceMotion && window.matchMedia('(pointer:fine)').matches) {
+    document.querySelectorAll('[data-tilt]').forEach(card => {
+      let frame = 0;
+      card.addEventListener('pointermove', event => {
+        const rect = card.getBoundingClientRect();
+        const x = (event.clientX - rect.left) / rect.width;
+        const y = (event.clientY - rect.top) / rect.height;
+        card.style.setProperty('--mx', (x * 100).toFixed(1) + '%');
+        card.style.setProperty('--my', (y * 100).toFixed(1) + '%');
+        if (frame) cancelAnimationFrame(frame);
+        frame = requestAnimationFrame(() => {
+          card.style.setProperty('--ry', ((x - .5) * 5.5).toFixed(2) + 'deg');
+          card.style.setProperty('--rx', ((.5 - y) * 4.5).toFixed(2) + 'deg');
+          frame = 0;
+        });
+      }, { passive: true });
+      card.addEventListener('pointerleave', () => {
+        if (frame) cancelAnimationFrame(frame);
+        frame = 0;
+        card.style.setProperty('--rx', '0deg');
+        card.style.setProperty('--ry', '0deg');
+        card.style.setProperty('--mx', '50%');
+        card.style.setProperty('--my', '50%');
+      });
+    });
+  }
+
+  if (!reduceMotion && window.matchMedia('(pointer:fine)').matches) {
     document.querySelectorAll('.magnetic').forEach(el => {
       el.addEventListener('pointermove', event => {
         const r = el.getBoundingClientRect();

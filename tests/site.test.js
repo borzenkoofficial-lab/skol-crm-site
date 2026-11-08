@@ -134,3 +134,12 @@ test('finance columns rise and transfer paths progressively connect to the contr
   assert.ok(motion.includes('geometry.setDrawRange(0, Math.floor(total * transferProgress))'));
   assert.ok(motion.includes('transferCurves[i].getPointAt'));
 });
+
+test('operational modules section covers the real CRM workflow without fabricated metrics', () => {
+  assert.ok(html.includes('id="modules"'));
+  for (const label of ['Заявки и клиенты', 'Бригады и производство', 'Задачи и сроки', 'Документы и история']) assert.ok(html.includes(label), 'missing module: ' + label);
+  assert.ok(html.includes('data-tilt'));
+  assert.ok(css.includes('.modules-grid{display:grid'));
+  assert.ok(css.includes('@media(prefers-reduced-motion:reduce){.module-card'));
+  assert.ok(js.includes("querySelectorAll('[data-tilt]')"));
+});
