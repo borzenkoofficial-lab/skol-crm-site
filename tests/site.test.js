@@ -121,3 +121,16 @@ test('camera framing includes restrained pointer parallax and no cumulative tran
   assert.ok(motion.includes('pointerY * (mobile ? 0.025 : 0.075)'));
   assert.ok(!motion.includes('camera.rotation.z +='));
 });
+
+test('architectural frame and glass facade unfold in separate scroll beats', () => {
+  assert.ok(motion.includes('const frameBuild = smooth((p - 0.16) / 0.19)'));
+  assert.ok(motion.includes('const facadeOpen = smooth((p - 0.31) / 0.14)'));
+  assert.ok(motion.includes('facadePanels.forEach'));
+  assert.ok(motion.includes('building.scale.y = mix(0.055, 1, frameBuild)'));
+});
+test('finance columns rise and transfer paths progressively connect to the control core', () => {
+  assert.ok(motion.includes('const financeBuild = smooth((p - 0.445) / 0.13)'));
+  assert.ok(motion.includes('const transferProgress = smooth((p - 0.59) / 0.19)'));
+  assert.ok(motion.includes('geometry.setDrawRange(0, Math.floor(total * transferProgress))'));
+  assert.ok(motion.includes('transferCurves[i].getPointAt'));
+});
