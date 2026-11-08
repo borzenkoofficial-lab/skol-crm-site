@@ -144,3 +144,14 @@ test('operational modules section covers the real CRM workflow without fabricate
   assert.ok(css.includes('@media(prefers-reduced-motion:reduce){.module-card'));
   assert.ok(js.includes("querySelectorAll('[data-tilt]')"));
 });
+
+test('global cinematic interaction layer is pointer-safe and reduced-motion aware', () => {
+  assert.ok(html.includes('id="pointer-aura"'));
+  assert.ok(html.includes('id="cursor-reticle"'));
+  assert.ok(js.includes('Global pointer field'));
+  assert.ok(js.includes('IntersectionObserver'));
+  assert.ok(css.includes('.pointer-aura{position:fixed'));
+  assert.ok(css.includes('@keyframes finance-sweep'));
+  assert.ok(css.includes('@keyframes closing-aura'));
+  assert.ok(css.includes('@media(prefers-reduced-motion:reduce){.pointer-aura'));
+});

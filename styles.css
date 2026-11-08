@@ -107,3 +107,48 @@
 @media(max-width:1100px){.modules-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.module-card{min-height:380px}}
 @media(max-width:700px){.modules-heading{grid-template-columns:1fr;gap:25px;margin:60px 0 38px}.modules-heading h2{font-size:clamp(52px,13vw,78px)}.modules-heading>p{font-size:11px}.modules-grid{grid-template-columns:1fr;gap:10px}.module-card{min-height:360px;padding:17px}.module-visual{height:145px;margin:18px 0}.module-card h3{font-size:18px}}
 @media(prefers-reduced-motion:reduce){.module-card,.module-arrow{transition:none}.module-card.reveal.is-visible{transform:none}.lead-signal{animation:none}}
+
+
+/* Cinematic interaction layer — shared pointer light, optical depth and scroll accents */
+:root{--pointer-x:50vw;--pointer-y:50vh;--scroll-velocity:0}
+.pointer-aura{position:fixed;z-index:90;inset:0;pointer-events:none;opacity:0;background:radial-gradient(420px circle at var(--pointer-x) var(--pointer-y),rgba(190,232,115,.075),transparent 68%);mix-blend-mode:screen;transition:opacity .35s}
+.has-pointer-field .pointer-aura{opacity:1}
+.cursor-reticle{position:fixed;z-index:100;left:50%;top:50%;width:34px;height:34px;pointer-events:none;opacity:0;transform:translate(-50%,-50%);border:1px solid rgba(200,241,105,.62);border-radius:50%;display:grid;place-items:center;transition:width .25s,height .25s,border-color .25s,opacity .25s}
+.has-pointer-field .cursor-reticle{opacity:1}
+.cursor-reticle i{width:3px;height:3px;border-radius:50%;background:#c8f169;box-shadow:0 0 10px #c8f169}
+.cursor-reticle b{position:absolute;inset:-5px;border:1px solid rgba(200,241,105,.16);border-radius:50%;animation:reticle-spin 9s linear infinite}
+.cursor-reticle.is-hovering{width:54px;height:54px;border-color:rgba(200,241,105,.95);background:rgba(200,241,105,.055)}
+@keyframes reticle-spin{to{transform:rotate(360deg)}}
+.hero-stage,.feature-visual,.finance-panel,.workflow-step,.closing{--local-x:50%;--local-y:50%}
+.hero-stage:after{content:"";position:absolute;inset:0;pointer-events:none;z-index:0;opacity:.42;background:radial-gradient(360px circle at var(--pointer-x) var(--pointer-y),rgba(200,241,105,.08),transparent 70%);mix-blend-mode:screen}
+.feature-visual{isolation:isolate}
+.feature-visual:after{content:"";position:absolute;inset:0;z-index:4;pointer-events:none;opacity:0;background:radial-gradient(460px circle at var(--pointer-x) var(--pointer-y),rgba(200,241,105,.12),transparent 65%);transition:opacity .35s}
+.has-pointer-field .feature-visual:after{opacity:1}
+.feature-visual:before{content:"";position:absolute;inset:8%;z-index:3;pointer-events:none;border:1px solid rgba(200,241,105,.13);clip-path:polygon(0 0,100% 0,100% 100%,0 100%);opacity:.45;transition:inset .7s cubic-bezier(.2,.8,.2,1),opacity .5s}
+.feature-visual.chapter-in-view:before,.chapter-in-view .feature-visual:before{inset:3%;opacity:.9}
+.feature-orb{animation:orb-breathe 7s ease-in-out infinite}
+@keyframes orb-breathe{0%,100%{transform:translate(-50%,-50%) scale(.94);filter:brightness(.85)}50%{transform:translate(-50%,-50%) scale(1.08);filter:brightness(1.25)}}
+.finance-panel{overflow:hidden}
+.finance-panel:after{content:"";position:absolute;inset:-60% -30%;pointer-events:none;background:linear-gradient(112deg,transparent 43%,rgba(200,241,105,.12) 49%,rgba(255,255,255,.2) 50%,transparent 56%);transform:translateX(-75%) rotate(8deg);animation:finance-sweep 8s cubic-bezier(.4,0,.2,1) infinite}
+@keyframes finance-sweep{0%,20%{transform:translateX(-75%) rotate(8deg)}65%,100%{transform:translateX(75%) rotate(8deg)}}
+.workflow{position:relative;isolation:isolate;overflow:hidden}
+.workflow:before{content:"";position:absolute;z-index:-1;inset:0;opacity:.35;background:radial-gradient(ellipse at 50% 100%,rgba(158,194,93,.17),transparent 55%),linear-gradient(90deg,transparent 49.95%,rgba(130,155,98,.1) 50%,transparent 50.05%)}
+.workflow-step{position:relative;transition:transform .5s cubic-bezier(.2,.8,.2,1),border-color .4s}
+.workflow-step:after{content:"";position:absolute;inset:0;pointer-events:none;opacity:0;background:radial-gradient(240px circle at var(--pointer-x) var(--pointer-y),rgba(165,205,93,.12),transparent 70%);transition:opacity .3s}
+.has-pointer-field .workflow-step:hover{transform:translateY(-9px)}
+.workflow-step:hover:after{opacity:1}
+.workflow-step>b{transition:color .35s,text-shadow .35s}
+.workflow-step:hover>b{color:var(--lime);text-shadow:0 0 24px rgba(200,241,105,.5)}
+.closing{isolation:isolate}
+.closing:after{content:"";position:absolute;z-index:-1;inset:-25%;pointer-events:none;background:radial-gradient(ellipse at 50% 65%,rgba(168,210,93,.16),transparent 45%),conic-gradient(from 220deg at 50% 55%,transparent 0 28%,rgba(200,241,105,.045) 35%,transparent 48% 100%);animation:closing-aura 18s linear infinite}
+@keyframes closing-aura{to{transform:rotate(360deg)}}
+.closing-grid{mask-image:radial-gradient(ellipse at 50% 60%,#000 10%,transparent 76%)}
+.is-scrolling-fast .scroll-line{filter:drop-shadow(0 0 7px rgba(200,241,105,.85))}
+.is-scrolling-fast .scroll-line span{box-shadow:0 0 15px rgba(200,241,105,.9)}
+.module-visual{transition:background .45s,box-shadow .45s}
+.module-card:hover .module-visual{box-shadow:inset 0 0 0 1px rgba(153,190,92,.3),0 12px 28px rgba(34,45,25,.08)}
+.module-visual:after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(110deg,transparent 25%,rgba(255,255,255,.36) 48%,transparent 70%);transform:translateX(-120%);transition:transform .85s cubic-bezier(.2,.8,.2,1)}
+.module-card:hover .module-visual:after{transform:translateX(120%)}
+@media(hover:none),(pointer:coarse){.pointer-aura,.cursor-reticle{display:none}.feature-visual:after{display:none}}
+@media(max-width:700px){.hero-stage:after{display:none}.finance-panel:after{animation-duration:11s}.closing:after{animation-duration:28s}}
+@media(prefers-reduced-motion:reduce){.pointer-aura,.cursor-reticle{display:none}.feature-orb,.finance-panel:after,.closing:after,.cursor-reticle b{animation:none}.workflow-step,.module-visual:after{transition:none}.has-pointer-field .workflow-step:hover{transform:none}}

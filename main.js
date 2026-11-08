@@ -90,4 +90,62 @@
       el.addEventListener('pointerleave', () => { el.style.transform = ''; });
     });
   }
+
+  // Global pointer field: one shared light source gives the interface spatial continuity.
+  const finePointer = window.matchMedia('(pointer:fine)').matches;
+  const aura = document.querySelector('#pointer-aura');
+  const cursor = document.querySelector('#cursor-reticle');
+  let pointerFrame = 0;
+  let pointerX = window.innerWidth * .5;
+  let pointerY = window.innerHeight * .5;
+  if (!reduceMotion && finePointer && aura) {
+    document.documentElement.classList.add('has-pointer-field');
+    window.addEventListener('pointermove', event => {
+      pointerX = event.clientX;
+      pointerY = event.clientY;
+      if (pointerFrame) return;
+      pointerFrame = requestAnimationFrame(() => {
+        document.documentElement.style.setProperty('--pointer-x', pointerX + 'px');
+        document.documentElement.style.setProperty('--pointer-y', pointerY + 'px');
+        if (cursor) {
+          cursor.style.left = pointerX + 'px';
+          cursor.style.top = pointerY + 'px';
+        }
+        pointerFrame = 0;
+      });
+    }, { passive: true });
+    document.querySelectorAll('a,button,[data-tilt]').forEach(target => {
+      target.addEventListener('pointerenter', () => cursor?.classList.add('is-hovering'));
+      target.addEventListener('pointerleave', () => cursor?.classList.remove('is-hovering'));
+    });
+  }
+
+  // Scroll velocity is used only as a visual accent; content layout never depends on it.
+  let lastScrollY = window.scrollY;
+  let scrollVelocity = 0;
+  let scrollFrame = 0;
+  window.addEventListener('scroll', () => {
+    if (reduceMotion || scrollFrame) return;
+    scrollFrame = requestAnimationFrame(() => {
+      const current = window.scrollY;
+      scrollVelocity = Math.max(-1, Math.min(1, (current - lastScrollY) / 42));
+      document.documentElement.style.setProperty('--scroll-velocity', scrollVelocity.toFixed(2));
+      document.documentElement.classList.toggle('is-scrolling-fast', Math.abs(scrollVelocity) > .55);
+      lastScrollY = current;
+      scrollFrame = 0;
+    });
+  }, { passive: true });
+
+  // Bring each chapter into focus without adding a heavy continuous animation loop.
+  if ('IntersectionObserver' in window) {
+    const chapters = document.querySelectorAll('.feature, .modules, .workflow, .closing');
+    const chapterObserver = new IntersectionObserver(entries => entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        document.querySelectorAll('.chapter-in-view').forEach(node => node.classList.remove('chapter-in-view'));
+        entry.target.classList.add('chapter-in-view');
+      }
+    }), { threshold: .28 });
+    chapters.forEach(chapter => chapterObserver.observe(chapter));
+  }
+
 })();
