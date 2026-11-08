@@ -44,27 +44,27 @@
             <div class="dash-side"><b>СКОЛ</b><span class="side-active">◈ Обзор</span><span>◉ Заявки</span><span>▤ Объекты</span><span>₽ Финансы</span><span>⌁ Производство</span><span>✓ Задачи</span><span>▧ Документы</span><div class="side-user"><i>С</i> Рабочее место</div></div>
             <div class="dash-content product-screen-content">
               <div class="product-screen-tabs" role="tablist" aria-label="Разделы интерфейса СКОЛ CRM">
-                <button class="product-screen-tab is-active" type="button" role="tab" aria-selected="true" data-showcase-tab="overview">Обзор</button>
-                <button class="product-screen-tab" type="button" role="tab" aria-selected="false" data-showcase-tab="leads">Заявки</button>
-                <button class="product-screen-tab" type="button" role="tab" aria-selected="false" data-showcase-tab="projects">Объекты</button>
-                <button class="product-screen-tab" type="button" role="tab" aria-selected="false" data-showcase-tab="finance">Финансы</button>
+                <button class="product-screen-tab is-active" type="button" role="tab" aria-selected="true" data-showcase-tab="overview" aria-controls="showcase-overview">Обзор</button>
+                <button class="product-screen-tab" type="button" role="tab" aria-selected="false" data-showcase-tab="leads" aria-controls="showcase-leads">Заявки</button>
+                <button class="product-screen-tab" type="button" role="tab" aria-selected="false" data-showcase-tab="projects" aria-controls="showcase-projects">Объекты</button>
+                <button class="product-screen-tab" type="button" role="tab" aria-selected="false" data-showcase-tab="finance" aria-controls="showcase-finance">Финансы</button>
               </div>
-              <section class="product-screen-panel is-active" data-showcase-panel="overview" role="tabpanel">
+              <section class="product-screen-panel is-active" data-showcase-panel="overview" id="showcase-overview" role="tabpanel" tabindex="0">
                 <div class="dash-greeting"><div><small>ВАШ БИЗНЕС · В ОДНОМ МЕСТЕ</small><h3>Обзор бизнеса</h3></div><span class="date-chip">ЛОКАЛЬНЫЕ ДАННЫЕ</span></div>
                 <div class="metric-row"><div class="metric"><small>АКТИВНЫЕ ЗАЯВКИ</small><strong>—</strong><span>Следующее действие</span></div><div class="metric"><small>АКТИВНЫЕ ОБЪЕКТЫ</small><strong>—</strong><span>В работе и запланированы</span></div><div class="metric"><small>КЛИЕНТЫ В БАЗЕ</small><strong>—</strong><span>Карточки клиентов</span></div></div>
                 <div class="product-screen-lower"><div class="product-screen-card"><b>ДВИЖЕНИЕ ЗАЯВОК</b><span>Новая · Связались · Замер · Смета · Переговоры</span><i>Статусы из воронки CRM</i></div><div class="product-screen-card"><b>ТРЕБУЕТ ВНИМАНИЯ</b><span>Задачи · сроки · отклонения</span><i>Сигналы по сохранённым записям</i></div></div>
               </section>
-              <section class="product-screen-panel" data-showcase-panel="leads" role="tabpanel" hidden>
+              <section class="product-screen-panel" data-showcase-panel="leads" id="showcase-leads" role="tabpanel" tabindex="0" hidden>
                 <div class="dash-greeting"><div><small>КЛИЕНТСКИЙ ПОТОК</small><h3>Заявки</h3></div><span class="date-chip">ВОРОНКА</span></div>
                 <div class="product-pipeline"><div><b>Новая</b><strong>—</strong></div><div><b>Связались</b><strong>—</strong></div><div><b>Замер</b><strong>—</strong></div><div><b>Смета</b><strong>—</strong></div><div><b>Переговоры</b><strong>—</strong></div></div>
                 <div class="product-screen-note">Карточки обращений, источник, клиент и следующий шаг. Количество заявок рассчитывается по записям базы.</div>
               </section>
-              <section class="product-screen-panel" data-showcase-panel="projects" role="tabpanel" hidden>
+              <section class="product-screen-panel" data-showcase-panel="projects" id="showcase-projects" role="tabpanel" tabindex="0" hidden>
                 <div class="dash-greeting"><div><small>ПОРТФЕЛЬ РАБОТ</small><h3>Объекты</h3></div><span class="date-chip">ПРОЕКТЫ</span></div>
                 <div class="product-object-row"><span>Название объекта</span><span>Договор</span><span>Статус</span><span>Получено</span></div>
                 <div class="product-empty-state"><i>▤</i><b>Данные объектов не подменяются примерами</b><span>В программе отображаются ваши объекты и их фактические статусы.</span></div>
               </section>
-              <section class="product-screen-panel" data-showcase-panel="finance" role="tabpanel" hidden>
+              <section class="product-screen-panel" data-showcase-panel="finance" id="showcase-finance" role="tabpanel" tabindex="0" hidden>
                 <div class="dash-greeting"><div><small>ФАКТИЧЕСКИЕ ЗАПИСИ</small><h3>Финансы</h3></div><span class="date-chip">ПЛАН / ФАКТ</span></div>
                 <div class="product-finance-grid"><div><small>ПОСТУПИЛО</small><b>—</b></div><div><small>ОПЛАЧЕНО РАСХОДОВ</small><b>—</b></div><div><small>ДЕНЕЖНЫЙ ОСТАТОК</small><b>—</b></div></div>
                 <div class="product-screen-note">Денежный остаток — поступления минус оплаченные расходы. Это не прибыль и не банковский баланс.</div>
@@ -73,7 +73,6 @@
             </div>
           </div>
         </div>
-        <div class="floating-note
         <div class="floating-note note-one parallax" data-speed=".22"><span class="note-icon">↗</span><div><small>ФИНАНСЫ ОБЪЕКТА</small><b>Маржинальность под контролем</b></div></div>
         <div class="floating-note note-two parallax" data-speed="-.28"><span class="note-check">✓</span><div><small>ЗАДАЧА ЗАКРЫТА</small><b>Акт выполненных работ</b></div></div>
         <div class="stage-index">01 <span>/</span> 04</div>
@@ -113,7 +112,7 @@
       <div class="feature-visual">
         <div class="feature-orb"></div><div class="feature-number">01</div>
         <div class="stack-card stack-back"><span>ОБЪЕКТ / 024</span><b>История изменений</b><i>Полная хронология</i></div>
-        <div class="stack-card stack-front product-object-card"><div class="stack-top"><span>СТРУКТУРА КАРТОЧКИ ОБЪЕКТА</span><span class="live-dot">CRM</span></div><h3>Объект<br>в работе.</h3><div class="stack-stats"><div><small>ДОГОВОР</small><b>Сумма из записи</b></div><div><small>СТАТУС</small><b class="lime-text">Фактический</b></div></div><div class="stack-progress"><span></span></div><div class="stack-bottom"><span>ПОЛУЧЕНО / РАСХОДЫ</span><span>ПЛАН / ФАКТ</span></div></div>
+        <div class="stack-card stack-front product-object-card"><div class="stack-top"><span>СТРУКТУРА КАРТОЧКИ ОБЪЕКТА</span><span class="live-dot">CRM</span></div><h3>Объект<br>в работе.</h3><div class="stack-stats"><div><small>ДОГОВОР</small><b>Сумма из записи</b></div><div><small>СТАТУС</small><b class="lime-text">Фактический</b></div></div><div class="product-object-divider"></div><div class="stack-bottom"><span>ПОЛУЧЕНО / РАСХОДЫ</span><span>ПЛАН / ФАКТ</span></div></div>
         <div class="visual-caption">ОБЪЕКТЫ / ЕДИНЫЙ КОНТЕКСТ</div>
       </div>
       <div class="feature-copy">
@@ -135,7 +134,7 @@
         <div class="finance-glow"></div><div class="finance-panel product-finance-panel">
           <div class="finance-head"><span>ДЕНЕЖНЫЙ ПОТОК</span><span>ФАКТИЧЕСКИЕ ЗАПИСИ</span></div>
           <small>РАЗДЕЛЕНИЕ ПОКАЗАТЕЛЕЙ</small><div class="profit">План <i>/</i> факт</div>
-          <div class="finance-bars"><div><span>Поступления</span><i><b style="width:100%"></b></i><strong>₽</strong></div><div><span>Расходы</span><i><b style="width:72%"></b></i><strong>₽</strong></div><div><span>Остаток</span><i><b style="width:46%"></b></i><strong>₽</strong></div></div>
+          <div class="product-finance-labels"><span>Поступления</span><span>Оплаченные расходы</span><span>Денежный остаток</span></div>
           <div class="finance-foot"><span>ЗНАЧЕНИЯ ИЗ БАЗЫ CRM</span><span class="live-dot">ЛОКАЛЬНО</span></div>
         </div>
         <div class="visual-caption">ФИНАНСЫ / ПЛАН И ФАКТ</div>

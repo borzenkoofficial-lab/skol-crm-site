@@ -6,6 +6,8 @@ const html = fs.readFileSync('index.html', 'utf8');
 const js = fs.readFileSync('main.js', 'utf8');
 const motion = fs.readFileSync('motion-scene.mjs', 'utf8');
 const css = fs.readFileSync('styles.css', 'utf8');
+const showcaseJs = fs.readFileSync('product-showcase.js', 'utf8');
+const showcaseCss = fs.readFileSync('product-showcase.css', 'utf8');
 
 test('HTML includes all main navigation targets and the WebGL experience', () => {
   for (const id of ['top', 'experience', 'system', 'control', 'workflow', 'contact']) {
@@ -71,6 +73,10 @@ test('hero product interface uses real CRM modules and avoids fabricated dashboa
   assert.ok(!html.includes('БЦ «Север»'));
   assert.ok(!html.includes('₽ 8.42'));
   assert.ok(!html.includes('₽ 684 200'));
+  assert.ok(!html.includes('width:82%'));
+  assert.ok(!html.includes('width:67%'));
+  assert.ok(!html.includes('62%'));
+  assert.ok(!html.includes('09:41'));
 });
 test('product showcase tabs are accessible and backed by a separate interaction module', () => {
   assert.ok(html.includes('role="tablist"'));
@@ -78,7 +84,10 @@ test('product showcase tabs are accessible and backed by a separate interaction 
   assert.ok(html.includes('data-showcase-panel="finance"'));
   assert.ok(html.includes('src="/product-showcase.js"'));
   assert.ok(html.includes('href="/product-showcase.css"'));
-  assert.ok(main.includes("prefers-reduced-motion"));
+  assert.doesNotThrow(() => new vm.Script(showcaseJs));
+  assert.ok(showcaseCss.includes('.product-screen-tab.is-active'));
+  assert.ok(showcaseJs.includes("ArrowLeft"));
+  assert.ok(showcaseJs.includes("ArrowRight"));
 });
 test('finance messaging preserves the distinction between cash balance and profit', () => {
   assert.ok(html.includes('Это не прибыль и не банковский баланс'));

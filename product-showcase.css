@@ -49,3 +49,7 @@
 .product-finance-panel .finance-bars i b{background:#a4d52f}
 @media(max-width:700px){.product-window{transform:none}.product-window .dash-side{width:17%;padding:12px 6px;gap:10px}.product-screen-content{padding:8px 7px}.product-screen-tab{padding:5px 5px;font-size:6px}.product-screen-disclaimer{font-size:4px}.product-pipeline b{font-size:4px}.product-screen-lower{grid-template-columns:1fr 1fr}}
 @media(prefers-reduced-motion:reduce){.product-screen-tab{transition:none}}
+
+.product-finance-labels{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin:18px 0 28px}
+.product-finance-labels span{padding:10px 8px;background:rgba(164,213,47,.11);border:1px solid rgba(164,213,47,.2);color:#667455;font-size:8px;line-height:1.4}
+.product-object-divider{height:1px;background:rgba(200,241,105,.28);margin:0 0 16px}
