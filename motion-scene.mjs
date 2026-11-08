@@ -185,7 +185,7 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.187.0/build/three.m
     for (const z of zs) beam(building, [-2.8, y + 1.24, z], [2.8, y + 1.24, z], 0.055, mats.steel);
     for (const x of xs) beam(building, [x, y + 1.24, -2.0], [x, y + 1.24, 2.0], 0.055, mats.steel);
   }
-  // The glass curtain wall is isolated so it can unfold as its own cinematic beat.
+  // Glass curtain wall is isolated so it can unfold as its own cinematic beat.
   const facade = new THREE.Group();
   building.add(facade);
   const facadePanels = [];
