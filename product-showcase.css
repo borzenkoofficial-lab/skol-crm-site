@@ -1,0 +1,55 @@
+/* Product-accurate CRM interface showcase */
+.product-window{background:#f7f8f4;border-color:rgba(255,255,255,.72);box-shadow:0 45px 120px rgba(0,0,0,.5),0 0 0 1px rgba(200,241,105,.14);color:#20251b}
+.product-window .dash-head{background:#fff;border-color:#e7eadf;color:#77806d}
+.product-window .dash-head>div{display:flex;align-items:center;gap:7px}
+.product-window-tag{font-size:6px;letter-spacing:.08em;color:#77806d;border:1px solid #e0e5d8;padding:3px 5px;border-radius:3px}
+.product-window .dash-main{background:#f7f8f4}
+.product-window .dash-side{background:#f0f3eb;border-color:#e1e6d9;color:#68715f}
+.product-window .dash-side>b{color:#20251b}
+.product-window .side-active{color:#5b8122;font-weight:800}
+.product-window .side-user i{background:#e2edce;color:#4d7020}
+.product-screen-content{padding:10px 12px 8px;display:flex;flex-direction:column;min-height:0}
+.product-screen-tabs{display:flex;gap:4px;border-bottom:1px solid #e4e8df;margin-bottom:9px;padding-bottom:6px}
+.product-screen-tab{border:0;background:transparent;color:#78816f;font:600 7px Manrope,Arial,sans-serif;padding:5px 8px;border-radius:4px;cursor:pointer}
+.product-screen-tab.is-active{background:#e8f1d8;color:#45671a}
+.product-screen-panel{min-height:0;flex:1}
+.product-screen-panel[hidden]{display:none}
+.product-screen-content .dash-greeting{margin-bottom:7px}
+.product-screen-content .dash-greeting h3{font-size:14px;color:#20251b;margin:3px 0 7px}
+.product-screen-content .dash-greeting small,.product-screen-content .metric small{color:#89927f;font-size:5px}
+.product-screen-content .date-chip{color:#718064;border-color:#dce3d3;font-size:5px}
+.product-screen-content .metric-row{gap:5px}
+.product-screen-content .metric{background:#fff;border-color:#e5e9df;padding:7px}
+.product-screen-content .metric strong{font-size:17px;color:#22291c;margin:5px 0 1px}
+.product-screen-content .metric>span{font-size:5px;color:#78816e}
+.product-screen-lower{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-top:6px}
+.product-screen-card{display:flex;flex-direction:column;gap:6px;background:#fff;border:1px solid #e5e9df;border-radius:5px;padding:8px;min-height:72px}
+.product-screen-card b,.product-screen-note{font-size:6px;letter-spacing:.06em;color:#69745e}
+.product-screen-card span{font-size:7px;line-height:1.45;color:#30382a}
+.product-screen-card i{font-size:6px;color:#8a9380;font-style:normal}
+.product-screen-disclaimer{margin-top:auto;padding-top:6px;border-top:1px solid #e4e8df;color:#858e7b;font-size:5px;line-height:1.4}
+.product-pipeline{display:grid;grid-template-columns:repeat(5,1fr);gap:4px;margin:12px 0}
+.product-pipeline>div{background:#fff;border:1px solid #e4e9dd;border-radius:4px;padding:7px 4px;display:flex;flex-direction:column;gap:9px}
+.product-pipeline b{font-size:5px;color:#79836e;font-weight:600}
+.product-pipeline strong{font-size:14px;color:#252b20}
+.product-screen-note{background:#eef3e7;border-left:2px solid #a4d52f;padding:8px;line-height:1.5;letter-spacing:0}
+.product-object-row{display:grid;grid-template-columns:1.4fr 1fr .8fr 1fr;gap:5px;padding:8px 5px;border-bottom:1px solid #e5e9df;color:#77816d;font-size:6px}
+.product-empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;text-align:center;height:110px;color:#78816e}
+.product-empty-state i{font-style:normal;font-size:17px;color:#8eaf4b}
+.product-empty-state b{font-size:7px;color:#30382a}
+.product-empty-state span{font-size:6px;max-width:220px;line-height:1.45}
+.product-finance-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin:14px 0}
+.product-finance-grid>div{background:#fff;border:1px solid #e4e9dd;border-radius:4px;padding:8px;display:flex;flex-direction:column;gap:8px}
+.product-finance-grid small{font-size:5px;letter-spacing:.05em;color:#7d8773}
+.product-finance-grid b{font-size:16px;color:#22291c}
+.product-object-card .stack-stats{gap:24px}
+.product-object-card .stack-stats b{font-size:11px}
+.product-object-card .stack-progress span{width:100%}
+.product-finance-panel .profit{font-size:clamp(28px,3.5vw,42px);margin-bottom:30px}
+.product-finance-panel .finance-bars i b{background:#a4d52f}
+@media(max-width:700px){.product-window{transform:none}.product-window .dash-side{width:17%;padding:12px 6px;gap:10px}.product-screen-content{padding:8px 7px}.product-screen-tab{padding:5px 5px;font-size:6px}.product-screen-disclaimer{font-size:4px}.product-pipeline b{font-size:4px}.product-screen-lower{grid-template-columns:1fr 1fr}}
+@media(prefers-reduced-motion:reduce){.product-screen-tab{transition:none}}
+
+.product-finance-labels{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin:18px 0 28px}
+.product-finance-labels span{padding:10px 8px;background:rgba(164,213,47,.11);border:1px solid rgba(164,213,47,.2);color:#667455;font-size:8px;line-height:1.4}
+.product-object-divider{height:1px;background:rgba(200,241,105,.28);margin:0 0 16px}

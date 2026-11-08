@@ -185,11 +185,22 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.187.0/build/three.m
     for (const z of zs) beam(building, [-2.8, y + 1.24, z], [2.8, y + 1.24, z], 0.055, mats.steel);
     for (const x of xs) beam(building, [x, y + 1.24, -2.0], [x, y + 1.24, 2.0], 0.055, mats.steel);
   }
-  // Glass curtain wall and facade rhythm.
+  // Glass curtain wall is isolated so it can unfold as its own cinematic beat.
+  const facade = new THREE.Group();
+  building.add(facade);
+  const facadePanels = [];
   for (let level = 0; level < 4; level++) {
     const y = 0.65 + level * 1.28;
-    for (let i = 0; i < 12; i++) box(building, [0.39, 0.94, 0.025], [-2.55 + i * 0.465, y, 2.225], mats.glass);
-    for (let i = 0; i < 8; i++) box(building, [0.025, 0.94, 0.43], [3.04, y, -1.75 + i * 0.5], mats.glass);
+    for (let i = 0; i < 12; i++) {
+      const panel = box(facade, [0.39, 0.94, 0.025], [-2.55 + i * 0.465, y, 2.225], mats.glass);
+      panel.userData.baseX = panel.position.x;
+      facadePanels.push(panel);
+    }
+    for (let i = 0; i < 8; i++) {
+      const panel = box(facade, [0.025, 0.94, 0.43], [3.04, y, -1.75 + i * 0.5], mats.glass);
+      panel.userData.baseZ = panel.position.z;
+      facadePanels.push(panel);
+    }
   }
   box(building, [0.82, 5.1, 0.82], [0.1, 2.48, -0.25], mats.concrete);
   for (let level = 0; level < 4; level++) box(building, [1.1, 0.035, 1.1], [0.1, 0.7 + level * 1.28, -0.25], mats.lime);
@@ -209,11 +220,17 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.187.0/build/three.m
   // Chapter 03: finance as a physical measuring instrument.
   box(finance, [6.7, 0.12, 4.4], [0, -1.45, 0], mats.steelDark);
   const heights = [0.9, 1.3, 1.05, 1.8, 1.55, 2.3, 1.95, 2.75, 2.45, 3.2, 2.9, 3.65];
+  const financeBars = [];
   for (let i = 0; i < heights.length; i++) {
     const x = -2.75 + i * 0.5;
     const h = heights[i];
-    box(finance, [0.27, h, 0.42], [x, -1.38 + h / 2, 0], i === heights.length - 1 ? mats.lime : mats.steel);
-    box(finance, [0.29, 0.025, 0.46], [x, -1.36 + h, 0], mats.white);
+    const bar = box(finance, [0.27, h, 0.42], [x, -1.38 + h / 2, 0], i === heights.length - 1 ? mats.lime : mats.steel);
+    bar.userData.baseHeight = h;
+    financeBars.push(bar);
+    const cap = box(finance, [0.29, 0.025, 0.46], [x, -1.36 + h, 0], mats.white);
+    cap.userData.baseY = -1.36 + h;
+    cap.userData.barIndex = i;
+    financeBars.push(cap);
   }
   for (let i = 0; i < 5; i++) line(finance, [[-3.15, -1.37, -1.65 + i * 0.82], [3.15, -1.37, -1.65 + i * 0.82]], 0x91a47d, 0.2);
   tube(finance, [[-3, -0.4, 0.5], [-2, 0.1, 0.5], [-1, -0.05, 0.5], [0.1, 0.8, 0.5], [1.2, 0.55, 0.5], [2.8, 2.4, 0.5]], 0.027, mats.lime);
@@ -248,19 +265,63 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.187.0/build/three.m
     control.add(ring);
   }
 
-  // Atmospheric particles and an architectural floor grid.
-  const particleCount = mobile ? 420 : 900;
-  const positions = new Float32Array(particleCount * 3);
-  for (let i = 0; i < particleCount; i++) {
-    const a = i * 2.399963;
-    const r = 4 + ((i * 19) % 100) / 100 * 13;
-    positions[i * 3] = Math.cos(a) * r;
-    positions[i * 3 + 1] = (((i * 23) % 100) / 100 - 0.5) * 10;
-    positions[i * 3 + 2] = Math.sin(a) * r;
+  // Transfer paths connect the financial instrument to the central control core.
+  const transferGroup = new THREE.Group();
+  scene.add(transferGroup);
+  const transferCurves = [];
+  const transferMeshes = [];
+  const transferNodes = [];
+  for (let i = 0; i < 3; i++) {
+    const curve = new THREE.CatmullRomCurve3([
+      new THREE.Vector3(5.6 + (i - 1) * 0.85, 0.15 + i * 0.45, 0.1),
+      new THREE.Vector3(3.9, 1.2 + i * 0.38, -1.4),
+      new THREE.Vector3(2.1, 1.55 + i * 0.2, -3.1),
+      new THREE.Vector3(0.55, 1.05 + i * 0.16, -4.65),
+      new THREE.Vector3(0, 0.7 + i * 0.12, -5.3)
+    ]);
+    const geometry = new THREE.TubeGeometry(curve, 96, 0.018 - i * 0.003, 6, false);
+    geometry.setDrawRange(0, 0);
+    const material = new THREE.MeshBasicMaterial({ color: i === 1 ? 0xc8f169 : 0x9fb77b, transparent: true, opacity: i === 1 ? 0.88 : 0.48, blending: THREE.AdditiveBlending, depthWrite: false });
+    const mesh = new THREE.Mesh(geometry, material);
+    transferGroup.add(mesh);
+    const node = new THREE.Mesh(new THREE.SphereGeometry(i === 1 ? 0.075 : 0.052, 12, 12), mats.lime);
+    transferGroup.add(node);
+    transferCurves.push(curve);
+    transferMeshes.push(mesh);
+    transferNodes.push(node);
   }
+
+  // Atmospheric particles and an architectural floor grid.
+  // Scroll-morphed particles: incoming data -> building structure -> project economics -> control core.
+  const particleCount = mobile ? 420 : 900;
+  const particleTargets = Array.from({ length: 4 }, () => new Float32Array(particleCount * 3));
+  const financeHeights = [0.9, 1.3, 1.05, 1.8, 1.55, 2.3, 1.95, 2.75, 2.45, 3.2, 2.9, 3.65];
+  for (let i = 0; i < particleCount; i++) {
+    const angle = i * 2.399963;
+    const radius = 0.8 + ((i * 37) % 100) / 100 * 2.2;
+    particleTargets[0][i * 3] = -5.2 + Math.cos(angle) * radius;
+    particleTargets[0][i * 3 + 1] = 0.4 + Math.sin(angle * 1.7) * 1.25;
+    particleTargets[0][i * 3 + 2] = Math.sin(angle) * radius * 0.72;
+    const face = i % 4, u = ((i * 17) % 101) / 100, v = ((i * 29) % 101) / 100;
+    particleTargets[1][i * 3] = face < 2 ? (face === 0 ? -3.05 : 3.05) : -3.05 + u * 6.1;
+    particleTargets[1][i * 3 + 1] = -0.05 + v * 5.25;
+    particleTargets[1][i * 3 + 2] = face < 2 ? -2.15 + u * 4.3 : (face === 2 ? -2.15 : 2.15);
+    const bar = i % financeHeights.length, level = (Math.floor(i / financeHeights.length) % 60) / 59;
+    particleTargets[2][i * 3] = 5.6 - 2.75 + bar * 0.5;
+    particleTargets[2][i * 3 + 1] = -1.38 + level * financeHeights[bar];
+    particleTargets[2][i * 3 + 2] = ((i * 13) % 100) / 100 * 0.42 - 0.21;
+    const sphereY = 1 - 2 * ((i * 37) % particleCount) / Math.max(1, particleCount - 1);
+    const sphereRadius = 2.15 + ((i * 11) % 100) / 100 * 0.16;
+    const sphereRing = Math.sqrt(Math.max(0, 1 - sphereY * sphereY));
+    particleTargets[3][i * 3] = Math.cos(angle) * sphereRing * sphereRadius;
+    particleTargets[3][i * 3 + 1] = 0.7 + sphereY * sphereRadius;
+    particleTargets[3][i * 3 + 2] = -5.3 + Math.sin(angle) * sphereRing * sphereRadius;
+  }
+  const positions = new Float32Array(particleTargets[0]);
   const particleGeometry = new THREE.BufferGeometry();
   particleGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-  const particleField = new THREE.Points(particleGeometry, new THREE.PointsMaterial({ color: 0xc8f169, size: mobile ? 0.018 : 0.024, transparent: true, opacity: 0.52, blending: THREE.AdditiveBlending, depthWrite: false }));
+  particleGeometry.boundingSphere = new THREE.Sphere(new THREE.Vector3(0, 1, 0), 18);
+  const particleField = new THREE.Points(particleGeometry, new THREE.PointsMaterial({ color: 0xc8f169, size: mobile ? 0.016 : 0.021, transparent: true, opacity: 0.34, blending: THREE.AdditiveBlending, depthWrite: false }));
   scene.add(particleField);
   const floor = new THREE.GridHelper(90, 90, 0x536546, 0x293326);
   floor.position.y = -1.62;
@@ -289,24 +350,28 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.187.0/build/three.m
 
   // Seven camera beats: establish the data field, inspect the structure, skim the facade,
   // move through the financial instrument, orbit the control core, then pull back to the whole system.
+  // Eight deliberate shots: establish -> data push-in -> architectural reveal -> facade skim
+  // -> finance close-up -> orbit the core -> release into a wide master shot.
   const cameraPath = new THREE.CatmullRomCurve3([
-    new THREE.Vector3(-7.8, 2.8, 7.6),
-    new THREE.Vector3(-2.1, 3.0, 5.8),
-    new THREE.Vector3(3.8, 5.8, 5.6),
-    new THREE.Vector3(9.2, 2.7, 5.2),
-    new THREE.Vector3(4.8, 3.6, -8.4),
-    new THREE.Vector3(-4.2, 2.2, -1.8),
-    new THREE.Vector3(0.4, 2.7, 14.2)
-  ], false, 'centripetal', 0.45);
+    new THREE.Vector3(-8.2, 2.7, 8.2),
+    new THREE.Vector3(-4.9, 1.75, 4.25),
+    new THREE.Vector3(-1.9, 3.2, 6.1),
+    new THREE.Vector3(3.55, 3.55, 3.65),
+    new THREE.Vector3(8.1, 2.35, 4.5),
+    new THREE.Vector3(4.0, 1.55, -3.2),
+    new THREE.Vector3(-3.7, 1.95, -2.5),
+    new THREE.Vector3(0.4, 3.0, 14.2)
+  ], false, 'centripetal', 0.42);
   const targetPath = new THREE.CatmullRomCurve3([
     new THREE.Vector3(-5.2, 0.3, 0),
-    new THREE.Vector3(-0.5, 2.1, 0),
-    new THREE.Vector3(1.2, 3.2, 2.0),
-    new THREE.Vector3(5.6, 0.8, 0),
-    new THREE.Vector3(0, 0.7, -5.3),
+    new THREE.Vector3(-5.2, 0.5, 0),
+    new THREE.Vector3(0, 2.1, 0),
+    new THREE.Vector3(1.3, 3.0, 2.0),
+    new THREE.Vector3(5.6, 0.9, 0),
+    new THREE.Vector3(5.6, 0.65, 0),
     new THREE.Vector3(0, 0.7, -5.3),
     new THREE.Vector3(0, 0.5, 0)
-  ], false, 'centripetal', 0.45);
+  ], false, 'centripetal', 0.42);
   const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
   const smooth = v => { const x = clamp(v, 0, 1); return x * x * (3 - 2 * x); };
   const mix = (a, b, t) => a + (b - a) * t;
@@ -316,6 +381,24 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.187.0/build/three.m
     const a = points[i], b = points[i + 1];
     return mix(a[1], b[1], smooth((p - a[0]) / (b[0] - a[0])));
   };
+  const sampleTrack = (p, keys, column) => {
+    let i = 0;
+    while (i < keys.length - 2 && p > keys[i + 1][0]) i++;
+    const a = keys[i], b = keys[i + 1];
+    return mix(a[column], b[column], smooth((p - a[0]) / (b[0] - a[0])));
+  };
+  // p, focal length in degrees, roll, camera X/Y/Z offset, target X/Y/Z offset.
+  // Short focal lengths create deliberate close-ups; the final wide lens restores spatial context.
+  const shotTrack = [
+    [0, 42, -0.004, 0, 0, 0, 0, 0, 0],
+    [0.12, 27, 0.012, 0.12, -0.08, -0.12, 0.12, 0.04, 0],
+    [0.29, 36, -0.008, -0.08, 0.1, 0.18, 0, 0.12, 0],
+    [0.43, 25, 0.014, 0.1, -0.06, -0.16, 0.1, 0.08, 0.08],
+    [0.58, 31, -0.012, -0.12, 0.04, 0.12, 0.08, 0, 0],
+    [0.73, 24, 0.01, 0.08, -0.04, -0.1, 0, 0.04, 0],
+    [0.88, 34, -0.006, -0.06, 0.08, 0.16, 0, 0.12, 0],
+    [1, 43, 0, 0, 0, 0, 0, 0, 0]
+  ];
   const visibility = [
     [[0, 1], [0.12, 1], [0.28, 0.04], [1, 0]],
     [[0, 0.04], [0.18, 0.4], [0.3, 1], [0.47, 0.5], [0.72, 0.1], [1, 0.24]],
@@ -344,27 +427,71 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.187.0/build/three.m
     const p = state.progress;
     const pos = cameraPath.getPointAt(p);
     const target = targetPath.getPointAt(p);
-    camera.position.set(pos.x + pointerX * (mobile ? 0.06 : 0.18), pos.y - pointerY * (mobile ? 0.04 : 0.12), pos.z);
-    camera.lookAt(target);
-    // Set roll from scroll progress; accumulating onto the previous frame causes unbounded camera drift.
-    camera.rotation.z = Math.sin(p * Math.PI * 2) * 0.012;
-    camera.fov = mix(39, 32, smooth(Math.sin(p * Math.PI)));
-    camera.updateProjectionMatrix();
+    const shot = column => sampleTrack(p, shotTrack, column);
+    camera.position.set(
+      pos.x + shot(3) + pointerX * (mobile ? 0.035 : 0.11),
+      pos.y + shot(4) - pointerY * (mobile ? 0.025 : 0.075),
+      pos.z + shot(5)
+    );
+    camera.lookAt(target.x + shot(6), target.y + shot(7), target.z + shot(8));
+    // Shot roll and focal length are absolute scroll-driven values, never accumulated frame-to-frame.
+    camera.rotation.z = shot(2);
+    const nextFov = shot(1);
+    if (Math.abs(camera.fov - nextFov) > 0.015) {
+      camera.fov = nextFov;
+      camera.updateProjectionMatrix();
+    }
     groups.forEach((group, i) => setGroupOpacity(i, opacityAt(p, visibility[i])));
     input.rotation.y = -p * 1.5;
     input.rotation.z = Math.sin(p * Math.PI) * 0.08;
     input.scale.setScalar(mix(1, 0.82, smooth(p)));
     building.rotation.y = mix(-0.12, 0.1, p);
     building.position.y = Math.sin(p * Math.PI) * 0.12;
+    // Structural frame rises from its foundation, then the facade unfolds from the center line.
+    const frameBuild = smooth((p - 0.16) / 0.19);
+    building.scale.y = mix(0.055, 1, frameBuild);
+    const facadeOpen = smooth((p - 0.31) / 0.14);
+    facade.scale.set(0.06 + facadeOpen * 0.94, 1, 0.08 + facadeOpen * 0.92);
+    facadePanels.forEach(panel => {
+      if (panel.userData.baseX !== undefined) panel.position.x = panel.userData.baseX * (0.08 + facadeOpen * 0.92);
+      if (panel.userData.baseZ !== undefined) panel.position.z = panel.userData.baseZ * (0.08 + facadeOpen * 0.92);
+    });
     finance.rotation.y = -0.12 + p * 0.28;
+    // Finance columns rise from a common baseline, revealing the measuring instrument.
+    const financeBuild = smooth((p - 0.445) / 0.13);
+    financeBars.forEach(part => {
+      if (part.userData.baseHeight !== undefined) {
+        part.scale.y = Math.max(0.015, financeBuild);
+        part.position.y = -1.38 + part.userData.baseHeight * part.scale.y / 2;
+      } else if (part.userData.barIndex !== undefined) {
+        const h = heights[part.userData.barIndex];
+        part.position.y = -1.36 + h * financeBuild;
+      }
+    });
+    // Draw the transfer paths progressively; light nodes travel along each path into the core.
+    const transferProgress = smooth((p - 0.59) / 0.19);
+    transferMeshes.forEach((mesh, i) => {
+      const geometry = mesh.geometry;
+      const total = geometry.index ? geometry.index.count : geometry.attributes.position.count;
+      geometry.setDrawRange(0, Math.floor(total * transferProgress));
+      transferNodes[i].position.copy(transferCurves[i].getPointAt((p * 2.8 + i * 0.21) % 1));
+      transferNodes[i].visible = transferProgress > 0.04 && p < 0.91;
+      mesh.material.opacity = (i === 1 ? 0.88 : 0.48) * transferProgress;
+    });
     control.rotation.y = p * 0.46;
     control.rotation.x = Math.sin(p * Math.PI) * 0.08;
     controlCore.rotation.y = p * 1.5;
     controlCore.rotation.x = p * 0.6;
     coreWire.rotation.copy(controlCore.rotation);
     controlNodes.forEach((node, i) => { node.position.y = node.userData.baseY + Math.sin(performance.now() * 0.001 + i) * 0.14; });
-    particleField.rotation.y = p * 0.12;
-    particleField.rotation.x = Math.sin(p * Math.PI) * 0.035;
+    const morphPosition = p * 3;
+    const morphSegment = Math.min(2, Math.floor(morphPosition));
+    const morphMix = smooth(morphPosition - morphSegment);
+    const morphFrom = particleTargets[morphSegment], morphTo = particleTargets[morphSegment + 1];
+    for (let i = 0; i < positions.length; i++) positions[i] = mix(morphFrom[i], morphTo[i], morphMix);
+    particleGeometry.attributes.position.needsUpdate = true;
+    particleField.rotation.y = p * 0.035;
+    particleField.rotation.x = Math.sin(p * Math.PI) * 0.012;
     limeLight.intensity = 26 + Math.sin(p * Math.PI * 4) * 8;
     limeLight.position.x = mix(-5, 5, p);
     if (copy.progress) copy.progress.style.transform = 'scaleX(' + p + ')';
