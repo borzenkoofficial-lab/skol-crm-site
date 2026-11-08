@@ -68,7 +68,7 @@ test('main and 3D motion JavaScript parse', () => {
 });
 
 test('hero product interface uses real CRM modules and avoids fabricated dashboard values', () => {
-  for (const label of ['Активные заявки', 'Активные объекты', 'Клиенты в базе', 'Движение заявок', 'Объекты', 'Финансы']) assert.ok(html.includes(label), 'missing real CRM module: ' + label);
+  for (const label of ['АКТИВНЫЕ ЗАЯВКИ', 'АКТИВНЫЕ ОБЪЕКТЫ', 'КЛИЕНТЫ В БАЗЕ', 'ДВИЖЕНИЕ ЗАЯВОК', 'Объекты', 'Финансы']) assert.ok(html.includes(label), 'missing real CRM module: ' + label);
   assert.ok(html.includes('реальные показатели берутся из локальной базы программы'));
   assert.ok(!html.includes('БЦ «Север»'));
   assert.ok(!html.includes('₽ 8.42'));
