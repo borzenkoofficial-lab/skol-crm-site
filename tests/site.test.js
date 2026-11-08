@@ -64,3 +64,23 @@ test('main and 3D motion JavaScript parse', () => {
   assert.ok(motion.includes('WebGLRenderer'));
   assert.ok(motion.includes('cameraPath'));
 });
+
+test('hero product interface uses real CRM modules and avoids fabricated dashboard values', () => {
+  for (const label of ['Активные заявки', 'Активные объекты', 'Клиенты в базе', 'Движение заявок', 'Объекты', 'Финансы']) assert.ok(html.includes(label), 'missing real CRM module: ' + label);
+  assert.ok(html.includes('реальные показатели берутся из локальной базы программы'));
+  assert.ok(!html.includes('БЦ «Север»'));
+  assert.ok(!html.includes('₽ 8.42'));
+  assert.ok(!html.includes('₽ 684 200'));
+});
+test('product showcase tabs are accessible and backed by a separate interaction module', () => {
+  assert.ok(html.includes('role="tablist"'));
+  assert.ok(html.includes('data-showcase-tab="overview"'));
+  assert.ok(html.includes('data-showcase-panel="finance"'));
+  assert.ok(html.includes('src="/product-showcase.js"'));
+  assert.ok(html.includes('href="/product-showcase.css"'));
+  assert.ok(main.includes("prefers-reduced-motion"));
+});
+test('finance messaging preserves the distinction between cash balance and profit', () => {
+  assert.ok(html.includes('Это не прибыль и не банковский баланс'));
+  assert.ok(html.includes('не подменяет фактические данные прогнозом'));
+});

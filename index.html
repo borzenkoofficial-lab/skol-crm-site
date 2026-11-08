@@ -10,6 +10,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="/product-showcase.css">
 </head>
 <body>
   <div class="noise" aria-hidden="true"></div>
@@ -30,24 +31,49 @@
         <p class="eyebrow reveal"><span class="pulse"></span> СИСТЕМА УПРАВЛЕНИЯ СТРОИТЕЛЬНЫМ БИЗНЕСОМ</p>
         <h1 class="hero-title"><span>Весь объект.</span><br><em>Под контролем.</em></h1>
         <div class="hero-bottom reveal">
-          <p>СКОЛ CRM объединяет объекты, расчёты, бригады и деньги в единую систему. Без разрозненных таблиц и потери контекста.</p>
+          <p>СКОЛ CRM связывает заявки, объекты, сметы, производство и финансы. Данные остаются в локальной базе программы — без демонстрационных показателей на сайте.</p>
           <a class="round-link magnetic" href="#system" aria-label="Прокрутить к системе">↓</a>
         </div>
       </div>
       <div class="hero-stage" aria-label="Визуализация интерфейса СКОЛ CRM">
         <div class="orbit orbit-a"></div><div class="orbit orbit-b"></div>
         <div class="stage-label stage-label-top">СКОЛ / CONTROL SYSTEM <span>01—04</span></div>
-        <div class="dashboard parallax" data-speed="-0.12">
-          <div class="dash-head"><div><span class="dash-dot"></span> Рабочее пространство</div><span>ПОНЕДЕЛЬНИК, 09:41</span></div>
+        <div class="dashboard parallax product-window" data-speed="-0.12">
+          <div class="dash-head"><div><span class="dash-dot"></span> СКОЛ CRM <span class="product-window-tag">СТРУКТУРА ИНТЕРФЕЙСА</span></div><span>ЛОКАЛЬНАЯ БАЗА</span></div>
           <div class="dash-main">
-            <div class="dash-side"><b>СКОЛ</b><span class="side-active">◈ Обзор</span><span>▦ Объекты</span><span>⌁ Финансы</span><span>⌘ Команда</span><span>▤ Документы</span><div class="side-user"><i>АК</i> Администратор</div></div>
-            <div class="dash-content">
-              <div class="dash-greeting"><div><small>ПАНЕЛЬ УПРАВЛЕНИЯ</small><h3>Доброе утро.</h3></div><span class="date-chip">08 НОЯБРЯ 2026</span></div>
-              <div class="metric-row"><div class="metric"><small>АКТИВНЫЕ ОБЪЕКТЫ</small><strong>12</strong><span class="up">↗ 3 за месяц</span></div><div class="metric"><small>В РАБОТЕ</small><strong>₽ 8.42<span>м</span></strong><span>Текущий портфель</span></div><div class="metric"><small>КОМАНДА</small><strong>34</strong><span>Сотрудника и бригады</span></div></div>
-              <div class="dash-lower"><div class="project-card"><div class="card-caption">ПРОЕКТЫ / СЕЙЧАС</div><div class="project-line"><i class="project-icon lime">01</i><div><b>БЦ «Север»</b><small>Демонтаж · 840 м²</small></div><span class="status">В работе</span></div><div class="project-line"><i class="project-icon">02</i><div><b>Офис на Ленинском</b><small>Комплексная отделка</small></div><span class="status muted">Подготовка</span></div><div class="project-line"><i class="project-icon">03</i><div><b>Складской комплекс</b><small>Подготовка помещения</small></div><span class="status">В работе</span></div></div><div class="chart-card"><div class="card-caption">ДИНАМИКА / ВЫРУЧКА</div><div class="chart-value">₽ 2.84м <span>↗ 18.6%</span></div><div class="chart"><i style="--h:32%"></i><i style="--h:46%"></i><i style="--h:38%"></i><i style="--h:60%"></i><i style="--h:52%"></i><i style="--h:74%"></i><i style="--h:66%"></i><i style="--h:90%"></i><i style="--h:80%"></i><i style="--h:100%"></i></div><div class="chart-months"><span>ЯНВ</span><span>МАР</span><span>МАЙ</span><span>ИЮЛ</span><span>СЕН</span><span>НОЯ</span></div></div></div>
+            <div class="dash-side"><b>СКОЛ</b><span class="side-active">◈ Обзор</span><span>◉ Заявки</span><span>▤ Объекты</span><span>₽ Финансы</span><span>⌁ Производство</span><span>✓ Задачи</span><span>▧ Документы</span><div class="side-user"><i>С</i> Рабочее место</div></div>
+            <div class="dash-content product-screen-content">
+              <div class="product-screen-tabs" role="tablist" aria-label="Разделы интерфейса СКОЛ CRM">
+                <button class="product-screen-tab is-active" type="button" role="tab" aria-selected="true" data-showcase-tab="overview">Обзор</button>
+                <button class="product-screen-tab" type="button" role="tab" aria-selected="false" data-showcase-tab="leads">Заявки</button>
+                <button class="product-screen-tab" type="button" role="tab" aria-selected="false" data-showcase-tab="projects">Объекты</button>
+                <button class="product-screen-tab" type="button" role="tab" aria-selected="false" data-showcase-tab="finance">Финансы</button>
+              </div>
+              <section class="product-screen-panel is-active" data-showcase-panel="overview" role="tabpanel">
+                <div class="dash-greeting"><div><small>ВАШ БИЗНЕС · В ОДНОМ МЕСТЕ</small><h3>Обзор бизнеса</h3></div><span class="date-chip">ЛОКАЛЬНЫЕ ДАННЫЕ</span></div>
+                <div class="metric-row"><div class="metric"><small>АКТИВНЫЕ ЗАЯВКИ</small><strong>—</strong><span>Следующее действие</span></div><div class="metric"><small>АКТИВНЫЕ ОБЪЕКТЫ</small><strong>—</strong><span>В работе и запланированы</span></div><div class="metric"><small>КЛИЕНТЫ В БАЗЕ</small><strong>—</strong><span>Карточки клиентов</span></div></div>
+                <div class="product-screen-lower"><div class="product-screen-card"><b>ДВИЖЕНИЕ ЗАЯВОК</b><span>Новая · Связались · Замер · Смета · Переговоры</span><i>Статусы из воронки CRM</i></div><div class="product-screen-card"><b>ТРЕБУЕТ ВНИМАНИЯ</b><span>Задачи · сроки · отклонения</span><i>Сигналы по сохранённым записям</i></div></div>
+              </section>
+              <section class="product-screen-panel" data-showcase-panel="leads" role="tabpanel" hidden>
+                <div class="dash-greeting"><div><small>КЛИЕНТСКИЙ ПОТОК</small><h3>Заявки</h3></div><span class="date-chip">ВОРОНКА</span></div>
+                <div class="product-pipeline"><div><b>Новая</b><strong>—</strong></div><div><b>Связались</b><strong>—</strong></div><div><b>Замер</b><strong>—</strong></div><div><b>Смета</b><strong>—</strong></div><div><b>Переговоры</b><strong>—</strong></div></div>
+                <div class="product-screen-note">Карточки обращений, источник, клиент и следующий шаг. Количество заявок рассчитывается по записям базы.</div>
+              </section>
+              <section class="product-screen-panel" data-showcase-panel="projects" role="tabpanel" hidden>
+                <div class="dash-greeting"><div><small>ПОРТФЕЛЬ РАБОТ</small><h3>Объекты</h3></div><span class="date-chip">ПРОЕКТЫ</span></div>
+                <div class="product-object-row"><span>Название объекта</span><span>Договор</span><span>Статус</span><span>Получено</span></div>
+                <div class="product-empty-state"><i>▤</i><b>Данные объектов не подменяются примерами</b><span>В программе отображаются ваши объекты и их фактические статусы.</span></div>
+              </section>
+              <section class="product-screen-panel" data-showcase-panel="finance" role="tabpanel" hidden>
+                <div class="dash-greeting"><div><small>ФАКТИЧЕСКИЕ ЗАПИСИ</small><h3>Финансы</h3></div><span class="date-chip">ПЛАН / ФАКТ</span></div>
+                <div class="product-finance-grid"><div><small>ПОСТУПИЛО</small><b>—</b></div><div><small>ОПЛАЧЕНО РАСХОДОВ</small><b>—</b></div><div><small>ДЕНЕЖНЫЙ ОСТАТОК</small><b>—</b></div></div>
+                <div class="product-screen-note">Денежный остаток — поступления минус оплаченные расходы. Это не прибыль и не банковский баланс.</div>
+              </section>
+              <div class="product-screen-disclaimer">Демонстрация структуры интерфейса · реальные показатели берутся из локальной базы программы</div>
             </div>
           </div>
         </div>
+        <div class="floating-note
         <div class="floating-note note-one parallax" data-speed=".22"><span class="note-icon">↗</span><div><small>ФИНАНСЫ ОБЪЕКТА</small><b>Маржинальность под контролем</b></div></div>
         <div class="floating-note note-two parallax" data-speed="-.28"><span class="note-check">✓</span><div><small>ЗАДАЧА ЗАКРЫТА</small><b>Акт выполненных работ</b></div></div>
         <div class="stage-index">01 <span>/</span> 04</div>
@@ -87,13 +113,13 @@
       <div class="feature-visual">
         <div class="feature-orb"></div><div class="feature-number">01</div>
         <div class="stack-card stack-back"><span>ОБЪЕКТ / 024</span><b>История изменений</b><i>Полная хронология</i></div>
-        <div class="stack-card stack-front"><div class="stack-top"><span>КАРТОЧКА ОБЪЕКТА</span><span class="live-dot">LIVE</span></div><h3>Бизнес-центр<br>«Север»</h3><div class="stack-stats"><div><small>ПЛОЩАДЬ</small><b>840 м²</b></div><div><small>СТАТУС</small><b class="lime-text">В работе</b></div></div><div class="stack-progress"><span></span></div><div class="stack-bottom"><span>ЭТАП 03 / 05</span><span>62%</span></div></div>
+        <div class="stack-card stack-front product-object-card"><div class="stack-top"><span>СТРУКТУРА КАРТОЧКИ ОБЪЕКТА</span><span class="live-dot">CRM</span></div><h3>Объект<br>в работе.</h3><div class="stack-stats"><div><small>ДОГОВОР</small><b>Сумма из записи</b></div><div><small>СТАТУС</small><b class="lime-text">Фактический</b></div></div><div class="stack-progress"><span></span></div><div class="stack-bottom"><span>ПОЛУЧЕНО / РАСХОДЫ</span><span>ПЛАН / ФАКТ</span></div></div>
         <div class="visual-caption">ОБЪЕКТЫ / ЕДИНЫЙ КОНТЕКСТ</div>
       </div>
       <div class="feature-copy">
         <div class="section-kicker"><span>02 / ОБЪЕКТЫ</span><span>01—04</span></div>
         <p class="eyebrow reveal">НИЧЕГО НЕ ТЕРЯЕТСЯ</p><h2 class="reveal">Каждый объект<br>— в фокусе.</h2>
-        <p class="feature-description reveal">Вся информация по проекту в одном месте: этапы, задачи, сметы, документы, команда и история решений. Откройте объект — и сразу увидите реальную картину.</p>
+        <p class="feature-description reveal">Карточки объектов связывают договор, поступления, расходы и производственные данные. Состав и показатели отображаются по фактическим записям вашей базы.</p>
         <ul class="feature-list reveal"><li><span>01</span> Карточка объекта и этапы работ</li><li><span>02</span> Документы и история изменений</li><li><span>03</span> Ответственные и контроль сроков</li></ul>
       </div>
     </section>
@@ -102,15 +128,15 @@
       <div class="feature-copy">
         <div class="section-kicker"><span>03 / ЭКОНОМИКА</span><span>02—04</span></div>
         <p class="eyebrow reveal">ЦИФРЫ БЕЗ ИЛЛЮЗИЙ</p><h2 class="reveal">Знать цифры.<br><span>Управлять</span><br>результатом.</h2>
-        <p class="feature-description reveal">Плановые и фактические расходы, поступления, выплаты и прибыль — отдельно и прозрачно. Понимайте экономику каждого объекта, а не только общий остаток на счёте.</p>
+        <p class="feature-description reveal">Поступления, оплаченные расходы, договорные суммы и денежный остаток разделены. СКОЛ не называет остаток прибылью и не подменяет фактические данные прогнозом.</p>
         <ul class="feature-list reveal"><li><span>01</span> Доходы и расходы по объектам</li><li><span>02</span> План / факт / ожидаемая прибыль</li><li><span>03</span> Контроль выплат и обязательств</li></ul>
       </div>
       <div class="feature-visual finance-visual">
-        <div class="finance-glow"></div><div class="finance-panel">
-          <div class="finance-head"><span>ЭКОНОМИКА ОБЪЕКТА</span><span>НОЯБРЬ 2026 ↗</span></div>
-          <small>ОЖИДАЕМАЯ ПРИБЫЛЬ</small><div class="profit">₽ 684 200 <i>+12.8%</i></div>
-          <div class="finance-bars"><div><span>План</span><i><b style="width:82%"></b></i><strong>82%</strong></div><div><span>Факт</span><i><b style="width:67%"></b></i><strong>67%</strong></div><div><span>Оплачено</span><i><b style="width:54%"></b></i><strong>54%</strong></div></div>
-          <div class="finance-foot"><span>ОБНОВЛЕНО ТОЛЬКО ЧТО</span><span class="live-dot">СИНХРОНИЗИРОВАНО</span></div>
+        <div class="finance-glow"></div><div class="finance-panel product-finance-panel">
+          <div class="finance-head"><span>ДЕНЕЖНЫЙ ПОТОК</span><span>ФАКТИЧЕСКИЕ ЗАПИСИ</span></div>
+          <small>РАЗДЕЛЕНИЕ ПОКАЗАТЕЛЕЙ</small><div class="profit">План <i>/</i> факт</div>
+          <div class="finance-bars"><div><span>Поступления</span><i><b style="width:100%"></b></i><strong>₽</strong></div><div><span>Расходы</span><i><b style="width:72%"></b></i><strong>₽</strong></div><div><span>Остаток</span><i><b style="width:46%"></b></i><strong>₽</strong></div></div>
+          <div class="finance-foot"><span>ЗНАЧЕНИЯ ИЗ БАЗЫ CRM</span><span class="live-dot">ЛОКАЛЬНО</span></div>
         </div>
         <div class="visual-caption">ФИНАНСЫ / ПЛАН И ФАКТ</div>
       </div>
@@ -137,6 +163,7 @@
   </main>
   <footer><a class="brand" href="#top"><span class="brand-mark">С</span><span>СКОЛ<span class="brand-light">CRM</span></span></a><span>СИСТЕМА УПРАВЛЕНИЯ СТРОИТЕЛЬНЫМИ ПРОЕКТАМИ</span><a href="#top">НАВЕРХ ↑</a><small>© 2026 СКОЛ CRM</small></footer>
   <script src="/main.js" defer></script>
+  <script src="/product-showcase.js" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.1/dist/gsap.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.1/dist/ScrollTrigger.min.js"></script>
   <script type="module" src="/motion-scene.mjs"></script>
