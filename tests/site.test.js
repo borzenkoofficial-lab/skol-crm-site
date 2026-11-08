@@ -140,6 +140,7 @@ test('operational modules section covers the real CRM workflow without fabricate
   for (const label of ['Заявки и клиенты', 'Бригады и производство', 'Задачи и сроки', 'Документы и история']) assert.ok(html.includes(label), 'missing module: ' + label);
   assert.ok(html.includes('data-tilt'));
   assert.ok(css.includes('.modules-grid{display:grid'));
+  assert.ok(css.includes('.module-card.reveal.is-visible{transform:perspective(900px)'));
   assert.ok(css.includes('@media(prefers-reduced-motion:reduce){.module-card'));
   assert.ok(js.includes("querySelectorAll('[data-tilt]')"));
 });
