@@ -249,18 +249,36 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.187.0/build/three.m
   }
 
   // Atmospheric particles and an architectural floor grid.
+  // Scroll-morphed particles: incoming data -> building structure -> project economics -> control core.
   const particleCount = mobile ? 420 : 900;
-  const positions = new Float32Array(particleCount * 3);
+  const particleTargets = Array.from({ length: 4 }, () => new Float32Array(particleCount * 3));
+  const financeHeights = [0.9, 1.3, 1.05, 1.8, 1.55, 2.3, 1.95, 2.75, 2.45, 3.2, 2.9, 3.65];
   for (let i = 0; i < particleCount; i++) {
-    const a = i * 2.399963;
-    const r = 4 + ((i * 19) % 100) / 100 * 13;
-    positions[i * 3] = Math.cos(a) * r;
-    positions[i * 3 + 1] = (((i * 23) % 100) / 100 - 0.5) * 10;
-    positions[i * 3 + 2] = Math.sin(a) * r;
+    const angle = i * 2.399963;
+    const radius = 0.8 + ((i * 37) % 100) / 100 * 2.2;
+    particleTargets[0][i * 3] = -5.2 + Math.cos(angle) * radius;
+    particleTargets[0][i * 3 + 1] = 0.4 + Math.sin(angle * 1.7) * 1.25;
+    particleTargets[0][i * 3 + 2] = Math.sin(angle) * radius * 0.72;
+    const face = i % 4, u = ((i * 17) % 101) / 100, v = ((i * 29) % 101) / 100;
+    particleTargets[1][i * 3] = face < 2 ? (face === 0 ? -3.05 : 3.05) : -3.05 + u * 6.1;
+    particleTargets[1][i * 3 + 1] = -0.05 + v * 5.25;
+    particleTargets[1][i * 3 + 2] = face < 2 ? -2.15 + u * 4.3 : (face === 2 ? -2.15 : 2.15);
+    const bar = i % financeHeights.length, level = (Math.floor(i / financeHeights.length) % 60) / 59;
+    particleTargets[2][i * 3] = 5.6 - 2.75 + bar * 0.5;
+    particleTargets[2][i * 3 + 1] = -1.38 + level * financeHeights[bar];
+    particleTargets[2][i * 3 + 2] = ((i * 13) % 100) / 100 * 0.42 - 0.21;
+    const sphereY = 1 - 2 * ((i * 37) % particleCount) / Math.max(1, particleCount - 1);
+    const sphereRadius = 2.15 + ((i * 11) % 100) / 100 * 0.16;
+    const sphereRing = Math.sqrt(Math.max(0, 1 - sphereY * sphereY));
+    particleTargets[3][i * 3] = Math.cos(angle) * sphereRing * sphereRadius;
+    particleTargets[3][i * 3 + 1] = 0.7 + sphereY * sphereRadius;
+    particleTargets[3][i * 3 + 2] = -5.3 + Math.sin(angle) * sphereRing * sphereRadius;
   }
+  const positions = new Float32Array(particleTargets[0]);
   const particleGeometry = new THREE.BufferGeometry();
   particleGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-  const particleField = new THREE.Points(particleGeometry, new THREE.PointsMaterial({ color: 0xc8f169, size: mobile ? 0.018 : 0.024, transparent: true, opacity: 0.52, blending: THREE.AdditiveBlending, depthWrite: false }));
+  particleGeometry.boundingSphere = new THREE.Sphere(new THREE.Vector3(0, 1, 0), 18);
+  const particleField = new THREE.Points(particleGeometry, new THREE.PointsMaterial({ color: 0xc8f169, size: mobile ? 0.016 : 0.021, transparent: true, opacity: 0.34, blending: THREE.AdditiveBlending, depthWrite: false }));
   scene.add(particleField);
   const floor = new THREE.GridHelper(90, 90, 0x536546, 0x293326);
   floor.position.y = -1.62;
@@ -363,8 +381,14 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.187.0/build/three.m
     controlCore.rotation.x = p * 0.6;
     coreWire.rotation.copy(controlCore.rotation);
     controlNodes.forEach((node, i) => { node.position.y = node.userData.baseY + Math.sin(performance.now() * 0.001 + i) * 0.14; });
-    particleField.rotation.y = p * 0.12;
-    particleField.rotation.x = Math.sin(p * Math.PI) * 0.035;
+    const morphPosition = p * 3;
+    const morphSegment = Math.min(2, Math.floor(morphPosition));
+    const morphMix = smooth(morphPosition - morphSegment);
+    const morphFrom = particleTargets[morphSegment], morphTo = particleTargets[morphSegment + 1];
+    for (let i = 0; i < positions.length; i++) positions[i] = mix(morphFrom[i], morphTo[i], morphMix);
+    particleGeometry.attributes.position.needsUpdate = true;
+    particleField.rotation.y = p * 0.035;
+    particleField.rotation.x = Math.sin(p * Math.PI) * 0.012;
     limeLight.intensity = 26 + Math.sin(p * Math.PI * 4) * 8;
     limeLight.position.x = mix(-5, 5, p);
     if (copy.progress) copy.progress.style.transform = 'scaleX(' + p + ')';

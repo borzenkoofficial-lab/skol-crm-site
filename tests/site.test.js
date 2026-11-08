@@ -93,3 +93,15 @@ test('finance messaging preserves the distinction between cash balance and profi
   assert.ok(html.includes('Это не прибыль и не банковский баланс'));
   assert.ok(html.includes('не подменяет фактические данные прогнозом'));
 });
+
+test('scroll-driven particles morph through the four product chapters', () => {
+  for (let i = 0; i < 4; i++) assert.ok(motion.includes('particleTargets[' + i + ']'));
+  assert.ok(motion.includes('particleGeometry.attributes.position.needsUpdate = true'));
+  assert.ok(motion.includes('const morphPosition = p * 3'));
+});
+test('marketing visuals do not imply fabricated object IDs, margin values or live activity', () => {
+  assert.ok(!html.includes('ОБЪЕКТ / 024'));
+  assert.ok(!html.includes('Маржинальность под контролем'));
+  assert.ok(!html.includes('ЗАДАЧА ЗАКРЫТА'));
+  assert.ok(html.includes('ДОКУМЕНТЫ ОБЪЕКТА'));
+});
