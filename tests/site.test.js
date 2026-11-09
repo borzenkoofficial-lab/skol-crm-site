@@ -178,3 +178,11 @@ test('cinematic key light follows the four chapter focus points without frame ac
   assert.ok(motion.includes('scanLight.position.set(sampleTrack(p, lightTrack, 1)'));
   assert.ok(motion.includes('scanLight.intensity = sampleTrack(p, lightTrack, 4)'));
 });
+
+test('cinematic depth uses restrained focal-plane parallax, atmospheric falloff and bounded lens breathing', () => {
+  assert.ok(motion.includes('target.x + shot(6) + pointerX *'));
+  assert.ok(motion.includes('target.y + shot(7) - pointerY *'));
+  assert.ok(motion.includes('scene.fog.density = mix(0.026, 0.017'));
+  assert.ok(motion.includes('const lensBreath = Math.sin(p * Math.PI * 8) * 0.32'));
+  assert.ok(motion.includes('const resolvedFov = nextFov + lensBreath'));
+});
