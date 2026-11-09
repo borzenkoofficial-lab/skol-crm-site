@@ -52,6 +52,11 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.187.0/build/three.m
   backLight.position.set(-5, 2, -7);
   scene.add(backLight);
 
+  // A restrained moving key light gives each chapter its own readable material reveal.
+  const scanLight = new THREE.PointLight(0xd8f5a4, 18, 11, 2);
+  scanLight.position.set(-5.2, 3.8, 3.2);
+  scene.add(scanLight);
+
   const makeMat = (color, metalness = 0.55, roughness = 0.3, opacity = 1, emissive = 0x000000, emissiveIntensity = 0) =>
     new THREE.MeshStandardMaterial({ color, metalness, roughness, transparent: opacity < 1, opacity, emissive, emissiveIntensity, depthWrite: opacity >= 0.98 });
   const mats = {
@@ -406,6 +411,15 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.187.0/build/three.m
     [[0, 0], [0.58, 0.03], [0.72, 1], [0.88, 0.82], [1, 0.72]]
   ];
 
+  // Scroll-keyed light positions travel with the visual focus: data -> structure -> finance -> control.
+  const lightTrack = [
+    [0, -5.2, 3.8, 3.2, 18],
+    [0.29, -1.2, 6.2, 2.4, 25],
+    [0.52, 5.2, 4.1, 2.8, 22],
+    [0.76, 0.4, 4.8, -3.6, 28],
+    [1, 0, 3.2, 2.6, 16]
+  ];
+
   const state = { progress: 0 };
   let active = false, pageVisible = !document.hidden, contextLost = false;
   let raf = 0, pointerX = 0, pointerY = 0, targetPointerX = 0, targetPointerY = 0, lastFrameTime = 0, lastChapter = -1;
@@ -501,6 +515,8 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.187.0/build/three.m
     particleField.rotation.x = Math.sin(p * Math.PI) * 0.012;
     limeLight.intensity = 26 + Math.sin(p * Math.PI * 4) * 8;
     limeLight.position.x = mix(-5, 5, p);
+    scanLight.position.set(sampleTrack(p, lightTrack, 1), sampleTrack(p, lightTrack, 2), sampleTrack(p, lightTrack, 3));
+    scanLight.intensity = sampleTrack(p, lightTrack, 4) * (0.94 + Math.sin(p * Math.PI * 6) * 0.06);
     if (copy.progress) copy.progress.style.transform = 'scaleX(' + p + ')';
     renderer.render(scene, camera);
   };
