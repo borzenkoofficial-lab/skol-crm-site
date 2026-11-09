@@ -201,3 +201,18 @@ test('all editorial sections share the cinematic graphite, lime and glass visual
   assert.ok(css.includes('background:#090d09'));
   assert.ok(css.includes('.closing{'));
 });
+
+
+test('interactive cards clamp pointer coordinates and reset safely on pointer cancellation', () => {
+  assert.ok(js.includes('Math.max(0, Math.min(1, (event.clientX - rect.left) / rect.width))'));
+  assert.ok(js.includes('Math.max(0, Math.min(1, (event.clientY - rect.top) / rect.height))'));
+  assert.ok(js.includes("card.addEventListener('pointercancel', resetTilt)"));
+  assert.ok(js.includes('if (!rect.width || !rect.height) return'));
+});
+
+test('workflow cards participate in the same accessible pointer-tilt system', () => {
+  for (const step of ['01','02','03','04']) assert.ok(html.includes('workflow-step reveal" data-tilt><b>'+step+'</b>'));
+  assert.ok(css.includes('.workflow-step.reveal.is-visible{transform:perspective(900px)'));
+  assert.ok(css.includes('.workflow-step:before'));
+  assert.ok(css.includes('@media(prefers-reduced-motion:reduce)'));
+});
