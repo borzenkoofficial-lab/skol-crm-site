@@ -408,11 +408,12 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.187.0/build/three.m
 
   const state = { progress: 0 };
   let active = false, pageVisible = !document.hidden, contextLost = false;
-  let raf = 0, pointerX = 0, pointerY = 0, lastChapter = -1;
+  let raf = 0, pointerX = 0, pointerY = 0, targetPointerX = 0, targetPointerY = 0, lastFrameTime = 0, lastChapter = -1;
   const canAnimate = () => active && pageVisible && !contextLost && !reduced;
   const stopAnimation = () => {
     if (raf) cancelAnimationFrame(raf);
     raf = 0;
+    lastFrameTime = 0;
   };
   const updateCopy = () => {
     const chapter = Math.min(3, Math.floor(state.progress * 4));
@@ -516,19 +517,26 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.187.0/build/three.m
   root.addEventListener('pointermove', event => {
     if (reduced || mobile) return;
     const rect = root.getBoundingClientRect();
-    pointerX = ((event.clientX - rect.left) / rect.width - 0.5) * 2;
-    pointerY = ((event.clientY - rect.top) / rect.height - 0.5) * 2;
+    targetPointerX = ((event.clientX - rect.left) / rect.width - 0.5) * 2;
+    targetPointerY = ((event.clientY - rect.top) / rect.height - 0.5) * 2;
   }, { passive: true });
-  root.addEventListener('pointerleave', () => { pointerX = 0; pointerY = 0; });
+  root.addEventListener('pointerleave', () => { targetPointerX = 0; targetPointerY = 0; });
   const animate = () => {
     if (!canAnimate()) { stopAnimation(); return; }
     raf = requestAnimationFrame(animate);
-    const time = performance.now() * 0.00045;
+    const now = performance.now();
+    const delta = lastFrameTime ? Math.min((now - lastFrameTime) / 1000, 0.05) : 1 / 60;
+    lastFrameTime = now;
+    const pointerEase = 1 - Math.exp(-delta * 5.5);
+    pointerX += (targetPointerX - pointerX) * pointerEase;
+    pointerY += (targetPointerY - pointerY) * pointerEase;
+    const frameScale = delta * 60;
+    const time = now * 0.00045;
     input.children.forEach(child => {
       if (child.userData.phase !== undefined) child.position.y = child.userData.baseY + Math.sin(time * 3 + child.userData.phase) * 0.075;
     });
     control.children.forEach((child, i) => {
-      if (child.geometry && child.geometry.type === 'TorusGeometry') child.rotation.z += (i % 2 ? -1 : 1) * 0.00045;
+      if (child.geometry && child.geometry.type === 'TorusGeometry') child.rotation.z += (i % 2 ? -1 : 1) * 0.00045 * frameScale;
     });
     render();
   };
