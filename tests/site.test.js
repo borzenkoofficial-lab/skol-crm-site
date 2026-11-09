@@ -186,3 +186,18 @@ test('cinematic depth uses restrained focal-plane parallax, atmospheric falloff 
   assert.ok(motion.includes('const lensBreath = Math.sin(p * Math.PI * 8) * 0.32'));
   assert.ok(motion.includes('const resolvedFov = nextFov + lensBreath'));
 });
+
+test('all editorial sections share the cinematic graphite, lime and glass visual system', () => {
+  for (const token of [
+    'Unified cinematic design language',
+    '.manifesto,.modules,.feature-light',
+    '.manifesto-aside{',
+    '.module-card{',
+    '.workflow-step{',
+    'backdrop-filter:blur(16px)',
+    'prefers-reduced-motion:reduce'
+  ]) assert.ok(css.includes(token), 'missing design-system rule: ' + token);
+  assert.ok(css.includes('footer{'));
+  assert.ok(css.includes('background:#090d09'));
+  assert.ok(css.includes('.closing{'));
+});
