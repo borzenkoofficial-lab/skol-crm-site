@@ -407,7 +407,13 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.187.0/build/three.m
   ];
 
   const state = { progress: 0 };
-  let active = false, raf = 0, pointerX = 0, pointerY = 0, lastChapter = -1;
+  let active = false, pageVisible = !document.hidden, contextLost = false;
+  let raf = 0, pointerX = 0, pointerY = 0, lastChapter = -1;
+  const canAnimate = () => active && pageVisible && !contextLost && !reduced;
+  const stopAnimation = () => {
+    if (raf) cancelAnimationFrame(raf);
+    raf = 0;
+  };
   const updateCopy = () => {
     const chapter = Math.min(3, Math.floor(state.progress * 4));
     if (chapter === lastChapter) return;
@@ -423,7 +429,7 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.187.0/build/three.m
     }
   };
   const render = () => {
-    if (!active) return;
+    if (!active || !pageVisible || contextLost) return;
     const p = state.progress;
     const pos = cameraPath.getPointAt(p);
     const target = targetPath.getPointAt(p);
@@ -498,6 +504,7 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.187.0/build/three.m
     renderer.render(scene, camera);
   };
   const resize = () => {
+    if (contextLost) return;
     const width = Math.max(1, root.clientWidth);
     const height = Math.max(1, window.innerHeight);
     camera.aspect = width / height;
@@ -514,7 +521,7 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.187.0/build/three.m
   }, { passive: true });
   root.addEventListener('pointerleave', () => { pointerX = 0; pointerY = 0; });
   const animate = () => {
-    if (!active || reduced) return;
+    if (!canAnimate()) { stopAnimation(); return; }
     raf = requestAnimationFrame(animate);
     const time = performance.now() * 0.00045;
     input.children.forEach(child => {
@@ -543,16 +550,35 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.187.0/build/three.m
   }
   const observer = new IntersectionObserver(entries => {
     active = entries.some(entry => entry.isIntersecting);
-    if (active && !reduced && !raf) animate();
-    if (!active && raf) { cancelAnimationFrame(raf); raf = 0; }
+    if (canAnimate() && !raf) animate();
+    if (!active) stopAnimation();
     if (active && reduced) render();
   }, { threshold: 0.01 });
   observer.observe(root);
+  document.addEventListener('visibilitychange', () => {
+    pageVisible = !document.hidden;
+    if (canAnimate() && !raf) animate();
+    else if (!pageVisible) stopAnimation();
+    if (pageVisible && active) render();
+  });
+  canvas.addEventListener('webglcontextlost', event => {
+    event.preventDefault();
+    contextLost = true;
+    stopAnimation();
+    root.classList.add('motion-fallback');
+  });
+  canvas.addEventListener('webglcontextrestored', () => {
+    contextLost = false;
+    root.classList.remove('motion-fallback');
+    resize();
+    render();
+    if (canAnimate() && !raf) animate();
+  });
   window.addEventListener('resize', resize, { passive: true });
   if (reduced) { root.classList.add('motion-reduced'); state.progress = 0.31; }
   updateCopy();
   resize();
   active = true;
   render();
-  if (!reduced) animate();
+  if (canAnimate()) animate();
 })();
