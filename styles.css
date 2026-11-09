@@ -329,3 +329,61 @@ footer>a:not(.brand):hover{color:var(--lime);text-shadow:0 0 18px rgba(200,241,1
 @media(prefers-reduced-motion:reduce){
   .module-card,.workflow-step,.module-visual,.module-visual:after,footer>a:not(.brand){transition:none}
 }
+
+
+/* Spatial interaction pass: layered depth for module and workflow cards. */
+.module-card{
+  --rx:0deg;
+  --ry:0deg;
+  will-change:transform;
+}
+.module-card .module-card-top{transform:translateZ(18px)}
+.module-card .module-visual{
+  transform:translateZ(26px);
+  transition:transform .5s cubic-bezier(.2,.75,.2,1),filter .5s;
+}
+.module-card h3{transform:translateZ(17px)}
+.module-card>p{transform:translateZ(10px)}
+.module-card .module-tags{transform:translateZ(13px)}
+.module-card:hover .module-visual{
+  filter:brightness(1.12) saturate(1.08);
+}
+.workflow-step{
+  --mx:50%;
+  --my:50%;
+  --rx:0deg;
+  --ry:0deg;
+  position:relative;
+  overflow:hidden;
+  transform-style:preserve-3d;
+  transition:transform .42s cubic-bezier(.2,.75,.2,1),border-color .35s,box-shadow .35s;
+  will-change:transform;
+}
+.workflow-step:before{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:0;
+  pointer-events:none;
+  opacity:0;
+  background:radial-gradient(280px circle at var(--mx) var(--my),rgba(200,241,105,.16),transparent 70%);
+  transition:opacity .35s;
+}
+.workflow-step>*{position:relative;z-index:1;transform:translateZ(14px)}
+.workflow-step>b{transform:translateZ(24px)}
+.workflow-step>i{transform:translateZ(20px);transition:transform .4s,color .3s}
+.workflow-step:hover:before{opacity:1}
+.workflow-step:hover>i{transform:translateZ(28px) rotate(-8deg)}
+.workflow-step.reveal{transform:translateY(28px) perspective(900px) rotateX(var(--rx)) rotateY(var(--ry))}
+.workflow-step.reveal.is-visible{transform:perspective(900px) rotateX(var(--rx)) rotateY(var(--ry))}
+@media(hover:none),(pointer:coarse){
+  .module-card,.workflow-step{will-change:auto}
+  .module-card .module-visual,.module-card .module-card-top,.module-card h3,.module-card>p,.module-card .module-tags,
+  .workflow-step>*{transform:none}
+}
+@media(prefers-reduced-motion:reduce){
+  .module-card,.workflow-step{transform:none!important;will-change:auto}
+  .module-card .module-visual,.module-card .module-card-top,.module-card h3,.module-card>p,.module-card .module-tags,
+  .workflow-step>*{transform:none;transition:none}
+  .workflow-step:before{display:none}
+}
