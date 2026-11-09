@@ -171,3 +171,10 @@ test('camera pointer response is damped and frame-rate independent', () => {
   assert.ok(motion.includes('const frameScale = delta * 60'));
   assert.ok(motion.includes('0.00045 * frameScale'));
 });
+
+test('cinematic key light follows the four chapter focus points without frame accumulation', () => {
+  assert.ok(motion.includes('const scanLight = new THREE.PointLight'));
+  assert.ok(motion.includes('const lightTrack = ['));
+  assert.ok(motion.includes('scanLight.position.set(sampleTrack(p, lightTrack, 1)'));
+  assert.ok(motion.includes('scanLight.intensity = sampleTrack(p, lightTrack, 4)'));
+});
