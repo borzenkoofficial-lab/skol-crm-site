@@ -155,3 +155,11 @@ test('global cinematic interaction layer is pointer-safe and reduced-motion awar
   assert.ok(css.includes('@keyframes closing-aura'));
   assert.ok(css.includes('@media(prefers-reduced-motion:reduce){.pointer-aura'));
 });
+
+
+test('WebGL animation pauses when the tab is hidden and recovers after context restoration', () => {
+  assert.ok(motion.includes("document.addEventListener('visibilitychange'"));
+  assert.ok(motion.includes("canvas.addEventListener('webglcontextlost'"));
+  assert.ok(motion.includes("canvas.addEventListener('webglcontextrestored'"));
+  assert.ok(motion.includes('const canAnimate = () => active && pageVisible && !contextLost && !reduced'));
+});
