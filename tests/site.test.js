@@ -163,3 +163,11 @@ test('WebGL animation pauses when the tab is hidden and recovers after context r
   assert.ok(motion.includes("canvas.addEventListener('webglcontextrestored'"));
   assert.ok(motion.includes('const canAnimate = () => active && pageVisible && !contextLost && !reduced'));
 });
+
+
+test('camera pointer response is damped and frame-rate independent', () => {
+  assert.ok(motion.includes('targetPointerX'));
+  assert.ok(motion.includes('const pointerEase = 1 - Math.exp(-delta * 5.5)'));
+  assert.ok(motion.includes('const frameScale = delta * 60'));
+  assert.ok(motion.includes('0.00045 * frameScale'));
+});
