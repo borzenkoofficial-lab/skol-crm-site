@@ -454,12 +454,22 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.187.0/build/three.m
       pos.y + shot(4) - pointerY * (mobile ? 0.025 : 0.075),
       pos.z + shot(5)
     );
-    camera.lookAt(target.x + shot(6), target.y + shot(7), target.z + shot(8));
+    // Pointer parallax shifts the focal plane as well as the camera, creating readable depth.
+    camera.lookAt(
+      target.x + shot(6) + pointerX * (mobile ? 0.018 : 0.065),
+      target.y + shot(7) - pointerY * (mobile ? 0.012 : 0.04),
+      target.z + shot(8)
+    );
+    // Chapter-specific atmospheric depth keeps close-ups tactile and the final master shot legible.
+    scene.fog.density = mix(0.026, 0.017, smooth((p - 0.18) / 0.72));
     // Shot roll and focal length are absolute scroll-driven values, never accumulated frame-to-frame.
     camera.rotation.z = shot(2);
     const nextFov = shot(1);
-    if (Math.abs(camera.fov - nextFov) > 0.015) {
-      camera.fov = nextFov;
+    // A restrained lens breath adds scale to the transition without changing the authored shot track.
+    const lensBreath = Math.sin(p * Math.PI * 8) * 0.32;
+    const resolvedFov = nextFov + lensBreath;
+    if (Math.abs(camera.fov - resolvedFov) > 0.015) {
+      camera.fov = resolvedFov;
       camera.updateProjectionMatrix();
     }
     groups.forEach((group, i) => setGroupOpacity(i, opacityAt(p, visibility[i])));
