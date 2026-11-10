@@ -6,6 +6,8 @@
   const progress = root.querySelector('#crm-tour-progress');
   const caption = root.querySelector('#crm-tour-caption');
   const sectionLabel = root.querySelector('#crm-app-section');
+  const dockItems = [...root.querySelectorAll('.crm-app-dock span')];
+  const dockIndexByStep = [0, 1, 2, 3, 8];
   const labels = ['Обзор бизнеса', 'Заявки', 'Объекты', 'ПИ · Расчёт объекта', 'Центр привлечения заказов'];
   let active = -1;
   let frame = 0;
@@ -28,6 +30,7 @@
     if (progress) progress.style.width = ((next + 1) / steps.length * 100) + '%';
     if (caption) caption.textContent = String(next + 1).padStart(2, '0') + ' / ' + labels[next].toUpperCase();
     if (sectionLabel) sectionLabel.textContent = labels[next];
+    dockItems.forEach((item, i) => item.classList.toggle('is-active', i === dockIndexByStep[next]));
   };
   const updateFromScroll = () => {
     frame = 0;
