@@ -1,6 +1,6 @@
 /* Scroll-driven, product-accurate CRM tour */
 .crm-tour{height:470vh;position:relative;background:#f3f5ef;color:#20251b;isolation:isolate}
-.crm-tour-sticky{height:100vh;min-height:680px;position:sticky;top:0;display:flex;flex-direction:column;justify-content:center;padding:clamp(32px,5vh,68px) clamp(22px,6vw,104px) 26px;overflow:hidden}
+.crm-tour-sticky{height:100vh;min-height:680px;position:sticky;top:0;display:flex;flex-direction:column;justify-content:center;padding:clamp(82px,9vh,112px) clamp(22px,6vw,104px) 26px;overflow:hidden}
 .crm-tour:before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at 78% 38%,rgba(188,222,126,.19),transparent 38%),linear-gradient(120deg,transparent 45%,rgba(255,255,255,.7));pointer-events:none}
 .crm-tour-heading{position:relative;z-index:1;display:flex;align-items:flex-end;justify-content:space-between;gap:40px;margin:0 0 clamp(20px,3vh,34px)}
 .crm-tour-kicker{font-size:9px;letter-spacing:.18em;color:#78836b;font-weight:800}
