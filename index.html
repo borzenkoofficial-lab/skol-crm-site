@@ -25,11 +25,11 @@
   <div class="scroll-line" aria-hidden="true"><span id="scroll-progress"></span></div>
   <header class="topbar">
     <a class="brand" href="#top" aria-label="СКОЛ CRM — главная"><span class="brand-mark">С</span><span>СКОЛ<span class="brand-light">CRM</span></span></a>
-    <nav class="nav" aria-label="Основная навигация">
+    <nav class="nav" id="primary-navigation" aria-label="Основная навигация">
       <a href="#crm-tour">CRM</a><a href="#system">Система</a><a href="#control">Контроль</a><a href="#modules">Модули</a><a href="#workflow">Процесс</a>
     </nav>
-    <a class="top-cta magnetic" href="#contact">Обсудить внедрение <span>↗</span></a>
-    <button class="menu-toggle" aria-label="Открыть меню" aria-expanded="false"><i></i><i></i></button>
+    <a class="top-cta magnetic" href="#crm-tour">Посмотреть программу <span>↗</span></a>
+    <button class="menu-toggle" aria-label="Открыть меню" aria-controls="primary-navigation" aria-expanded="false"><i></i><i></i></button>
   </header>
 
   <main id="top">
@@ -40,7 +40,7 @@
         <h1 class="hero-title"><span>Весь объект.</span><br><em>Под контролем.</em></h1>
         <div class="hero-bottom reveal">
           <p>СКОЛ CRM связывает заявки, объекты, сметы, производство и финансы. Рабочая база хранится локально на компьютере; сайт показывает структуру системы, а не вымышленные показатели.</p>
-          <a class="round-link magnetic" href="#system" aria-label="Прокрутить к системе">↓</a>
+          <a class="round-link magnetic" href="#experience" aria-label="Перейти к 3D-презентации системы">↓</a>
         </div>
       </div>
       <div class="hero-stage" aria-label="Визуализация интерфейса СКОЛ CRM">
@@ -92,6 +92,15 @@
     <section class="experience-scroll" id="experience" aria-label="Интерактивная 3D-сцена СКОЛ CRM">
       <div class="experience-sticky">
         <canvas id="motion-canvas" aria-hidden="true"></canvas>
+        <div class="motion-static-fallback" aria-hidden="true">
+          <div class="motion-fallback-screen motion-fallback-screen-main">
+            <div class="motion-fallback-bar"><b>СКОЛ CRM</b><span>ОБЗОР БИЗНЕСА</span><i></i></div>
+            <div class="motion-fallback-stats"><div><small>ЗАЯВКИ</small><strong>—</strong></div><div><small>ОБЪЕКТЫ</small><strong>—</strong></div><div><small>ПОСТУПЛЕНИЯ</small><strong>—</strong></div></div>
+            <div class="motion-fallback-rows"><i>Карточки клиентов и объектов</i><i>Планирование ресурсов</i><i>Документы и история</i></div>
+          </div>
+          <div class="motion-fallback-screen motion-fallback-screen-side"><div class="motion-fallback-bar"><b>СКОЛ CRM</b><span>ЗАЯВКИ</span></div><div class="motion-fallback-rows"><i>Новый запрос</i><i>Следующее действие</i><i>История контакта</i></div></div>
+          <div class="motion-fallback-screen motion-fallback-screen-low"><div class="motion-fallback-bar"><b>СКОЛ CRM</b><span>ОБЪЕКТЫ</span></div><div class="motion-fallback-rows"><i>Договор и этапы</i><i>Расчёт и ресурсы</i></div></div>
+        </div>
         <div class="experience-grid" aria-hidden="true"></div>
         <div class="experience-vignette" aria-hidden="true"></div>
         <div class="motion-header"><span>СКОЛ / SYSTEM IN MOTION</span><span>SCROLL TO EXPLORE <b>↓</b></span></div>
@@ -103,7 +112,7 @@
         <div class="motion-index"><strong id="motion-index">01</strong><span>/ 04</span></div>
         <div class="motion-progress"><i id="motion-progress"></i></div>
         <div class="motion-footer"><span>DATA</span><i></i><span>STRUCTURE</span><i></i><span>CONTROL</span></div>
-        <div class="motion-fallback-copy">Интерактивная 3D-сцена СКОЛ CRM. Для просмотра включите аппаратное ускорение браузера.</div>
+        <div class="motion-fallback-copy">3D-презентация недоступна в этом режиме. Структура программы остаётся доступна в следующих разделах.</div>
       </div>
     </section>
 
@@ -116,41 +125,41 @@
         </div>
         <div class="crm-tour-layout">
           <nav class="crm-tour-nav" aria-label="Экраны CRM">
-            <button type="button" class="crm-tour-step is-active" data-crm-step="0" aria-current="step"><b>01</b><span>Обзор бизнеса</span><i>↗</i></button>
-            <button type="button" class="crm-tour-step" data-crm-step="1"><b>02</b><span>Заявки и клиенты</span><i>↗</i></button>
-            <button type="button" class="crm-tour-step" data-crm-step="2"><b>03</b><span>Объекты</span><i>↗</i></button>
-            <button type="button" class="crm-tour-step" data-crm-step="3"><b>04</b><span>ПИ · расчёт объекта</span><i>↗</i></button>
-            <button type="button" class="crm-tour-step" data-crm-step="4"><b>05</b><span>Радар заказов</span><i>↗</i></button>
+            <button type="button" class="crm-tour-step is-active" data-crm-step="0" aria-controls="crm-view-0" aria-current="step"><b>01</b><span>Обзор бизнеса</span><i>↗</i></button>
+            <button type="button" class="crm-tour-step" data-crm-step="1" aria-controls="crm-view-1"><b>02</b><span>Заявки и клиенты</span><i>↗</i></button>
+            <button type="button" class="crm-tour-step" data-crm-step="2" aria-controls="crm-view-2"><b>03</b><span>Объекты</span><i>↗</i></button>
+            <button type="button" class="crm-tour-step" data-crm-step="3" aria-controls="crm-view-3"><b>04</b><span>ПИ · расчёт объекта</span><i>↗</i></button>
+            <button type="button" class="crm-tour-step" data-crm-step="4" aria-controls="crm-view-4"><b>05</b><span>Радар заказов</span><i>↗</i></button>
             <div class="crm-tour-nav-foot"><span>SCROLL TO EXPLORE</span><span class="crm-tour-progress"><i id="crm-tour-progress"></i></span></div>
           </nav>
           <div class="crm-app-frame" aria-label="Макет интерфейса СКОЛ CRM">
             <div class="crm-app-topbar"><div class="crm-app-brand"><span>С</span><b>СКОЛ</b><small>CRM</small></div><div class="crm-app-breadcrumb"><i></i><span id="crm-app-section">Обзор бизнеса</span></div><div class="crm-app-actions"><span class="crm-app-search">⌕ <small>Поиск по системе</small></span><span class="crm-app-avatar">С</span></div></div>
             <div class="crm-app-content">
-              <article class="crm-app-view is-active" data-crm-view="0" aria-hidden="false">
+              <article class="crm-app-view is-active" id="crm-view-0" data-crm-view="0" aria-hidden="false">
                 <div class="crm-view-heading"><div><small>РАБОЧЕЕ ПРОСТРАНСТВО</small><h3>Обзор бизнеса</h3><p>Весь бизнес. В одной картине.</p></div><span class="crm-view-action">＋ Новая запись</span></div>
                 <div class="crm-overview-hero"><div><small>КОНТРОЛЬ БИЗНЕСА</small><h4>Решения —<br>на основе фактов.</h4><p>Заявки, объекты, деньги и команда собраны в одном рабочем пространстве.</p></div><div class="crm-overview-mark">СКОЛ<span>↗</span></div></div>
                 <div class="crm-view-section-title"><b>Состояние бизнеса</b><span>ДАННЫЕ ЛОКАЛЬНОЙ БАЗЫ</span></div>
                 <div class="crm-kpi-grid"><div><small>ПОСТУПЛЕНИЯ</small><b>—</b><i>Фактические оплаты</i></div><div><small>РАСХОДЫ</small><b>—</b><i>Оплаченные расходы</i></div><div><small>ДЕНЕЖНЫЙ ОСТАТОК</small><b>—</b><i>Поступления минус расходы</i></div><div><small>АКТИВНЫЕ ОБЪЕКТЫ</small><b>—</b><i>По текущим статусам</i></div></div>
                 <div class="crm-view-footnote">Показатели не заполнены демонстрационными цифрами: в программе они рассчитываются по данным вашей базы.</div>
               </article>
-              <article class="crm-app-view" data-crm-view="1" aria-hidden="true">
+              <article class="crm-app-view" id="crm-view-1" data-crm-view="1" aria-hidden="true">
                 <div class="crm-view-heading"><div><small>КЛИЕНТСКИЙ ПОТОК</small><h3>Заявки</h3><p>Обращения, контакты и следующий шаг по каждому клиенту.</p></div><span class="crm-view-action">＋ Новая заявка</span></div>
                 <div class="crm-filter-row"><span>Все заявки</span><span>Поиск клиента или объекта</span><span>Фильтр статуса　⌄</span><span>Источник　⌄</span></div>
                 <div class="crm-lead-layout"><div class="crm-table-card"><div class="crm-table-head"><span>КЛИЕНТ / ОБЪЕКТ</span><span>СТАТУС</span><span>ИСТОЧНИК</span><span>СЛЕДУЮЩИЙ ШАГ</span></div><div class="crm-table-empty"><i>⌕</i><b>Здесь появятся ваши заявки</b><small>Создайте обращение или импортируйте данные, чтобы вести клиентский поток в одном месте.</small></div></div><aside class="crm-detail-card"><small>КАРТОЧКА ЗАЯВКИ</small><h4>Детали обращения</h4><div class="crm-detail-line"><span>Клиент</span><b>—</b></div><div class="crm-detail-line"><span>Объект</span><b>—</b></div><div class="crm-detail-line"><span>Бюджет клиента</span><b>—</b></div><div class="crm-detail-line"><span>Следующее действие</span><b>—</b></div><div class="crm-detail-status">История коммуникации и изменений</div></aside></div>
                 <div class="crm-stage-strip"><span>НОВАЯ</span><i></i><span>СВЯЗЬ</span><i></i><span>ЗАМЕР</span><i></i><span>СМЕТА</span><i></i><span>ПЕРЕГОВОРЫ</span></div>
               </article>
-              <article class="crm-app-view" data-crm-view="2" aria-hidden="true">
+              <article class="crm-app-view" id="crm-view-2" data-crm-view="2" aria-hidden="true">
                 <div class="crm-view-heading"><div><small>ПОРТФЕЛЬ РАБОТ</small><h3>Объекты</h3><p>Единая карточка проекта: договор, экономика, документы и исполнение.</p></div><span class="crm-view-action">＋ Новый объект</span></div>
                 <div class="crm-object-summary"><div><small>ОБЪЕКТОВ В РАБОТЕ</small><b>—</b></div><div><small>ДОГОВОРНЫЙ ОБЪЁМ</small><b>—</b></div><div><small>ПОЛУЧЕНО</small><b>—</b></div><div><small>ОПЛАЧЕНО РАСХОДОВ</small><b>—</b></div></div>
                 <div class="crm-object-board"><div class="crm-object-board-head"><b>Карточки объектов</b><span>Список　⌄　　Сортировка　⌄</span></div><div class="crm-object-columns"><span>ОБЪЕКТ</span><span>ДОГОВОР</span><span>СТАТУС</span><span>ОТВЕТСТВЕННЫЙ</span><span>ПОЛУЧЕНО</span></div><div class="crm-object-empty"><div class="crm-object-glyph">▤</div><b>Объекты вашей компании — в одном списке</b><small>Откройте карточку, чтобы перейти к смете, ПИ, документам и истории работ.</small></div></div>
                 <div class="crm-object-tabs"><span class="is-active">Обзор объекта</span><span>Экономика</span><span>Производство</span><span>Документы</span><span>История</span></div>
               </article>
-              <article class="crm-app-view" data-crm-view="3" aria-hidden="true">
+              <article class="crm-app-view" id="crm-view-3" data-crm-view="3" aria-hidden="true">
                 <div class="crm-view-heading"><div><small>РАСЧЁТ И ПЛАНИРОВАНИЕ</small><h3>ПИ · Расчёт объекта</h3><p>Исходные параметры, стоимость, ресурсы и ожидаемая экономика.</p></div><span class="crm-view-action">Сохранить расчёт</span></div>
                 <div class="crm-calculator-layout"><div class="crm-calc-form"><div class="crm-calc-form-head"><b>Параметры расчёта</b><span>ИСХОДНЫЕ ДАННЫЕ</span></div><div class="crm-input-grid"><label>Тип работ<span>Выберите направление　⌄</span></label><label>Площадь / объём<span>Введите значение</span></label><label>Сложность объекта<span>Не задана　⌄</span></label><label>Срок выполнения<span>Укажите срок</span></label><label>Состав бригады<span>Добавить исполнителей</span></label><label>Материалы и техника<span>Добавить ресурсы</span></label></div><div class="crm-calc-note"><i>i</i><span>Расчёт строится из параметров объекта. Фактические затраты и плановая оценка учитываются отдельно.</span></div></div><aside class="crm-calc-result"><small>РЕЗУЛЬТАТ РАСЧЁТА</small><h4>Экономика объекта</h4><div class="crm-calc-total">—<span>Итоговая оценка</span></div><div class="crm-result-row"><span>Работы</span><b>—</b></div><div class="crm-result-row"><span>Материалы и техника</span><b>—</b></div><div class="crm-result-row"><span>Фонд оплаты работ</span><b>—</b></div><div class="crm-result-row"><span>Срок</span><b>—</b></div><div class="crm-calc-result-foot">Смета и план ресурсов сохраняются в карточке объекта.</div></aside></div>
                 <div class="crm-calc-bottom"><span>ПЛАНИРУЕМЫЕ ПОКАЗАТЕЛИ</span><i></i><span>ФАКТИЧЕСКОЕ ИСПОЛНЕНИЕ</span><i></i><span>ОТКЛОНЕНИЕ</span></div>
               </article>
-              <article class="crm-app-view" data-crm-view="4" aria-hidden="true">
+              <article class="crm-app-view" id="crm-view-4" data-crm-view="4" aria-hidden="true">
                 <div class="crm-view-heading"><div><small>ПОИСК НОВЫХ КЛИЕНТОВ</small><h3>Центр привлечения заказов</h3><p>Поиск компаний, запросов и коммерческих возможностей в открытых источниках.</p></div><span class="crm-view-action">＋ Новый поиск</span></div>
                 <div class="crm-radar-status"><div><b>Источники поиска</b><span>НАСТРОЙКА ИСТОЧНИКОВ И ФИЛЬТРОВ</span></div><div class="crm-source-pills"><i>Публичные сайты</i><i>ЕИС / закупки</i><i>Компании</i><i>Документы</i></div></div>
                 <div class="crm-radar-block"><div class="crm-radar-block-head"><b>Поиск на публичных сайтах</b><span>ПОИСКОВЫЙ СЦЕНАРИЙ　⌄</span></div><div class="crm-radar-fields"><label>Что ищем<span>Вид работ, услуга или ключевые слова</span></label><label>Регион<span>Выберите регион</span></label><label>Период<span>За последние 30 дней　⌄</span></label></div><div class="crm-radar-actions"><span>Источники и критерии можно настроить под профиль компании.</span><b>Запустить поиск ↗</b></div></div>
@@ -272,7 +281,7 @@
     <section class="closing" id="contact">
       <div class="closing-grid"></div><p class="eyebrow reveal"><span class="pulse"></span> СКОЛ CRM / ВАШ СЛЕДУЮЩИЙ УРОВЕНЬ</p>
       <h2 class="reveal">Пора навести<br><em>порядок.</em></h2>
-      <div class="closing-bottom reveal"><p>Посмотрите, как СКОЛ может организовать работу вашей компании.</p><div class="closing-cta closing-cta-disabled" aria-disabled="true">Контакты для демонстрации уточняются</div></div>
+      <div class="closing-bottom reveal"><p>Пять экранов показывают основной контур работы: от заявки и расчёта до исполнения и поиска заказов.</p><a class="closing-cta" href="#crm-tour">Посмотреть программу <span>↗</span></a></div>
       <div class="closing-mark">СКОЛ</div>
     </section>
   </main>

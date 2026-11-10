@@ -10,15 +10,22 @@
     if (!menu || !nav) return;
     nav.classList.remove('open');
     menu.setAttribute('aria-expanded', 'false');
+    menu.setAttribute('aria-label', 'Открыть меню');
     if (restoreFocus) menu.focus();
   };
   if (menu && nav) menu.addEventListener('click', () => {
     const isOpen = nav.classList.toggle('open');
     menu.setAttribute('aria-expanded', String(isOpen));
+    menu.setAttribute('aria-label', isOpen ? 'Закрыть меню' : 'Открыть меню');
   });
   nav?.querySelectorAll('a').forEach(link => link.addEventListener('click', () => closeMenu()));
   document.addEventListener('keydown', event => {
     if (event.key === 'Escape' && nav?.classList.contains('open')) closeMenu(true);
+  });
+  document.addEventListener('pointerdown', event => {
+    if (!nav?.classList.contains('open')) return;
+    if (nav.contains(event.target) || menu?.contains(event.target)) return;
+    closeMenu();
   });
 
   // Keep navigation state aligned with the section crossing the reading line.

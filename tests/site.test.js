@@ -41,10 +41,13 @@ test('3D information cards keep their frame attached during motion', () => {
   assert.ok(motion.includes('return rig'));
 });
 
-test('scene includes a detailed architectural construction model', () => {
-  assert.ok(motion.includes('tower crane'));
-  assert.ok(motion.includes('Glass curtain wall'));
-  assert.ok(motion.includes('level < 5'));
+test('3D scene allocates product and workflow geometry without unused architecture', () => {
+  assert.ok(motion.includes('const software = new THREE.Group()'));
+  assert.ok(motion.includes('const input = new THREE.Group()'));
+  assert.ok(motion.includes('const finance = new THREE.Group()'));
+  assert.ok(!motion.includes('const building = new THREE.Group()'));
+  assert.ok(!motion.includes('tower crane'));
+  assert.ok(!motion.includes('facadePanels'));
 });
 
 test('mobile menu exposes an initial accessible state', () => {
@@ -123,11 +126,12 @@ test('camera framing includes restrained pointer parallax and no cumulative tran
   assert.ok(!motion.includes('camera.rotation.z +='));
 });
 
-test('architectural frame and glass facade unfold in separate scroll beats', () => {
-  assert.ok(motion.includes('const frameBuild = smooth((p - 0.16) / 0.19)'));
-  assert.ok(motion.includes('const facadeOpen = smooth((p - 0.31) / 0.14)'));
-  assert.ok(motion.includes('facadePanels.forEach'));
-  assert.ok(motion.includes('building.scale.y = mix(0.055, 1, frameBuild)'));
+test('CRM workspace particles morph into five distinct screen surfaces', () => {
+  assert.ok(motion.includes('const screens = ['));
+  assert.ok(motion.includes('const panel = screens[i % screens.length]'));
+  assert.ok(motion.includes('particleTargets[1][i * 3 + 1] = panel.y + localY'));
+  assert.ok(motion.includes('const uiReveal = smooth((p - 0.19) / 0.16)'));
+  assert.ok(!motion.includes('frameBuild'));
 });
 test('finance columns rise and transfer paths progressively connect to the control core', () => {
   assert.ok(motion.includes('const financeBuild = smooth((p - 0.445) / 0.13)'));
@@ -272,7 +276,7 @@ test('floating CRM screens use truthful blank values and a readable product UI t
 test('floating CRM presentation is independent from the collapsing architectural model', () => {
   assert.ok(motion.includes('const software = new THREE.Group();\n  scene.add(software);'));
   assert.ok(!motion.includes('building.add(software)'));
-  assert.ok(motion.includes('const groups = [input, building, finance, control, software]'));
+  assert.ok(motion.includes('const groups = [input, finance, control, software]'));
   assert.ok(motion.includes('[[0, 0], [0.18, 0], [0.25, 0.35], [0.33, 1], [0.67, 1], [0.8, 0.72], [0.9, 0.18], [1, 0]]'));
 });
 
@@ -325,4 +329,38 @@ test('all browser interaction modules are included in the JavaScript syntax gate
   assert.ok(pkg.scripts['check:js'].includes('node --check product-showcase.js'));
   assert.ok(pkg.scripts['check:js'].includes('node --check crm-product-tour.js'));
   assert.ok(pkg.scripts['check:js'].includes('node --check motion-scene.mjs'));
+});
+
+
+test('Three.js CDN failure produces a static CRM presentation instead of a blank scene', () => {
+  assert.ok(motion.includes('const THREE_MODULE_URL ='));
+  assert.ok(motion.includes('THREE = await import(THREE_MODULE_URL)'));
+  assert.ok(motion.includes("classList.add('motion-fallback')"));
+  assert.ok(html.includes('motion-static-fallback'));
+  assert.ok(css.includes('.motion-fallback .motion-static-fallback{display:block}'));
+  assert.ok(html.includes('Структура программы остаётся доступна в следующих разделах'));
+});
+
+test('the hero scroll affordance continues into the cinematic scene', () => {
+  assert.ok(html.includes('href="#experience" aria-label="Перейти к 3D-презентации системы"'));
+  assert.ok(html.includes('id="experience"'));
+});
+
+test('all CRM tour controls have explicit relationships to their product screens', () => {
+  for (let i = 0; i < 5; i++) {
+    assert.ok(html.includes('data-crm-step="' + i + '" aria-controls="crm-view-' + i + '"'));
+    assert.ok(html.includes('id="crm-view-' + i + '" data-crm-view="' + i + '"'));
+  }
+});
+
+test('the closing action links to a real product section instead of an unavailable contact placeholder', () => {
+  assert.ok(html.includes('<a class="closing-cta" href="#crm-tour">Посмотреть программу'));
+  assert.ok(!html.includes('Контакты для демонстрации уточняются'));
+});
+
+test('mobile navigation exposes a control relationship and closes on outside interaction', () => {
+  assert.ok(html.includes('id="primary-navigation"'));
+  assert.ok(html.includes('aria-controls="primary-navigation"'));
+  assert.ok(main.includes("menu.setAttribute('aria-label', isOpen ? 'Закрыть меню' : 'Открыть меню')"));
+  assert.ok(main.includes("document.addEventListener('pointerdown'"));
 });

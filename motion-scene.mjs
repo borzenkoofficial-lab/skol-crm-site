@@ -1,6 +1,15 @@
-import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.187.0/build/three.module.js';
+const THREE_MODULE_URL = 'https://cdn.jsdelivr.net/npm/three@0.187.0/build/three.module.js';
 
-(() => {
+(async () => {
+  let THREE;
+  try {
+    THREE = await import(THREE_MODULE_URL);
+  } catch {
+    document.querySelector('#experience')?.classList.add('motion-fallback');
+    return;
+  }
+
+  (() => {
   const root = document.querySelector('#experience');
   const canvas = document.querySelector('#motion-canvas');
   if (!root || !canvas) return;
@@ -62,8 +71,6 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.187.0/build/three.m
   const mats = {
     steel: makeMat(0x75806e, 0.88, 0.26),
     steelDark: makeMat(0x30392d, 0.92, 0.22),
-    concrete: makeMat(0x62695b, 0.28, 0.78),
-    glass: makeMat(0x9ebc75, 0.42, 0.16, 0.3, 0x5f852d, 0.4),
     lime: makeMat(0xc8f169, 0.62, 0.18, 1, 0x8ebc42, 1.25),
     white: makeMat(0xe5ebdb, 0.38, 0.3, 0.88),
     darkGlass: makeMat(0x1b2817, 0.72, 0.16, 0.94, 0x283d1b, 0.35)
@@ -72,16 +79,6 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.187.0/build/three.m
     const mesh = new THREE.Mesh(new THREE.BoxGeometry(size[0], size[1], size[2]), material);
     mesh.position.set(pos[0], pos[1], pos[2]);
     if (rot) mesh.rotation.set(rot[0], rot[1], rot[2]);
-    parent.add(mesh);
-    return mesh;
-  };
-  const beam = (parent, a, b, radius, material) => {
-    const start = new THREE.Vector3(a[0], a[1], a[2]);
-    const end = new THREE.Vector3(b[0], b[1], b[2]);
-    const delta = new THREE.Vector3().subVectors(end, start);
-    const mesh = new THREE.Mesh(new THREE.CylinderGeometry(radius, radius, delta.length(), 7), material);
-    mesh.position.copy(start).add(end).multiplyScalar(0.5);
-    mesh.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), delta.normalize());
     parent.add(mesh);
     return mesh;
   };
@@ -145,13 +142,12 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.187.0/build/three.m
   };
 
   const input = new THREE.Group();
-  const building = new THREE.Group();
   const finance = new THREE.Group();
   const control = new THREE.Group();
   input.position.set(-5.2, 0.4, 0);
   finance.position.set(5.6, 0, 0);
   control.position.set(0, 0.7, -5.3);
-  scene.add(input, building, finance, control);
+  scene.add(input, finance, control);
 
   // Chapter 01: data fragments become a connected system.
   const inputTitles = [
@@ -176,54 +172,7 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.187.0/build/three.m
   inputRing.rotation.x = Math.PI / 2.5;
   input.add(inputRing);
 
-  // Chapter 02: an architectural digital twin with a tower crane.
-  box(building, [6.4, 0.28, 4.8], [0, -0.16, 0], mats.concrete);
-  const floorY = [-0.02, 1.28, 2.56, 3.84, 5.12];
-  const xs = [-2.75, -0.92, 0.92, 2.75];
-  const zs = [-1.95, 0, 1.95];
-  for (let level = 0; level < 5; level++) {
-    const y = floorY[level];
-    box(building, [6.05, 0.12, 4.45], [0, y, 0], level === 4 ? mats.glass : mats.steelDark);
-    for (const x of xs) for (const z of zs) {
-      box(building, [0.105, 1.28, 0.105], [x, y + 0.64, z], (x === -2.75 && z === -1.95) ? mats.lime : mats.steel);
-    }
-    for (const z of zs) beam(building, [-2.8, y + 1.24, z], [2.8, y + 1.24, z], 0.055, mats.steel);
-    for (const x of xs) beam(building, [x, y + 1.24, -2.0], [x, y + 1.24, 2.0], 0.055, mats.steel);
-  }
-  // Glass curtain wall is isolated so it can unfold as its own cinematic beat.
-  const facade = new THREE.Group();
-  building.add(facade);
-  const facadePanels = [];
-  for (let level = 0; level < 4; level++) {
-    const y = 0.65 + level * 1.28;
-    for (let i = 0; i < 12; i++) {
-      const panel = box(facade, [0.39, 0.94, 0.025], [-2.55 + i * 0.465, y, 2.225], mats.glass);
-      panel.userData.baseX = panel.position.x;
-      facadePanels.push(panel);
-    }
-    for (let i = 0; i < 8; i++) {
-      const panel = box(facade, [0.025, 0.94, 0.43], [3.04, y, -1.75 + i * 0.5], mats.glass);
-      panel.userData.baseZ = panel.position.z;
-      facadePanels.push(panel);
-    }
-  }
-  box(building, [0.82, 5.1, 0.82], [0.1, 2.48, -0.25], mats.concrete);
-  for (let level = 0; level < 4; level++) box(building, [1.1, 0.035, 1.1], [0.1, 0.7 + level * 1.28, -0.25], mats.lime);
-  const craneX = -4.05;
-  for (let y = 0.1; y < 8; y += 0.55) {
-    beam(building, [craneX, y, -0.2], [craneX, y + 0.55, -0.2], 0.035, mats.lime);
-    beam(building, [craneX + 0.5, y, -0.2], [craneX + 0.5, y + 0.55, -0.2], 0.035, mats.steel);
-    beam(building, [craneX, y, -0.2], [craneX + 0.5, y + 0.55, -0.2], 0.022, mats.steel);
-    beam(building, [craneX + 0.5, y, -0.2], [craneX, y + 0.55, -0.2], 0.022, mats.steel);
-  }
-  beam(building, [craneX + 0.25, 8, -0.2], [craneX + 5.2, 8, -0.2], 0.065, mats.steel);
-  beam(building, [craneX + 0.25, 8, -0.2], [craneX - 2.1, 8, -0.2], 0.07, mats.steelDark);
-  beam(building, [craneX + 4.4, 8, -0.2], [craneX + 4.4, 5.6, -0.2], 0.018, mats.lime);
-  box(building, [0.72, 0.55, 0.62], [craneX + 4.4, 5.25, -0.2], mats.lime);
-  tube(building, [[-3.1, 0.05, 2.55], [-2.2, 1.2, 2.55], [-0.4, 2.2, 2.55], [1.5, 3.4, 2.55], [3.1, 5.1, 2.55]], 0.018, mats.lime);
-  // Chapter 02 visual direction: the construction shell resolves into the actual CRM product.
-  // Keep the authored architecture as an invisible source model, then stage floating application surfaces.
-  building.children.forEach(child => { child.visible = false; });
+  // Chapter 02: five separate CRM workspaces become the central 3D subject.
   const software = new THREE.Group();
   scene.add(software);
   const makeUiTexture = (title, kind = 0) => {
@@ -390,8 +339,7 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.187.0/build/three.m
     transferNodes.push(node);
   }
 
-  // Atmospheric particles and an architectural floor grid.
-  // Scroll-morphed particles: incoming data -> building structure -> project economics -> control core.
+  // Atmospheric particles morph from incoming data into CRM workspaces, project economics and the control core.
   const particleCount = mobile ? 420 : 900;
   const particleTargets = Array.from({ length: 4 }, () => new Float32Array(particleCount * 3));
   const financeHeights = [0.9, 1.3, 1.05, 1.8, 1.55, 2.3, 1.95, 2.75, 2.45, 3.2, 2.9, 3.65];
@@ -401,10 +349,22 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.187.0/build/three.m
     particleTargets[0][i * 3] = -5.2 + Math.cos(angle) * radius;
     particleTargets[0][i * 3 + 1] = 0.4 + Math.sin(angle * 1.7) * 1.25;
     particleTargets[0][i * 3 + 2] = Math.sin(angle) * radius * 0.72;
-    const face = i % 4, u = ((i * 17) % 101) / 100, v = ((i * 29) % 101) / 100;
-    particleTargets[1][i * 3] = face < 2 ? (face === 0 ? -3.05 : 3.05) : -3.05 + u * 6.1;
-    particleTargets[1][i * 3 + 1] = -0.05 + v * 5.25;
-    particleTargets[1][i * 3 + 2] = face < 2 ? -2.15 + u * 4.3 : (face === 2 ? -2.15 : 2.15);
+    const screens = [
+      { x: 0, y: 1.75, z: 0, width: 5.8, height: 3.62, yaw: 0 },
+      { x: -4.15, y: 1.25, z: -0.5, width: 2.55, height: 1.6, yaw: 0.52 },
+      { x: 4.15, y: 1.35, z: -0.35, width: 2.55, height: 1.6, yaw: -0.52 },
+      { x: -2.9, y: -1.15, z: -0.9, width: 2.45, height: 1.54, yaw: 0.28 },
+      { x: 2.9, y: -1.1, z: -0.85, width: 2.45, height: 1.54, yaw: -0.28 }
+    ];
+    const panel = screens[i % screens.length];
+    const sample = Math.floor(i / screens.length);
+    const u = ((sample * 37) % 97) / 96 - 0.5;
+    const v = ((sample * 61) % 89) / 88 - 0.5;
+    const localX = u * panel.width;
+    const localY = v * panel.height;
+    particleTargets[1][i * 3] = panel.x + localX * Math.cos(panel.yaw);
+    particleTargets[1][i * 3 + 1] = panel.y + localY;
+    particleTargets[1][i * 3 + 2] = panel.z - localX * Math.sin(panel.yaw) + ((sample % 5) - 2) * 0.012;
     const bar = i % financeHeights.length, level = (Math.floor(i / financeHeights.length) % 60) / 59;
     particleTargets[2][i * 3] = 5.6 - 2.75 + bar * 0.5;
     particleTargets[2][i * 3 + 1] = -1.38 + level * financeHeights[bar];
@@ -428,7 +388,7 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.187.0/build/three.m
   floor.material.opacity = 0.19;
   scene.add(floor);
 
-  const groups = [input, building, finance, control, software];
+  const groups = [input, finance, control, software];
   groups.forEach(group => group.traverse(obj => {
     if (!obj.material) return;
     obj.material = Array.isArray(obj.material) ? obj.material.map(material => material.clone()) : obj.material.clone();
@@ -447,10 +407,8 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.187.0/build/three.m
     material.depthWrite = opacity > 0.92 && base > 0.95;
   });
 
-  // Seven camera beats: establish the data field, inspect the structure, skim the facade,
-  // move through the financial instrument, orbit the control core, then pull back to the whole system.
-  // Eight deliberate shots: establish -> data push-in -> architectural reveal -> facade skim
-  // -> finance close-up -> orbit the core -> release into a wide master shot.
+  // Nine deliberate shots: establish the data field, enter the overview, inspect leads and objects,
+  // skim the PI calculator and finance surfaces, then orbit the control core before the final master shot.
   const cameraPath = new THREE.CatmullRomCurve3([
     new THREE.Vector3(-8.2, 2.7, 8.2),
     new THREE.Vector3(-4.9, 1.75, 4.25),
@@ -506,7 +464,6 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.187.0/build/three.m
   ];
   const visibility = [
     [[0, 1], [0.12, 1], [0.28, 0.04], [1, 0]],
-    [[0, 0.04], [0.18, 0.4], [0.3, 1], [0.47, 0.5], [0.72, 0.1], [1, 0.24]],
     [[0, 0], [0.36, 0.03], [0.48, 1], [0.63, 0.42], [1, 0.08]],
     [[0, 0], [0.58, 0.03], [0.72, 1], [0.88, 0.82], [1, 0.72]],
     [[0, 0], [0.18, 0], [0.25, 0.35], [0.33, 1], [0.67, 1], [0.8, 0.72], [0.9, 0.18], [1, 0]]
@@ -577,15 +534,13 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.187.0/build/three.m
     input.rotation.y = -p * 1.5;
     input.rotation.z = Math.sin(p * Math.PI) * 0.08;
     input.scale.setScalar(mix(1, 0.82, smooth(p)));
-    building.rotation.y = mix(-0.12, 0.1, p);
-    building.position.y = Math.sin(p * Math.PI) * 0.12;
     // The CRM UI unfolds from one compact product surface into five orbiting workspaces.
     const uiReveal = smooth((p - 0.19) / 0.16);
     const uiOrbit = smooth((p - 0.34) / 0.28);
     const uiGather = smooth((p - 0.78) / 0.2);
     software.rotation.y = -0.12 + uiOrbit * 0.16 - uiGather * 0.12;
     software.rotation.x = Math.sin(p * Math.PI) * 0.018;
-    software.position.y = building.position.y + Math.sin(p * Math.PI * 1.2) * 0.12;
+    software.position.y = Math.sin(p * Math.PI * 1.2) * 0.12;
     softwareScreens.forEach(({ rig, base, rotation, phase }, index) => {
       const spread = index === 0 ? 1 : 0.28 + uiReveal * 0.72;
       const gather = 1 - uiGather * 0.48;
@@ -595,15 +550,7 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.187.0/build/three.m
       rig.scale.setScalar(scale * (1 - uiGather * 0.08));
     });
 
-    // Structural frame rises from its foundation, then the facade unfolds from the center line.
-    const frameBuild = smooth((p - 0.16) / 0.19);
-    building.scale.y = mix(0.055, 1, frameBuild);
-    const facadeOpen = smooth((p - 0.31) / 0.14);
-    facade.scale.set(0.06 + facadeOpen * 0.94, 1, 0.08 + facadeOpen * 0.92);
-    facadePanels.forEach(panel => {
-      if (panel.userData.baseX !== undefined) panel.position.x = panel.userData.baseX * (0.08 + facadeOpen * 0.92);
-      if (panel.userData.baseZ !== undefined) panel.position.z = panel.userData.baseZ * (0.08 + facadeOpen * 0.92);
-    });
+    // The five UI surfaces open in sequence while camera focus travels from overview to detail.
     finance.rotation.y = -0.12 + p * 0.28;
     // Finance columns rise from a common baseline, revealing the measuring instrument.
     const financeBuild = smooth((p - 0.445) / 0.13);
@@ -699,13 +646,17 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.187.0/build/three.m
       render();
     }, { passive: true });
   }
-  const observer = new IntersectionObserver(entries => {
-    active = entries.some(entry => entry.isIntersecting);
-    if (canAnimate() && !raf) animate();
-    if (!active) stopAnimation();
-    if (active && reduced) render();
-  }, { threshold: 0.01 });
-  observer.observe(root);
+  if ('IntersectionObserver' in window) {
+    const observer = new IntersectionObserver(entries => {
+      active = entries.some(entry => entry.isIntersecting);
+      if (canAnimate() && !raf) animate();
+      if (!active) stopAnimation();
+      if (active && reduced) render();
+    }, { threshold: 0.01 });
+    observer.observe(root);
+  } else {
+    active = true;
+  }
   document.addEventListener('visibilitychange', () => {
     pageVisible = !document.hidden;
     if (canAnimate() && !raf) animate();
@@ -732,4 +683,5 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.187.0/build/three.m
   active = true;
   render();
   if (canAnimate()) animate();
+  })();
 })();
