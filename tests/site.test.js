@@ -249,3 +249,21 @@ test('CRM tour keeps the floating dock selection synchronized with the active pr
   assert.ok(tourJs.includes("item.classList.toggle('is-active'"));
   assert.ok(fs.readFileSync('crm-product-tour.css', 'utf8').includes('padding:clamp(82px,9vh,112px)'));
 });
+
+test('3D product chapter stages five floating CRM workspaces instead of relying only on an architectural building', () => {
+  for (const label of ['Обзор бизнеса', 'Заявки и клиенты', 'Объекты', 'ПИ · Расчёт', 'Финансы']) assert.ok(motion.includes("title: '" + label + "'"), 'missing floating CRM screen: ' + label);
+  assert.ok(motion.includes('const software = new THREE.Group()'));
+  assert.ok(motion.includes('new THREE.PlaneGeometry(w, h)'));
+  assert.ok(motion.includes('makeUiTexture'));
+  assert.ok(motion.includes('softwareScreens.forEach'));
+  assert.ok(motion.includes('const uiReveal = smooth((p - 0.19) / 0.16)'));
+  assert.ok(motion.includes('const uiGather = smooth((p - 0.78) / 0.2)'));
+  assert.ok(motion.includes('Thin luminous links make the five product surfaces read as one connected workspace'));
+});
+test('floating CRM screens use truthful blank values and a readable product UI texture', () => {
+  assert.ok(motion.includes("ctx.fillText('—'"));
+  assert.ok(motion.includes("ctx.fillText('СКОЛ'"));
+  assert.ok(motion.includes("ctx.fillText('CRM'"));
+  assert.ok(motion.includes("ctx.fillText('ПЛАН И ФАКТ'"));
+  assert.ok(!motion.includes('₽ 684 200'));
+});
