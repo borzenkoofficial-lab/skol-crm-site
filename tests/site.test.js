@@ -216,3 +216,29 @@ test('workflow cards participate in the same accessible pointer-tilt system', ()
   assert.ok(css.includes('.workflow-step:before'));
   assert.ok(css.includes('@media(prefers-reduced-motion:reduce)'));
 });
+
+test('CRM product tour presents five distinct screens matching the supplied desktop workflow', () => {
+  for (const label of ['Обзор бизнеса', 'Заявки и клиенты', 'Объекты', 'ПИ · расчёт объекта', 'Радар заказов']) assert.ok(html.includes(label), 'missing CRM tour stage: ' + label);
+  for (let i = 0; i < 5; i++) {
+    assert.ok(html.includes('data-crm-step="' + i + '"'));
+    assert.ok(html.includes('data-crm-view="' + i + '"'));
+  }
+  assert.ok(html.includes('Центр привлечения заказов'));
+  assert.ok(html.includes('ЕИС / закупки'));
+  assert.ok(html.includes('crm-app-dock'));
+});
+test('CRM tour is a scroll-driven pinned experience with accessible manual navigation', () => {
+  const tourJs = fs.readFileSync('crm-product-tour.js', 'utf8');
+  const tourCss = fs.readFileSync('crm-product-tour.css', 'utf8');
+  assert.doesNotThrow(() => new vm.Script(tourJs));
+  assert.ok(tourJs.includes('requestAnimationFrame'));
+  assert.ok(tourJs.includes('scrollIntoView'));
+  assert.ok(tourJs.includes('aria-current'));
+  assert.ok(tourCss.includes('position:sticky'));
+  assert.ok(tourCss.includes('prefers-reduced-motion:reduce'));
+});
+test('CRM tour does not invent customer data or claim a live database connection', () => {
+  for (const forbidden of ['ООО Ромашка', 'БЦ Север', '₽ 684 200', '100 000 000']) assert.ok(!html.includes(forbidden));
+  assert.ok(html.includes('Показатели не заполнены демонстрационными цифрами'));
+  assert.ok(html.includes('локальной базы'));
+});
