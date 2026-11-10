@@ -5,6 +5,6 @@
   "type": "commonjs",
   "scripts": {
     "test": "node --test",
-    "check:js": "node --check main.js && node --check motion-scene.mjs"
+    "check:js": "node --check main.js && node --check product-showcase.js && node --check crm-product-tour.js && node --check motion-scene.mjs"
   }
 }

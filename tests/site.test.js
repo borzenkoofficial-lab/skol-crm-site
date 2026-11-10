@@ -111,7 +111,8 @@ test('marketing visuals do not imply fabricated object IDs, margin values or liv
 
 test('cinematic camera uses distinct close-up and wide master-shot lenses', () => {
   assert.ok(motion.includes('[0.12, 27'));
-  assert.ok(motion.includes('[0.43, 25'));
+  assert.ok(motion.includes('[0.36, 24'));
+  assert.ok(motion.includes('[0.52, 24'));
   assert.ok(motion.includes('[0.73, 24'));
   assert.ok(motion.includes('[1, 43'));
   assert.ok(motion.includes('sampleTrack(p, shotTrack, column)'));
@@ -308,4 +309,20 @@ test('the refined CRM tour and 3D scene remain responsive and reduced-motion awa
   assert.ok(tourCss.includes('.crm-tour{height:360vh}'));
   assert.ok(tourCss.includes('@media(prefers-reduced-motion:reduce)'));
   assert.ok(tourCss.includes('.crm-app-view.is-active{'));
+});
+
+
+test('CRM product spotlight tracks the frame pointer without per-event layout writes', () => {
+  const tourJs = fs.readFileSync('crm-product-tour.js', 'utf8');
+  assert.ok(tourJs.includes("appFrame.addEventListener('pointermove'"));
+  assert.ok(tourJs.includes("appFrame.style.setProperty('--crm-pointer-x', pointerX)"));
+  assert.ok(tourJs.includes("appFrame.addEventListener('pointerleave'"));
+  assert.ok(tourJs.includes('if (pointerFrame) return'));
+});
+test('all browser interaction modules are included in the JavaScript syntax gate', () => {
+  const pkg = JSON.parse(fs.readFileSync('package.json', 'utf8'));
+  assert.ok(pkg.scripts['check:js'].includes('node --check main.js'));
+  assert.ok(pkg.scripts['check:js'].includes('node --check product-showcase.js'));
+  assert.ok(pkg.scripts['check:js'].includes('node --check crm-product-tour.js'));
+  assert.ok(pkg.scripts['check:js'].includes('node --check motion-scene.mjs'));
 });

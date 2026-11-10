@@ -7,6 +7,7 @@
   const caption = root.querySelector('#crm-tour-caption');
   const sectionLabel = root.querySelector('#crm-app-section');
   const dockItems = [...root.querySelectorAll('.crm-app-dock span')];
+  const appFrame = root.querySelector('.crm-app-frame');
   const dockIndexByStep = [0, 1, 2, 3, 8];
   const labels = ['Обзор бизнеса', 'Заявки', 'Объекты', 'ПИ · Расчёт объекта', 'Центр привлечения заказов'];
   let active = -1;
@@ -43,6 +44,31 @@
     if (frame) return;
     frame = requestAnimationFrame(updateFromScroll);
   };
+
+  // A restrained pointer light follows the user's focus across the CRM application frame.
+  if (appFrame && window.matchMedia('(pointer:fine)').matches) {
+    let pointerFrame = 0;
+    let pointerX = '50%';
+    let pointerY = '38%';
+    appFrame.addEventListener('pointermove', event => {
+      const rect = appFrame.getBoundingClientRect();
+      if (!rect.width || !rect.height) return;
+      pointerX = (Math.max(0, Math.min(1, (event.clientX - rect.left) / rect.width)) * 100).toFixed(1) + '%';
+      pointerY = (Math.max(0, Math.min(1, (event.clientY - rect.top) / rect.height)) * 100).toFixed(1) + '%';
+      if (pointerFrame) return;
+      pointerFrame = requestAnimationFrame(() => {
+        appFrame.style.setProperty('--crm-pointer-x', pointerX);
+        appFrame.style.setProperty('--crm-pointer-y', pointerY);
+        pointerFrame = 0;
+      });
+    }, { passive: true });
+    appFrame.addEventListener('pointerleave', () => {
+      if (pointerFrame) cancelAnimationFrame(pointerFrame);
+      pointerFrame = 0;
+      appFrame.style.setProperty('--crm-pointer-x', '50%');
+      appFrame.style.setProperty('--crm-pointer-y', '38%');
+    });
+  }
   const goTo = index => {
     const rect = root.getBoundingClientRect();
     const range = Math.max(1, rect.height - window.innerHeight);
