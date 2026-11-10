@@ -221,6 +221,86 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.187.0/build/three.m
   beam(building, [craneX + 4.4, 8, -0.2], [craneX + 4.4, 5.6, -0.2], 0.018, mats.lime);
   box(building, [0.72, 0.55, 0.62], [craneX + 4.4, 5.25, -0.2], mats.lime);
   tube(building, [[-3.1, 0.05, 2.55], [-2.2, 1.2, 2.55], [-0.4, 2.2, 2.55], [1.5, 3.4, 2.55], [3.1, 5.1, 2.55]], 0.018, mats.lime);
+  // Chapter 02 visual direction: the construction shell resolves into the actual CRM product.
+  // Keep the authored architecture as an invisible source model, then stage floating application surfaces.
+  building.children.forEach(child => { child.visible = false; });
+  const software = new THREE.Group();
+  building.add(software);
+  const screenMat = new THREE.MeshBasicMaterial({ color: 0xffffff, side: THREE.DoubleSide, toneMapped: false });
+  const makeUiTexture = (title, kind = 0) => {
+    const canvas = document.createElement('canvas');
+    canvas.width = 1024; canvas.height = 640;
+    const ctx = canvas.getContext('2d');
+    ctx.fillStyle = '#f5f7f1'; ctx.fillRect(0, 0, 1024, 640);
+    ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, 1024, 52);
+    ctx.fillStyle = '#9bc94b'; ctx.fillRect(22, 15, 22, 22);
+    ctx.fillStyle = '#273021'; ctx.font = '700 18px Arial'; ctx.fillText('СКОЛ', 54, 33);
+    ctx.fillStyle = '#89947e'; ctx.font = '12px Arial'; ctx.fillText('CRM', 113, 33);
+    ctx.fillStyle = '#e6ebdf'; ctx.fillRect(0, 52, 174, 588);
+    ctx.fillStyle = '#5f6b53'; ctx.font = '13px Arial';
+    ['Обзор','Заявки','Объекты','Производство','Финансы','Документы'].forEach((v, i) => {
+      if (i === kind % 6) { ctx.fillStyle = '#e4efcf'; ctx.fillRect(12, 78 + i * 43, 150, 32); ctx.fillStyle = '#5d842c'; }
+      else ctx.fillStyle = '#73806a';
+      ctx.fillText(v, 32, 99 + i * 43);
+    });
+    ctx.fillStyle = '#293222'; ctx.font = '700 32px Arial'; ctx.fillText(title, 210, 112);
+    ctx.fillStyle = '#87917c'; ctx.font = '14px Arial'; ctx.fillText('РАБОЧЕЕ ПРОСТРАНСТВО  /  ЛОКАЛЬНАЯ БАЗА', 210, 143);
+    const cardY = 176, cardW = 180, cardGap = 18;
+    for (let i = 0; i < 4; i++) {
+      const x = 210 + i * (cardW + cardGap);
+      ctx.fillStyle = '#ffffff'; ctx.fillRect(x, cardY, cardW, 105);
+      ctx.strokeStyle = '#e3e9dc'; ctx.strokeRect(x, cardY, cardW, 105);
+      ctx.fillStyle = '#8d9882'; ctx.font = '11px Arial'; ctx.fillText(['ПОСТУПЛЕНИЯ','РАСХОДЫ','ОБЪЕКТЫ','ЗАЯВКИ'][i], x + 14, cardY + 25);
+      ctx.fillStyle = '#303b27'; ctx.font = '700 28px Arial'; ctx.fillText('—', x + 14, cardY + 66);
+      ctx.fillStyle = '#a7d64c'; ctx.fillRect(x + 14, cardY + 82, 38 + i * 15, 4);
+    }
+    ctx.fillStyle = '#ffffff'; ctx.fillRect(210, 305, 790, 290);
+    ctx.strokeStyle = '#e3e9dc'; ctx.strokeRect(210, 305, 790, 290);
+    ctx.fillStyle = '#4a5740'; ctx.font = '700 16px Arial'; ctx.fillText(kind === 1 ? 'КАРТОЧКИ ОБЪЕКТОВ' : kind === 2 ? 'ПЛАН И ФАКТ' : 'ОПЕРАЦИОННАЯ СВОДКА', 234, 340);
+    for (let i = 0; i < 5; i++) {
+      const y = 376 + i * 39;
+      ctx.fillStyle = '#f4f7ef'; ctx.fillRect(232, y, 744, 27);
+      ctx.fillStyle = '#8b9680'; ctx.font = '12px Arial';
+      ctx.fillText(['Статус и следующий шаг','Ответственный и сроки','Документы объекта','Планирование ресурсов','История изменений'][i], 250, y + 18);
+      ctx.fillStyle = '#a4d448'; ctx.fillRect(850, y + 9, 85 + (i % 2) * 20, 7);
+    }
+    const texture = new THREE.CanvasTexture(canvas);
+    texture.colorSpace = THREE.SRGBColorSpace;
+    texture.anisotropy = renderer.capabilities.getMaxAnisotropy();
+    return texture;
+  };
+  const screenSpecs = [
+    { title: 'Обзор бизнеса', kind: 0, size: [5.8, 3.62], pos: [0, 1.75, 0], rot: [0, 0, 0] },
+    { title: 'Заявки и клиенты', kind: 1, size: [2.55, 1.6], pos: [-4.15, 1.25, -0.5], rot: [0.02, 0.52, 0.02] },
+    { title: 'Объекты', kind: 2, size: [2.55, 1.6], pos: [4.15, 1.35, -0.35], rot: [-0.02, -0.52, -0.02] },
+    { title: 'ПИ · Расчёт', kind: 3, size: [2.45, 1.54], pos: [-2.9, -1.15, -0.9], rot: [-0.12, 0.28, 0.04] },
+    { title: 'Финансы', kind: 4, size: [2.45, 1.54], pos: [2.9, -1.1, -0.85], rot: [-0.12, -0.28, -0.04] }
+  ];
+  const softwareScreens = screenSpecs.map((spec, index) => {
+    const rig = new THREE.Group();
+    rig.position.set(...spec.pos);
+    rig.rotation.set(...spec.rot);
+    const w = spec.size[0], h = spec.size[1];
+    const housing = new THREE.Mesh(new THREE.BoxGeometry(w + 0.12, h + 0.12, 0.12), mats.steelDark);
+    housing.position.z = -0.045;
+    rig.add(housing);
+    const screen = new THREE.Mesh(new THREE.PlaneGeometry(w, h), new THREE.MeshBasicMaterial({ map: makeUiTexture(spec.title, spec.kind), toneMapped: false, side: THREE.DoubleSide }));
+    screen.position.z = 0.025;
+    rig.add(screen);
+    const rim = new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(w + 0.15, h + 0.15, 0.14)), new THREE.LineBasicMaterial({ color: 0xc8f169, transparent: true, opacity: index === 0 ? 0.88 : 0.42 }));
+    rig.add(rim);
+    const anchor = new THREE.Mesh(new THREE.SphereGeometry(index === 0 ? 0.055 : 0.035, 12, 12), mats.lime);
+    anchor.position.set(-w / 2 + 0.12, h / 2 - 0.12, 0.11);
+    rig.add(anchor);
+    software.add(rig);
+    return { rig, base: new THREE.Vector3(...spec.pos), rotation: new THREE.Euler(...spec.rot), phase: index * 0.7 };
+  });
+  // Thin luminous links make the five product surfaces read as one connected workspace.
+  for (let i = 1; i < softwareScreens.length; i++) {
+    const a = softwareScreens[0].base, b = softwareScreens[i].base;
+    line(software, [[a.x, a.y, -0.12], [mix(a.x, b.x, 0.5), mix(a.y, b.y, 0.5), -0.2], [b.x, b.y, -0.12]], 0xc8f169, 0.34);
+  }
+
 
   // Chapter 03: finance as a physical measuring instrument.
   box(finance, [6.7, 0.12, 4.4], [0, -1.45, 0], mats.steelDark);
@@ -478,6 +558,21 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.187.0/build/three.m
     input.scale.setScalar(mix(1, 0.82, smooth(p)));
     building.rotation.y = mix(-0.12, 0.1, p);
     building.position.y = Math.sin(p * Math.PI) * 0.12;
+    // The CRM UI unfolds from one compact product surface into five orbiting workspaces.
+    const uiReveal = smooth((p - 0.19) / 0.16);
+    const uiOrbit = smooth((p - 0.34) / 0.28);
+    const uiGather = smooth((p - 0.78) / 0.2);
+    software.rotation.y = -0.12 + uiOrbit * 0.16 - uiGather * 0.12;
+    software.position.y = Math.sin(p * Math.PI * 1.2) * 0.12;
+    softwareScreens.forEach(({ rig, base, rotation, phase }, index) => {
+      const spread = index === 0 ? 1 : 0.28 + uiReveal * 0.72;
+      const gather = 1 - uiGather * 0.48;
+      rig.position.set(base.x * spread * gather, base.y * spread + Math.sin(p * Math.PI * 2 + phase) * 0.045, base.z * (0.55 + uiReveal * 0.45));
+      rig.rotation.set(rotation.x + Math.sin(p * Math.PI + phase) * 0.018, rotation.y + (index - 2) * uiOrbit * 0.045, rotation.z);
+      const scale = index === 0 ? 0.76 + uiReveal * 0.24 : 0.78 + uiReveal * 0.22;
+      rig.scale.setScalar(scale * (1 - uiGather * 0.08));
+    });
+
     // Structural frame rises from its foundation, then the facade unfolds from the center line.
     const frameBuild = smooth((p - 0.16) / 0.19);
     building.scale.y = mix(0.055, 1, frameBuild);
