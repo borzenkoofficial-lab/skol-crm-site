@@ -343,19 +343,19 @@ const THREE_MODULE_URL = 'https://cdn.jsdelivr.net/npm/three@0.187.0/build/three
   const particleCount = mobile ? 420 : 900;
   const particleTargets = Array.from({ length: 4 }, () => new Float32Array(particleCount * 3));
   const financeHeights = [0.9, 1.3, 1.05, 1.8, 1.55, 2.3, 1.95, 2.75, 2.45, 3.2, 2.9, 3.65];
+  const screens = [
+    { x: 0, y: 1.75, z: 0, width: 5.8, height: 3.62, yaw: 0 },
+    { x: -4.15, y: 1.25, z: -0.5, width: 2.55, height: 1.6, yaw: 0.52 },
+    { x: 4.15, y: 1.35, z: -0.35, width: 2.55, height: 1.6, yaw: -0.52 },
+    { x: -2.9, y: -1.15, z: -0.9, width: 2.45, height: 1.54, yaw: 0.28 },
+    { x: 2.9, y: -1.1, z: -0.85, width: 2.45, height: 1.54, yaw: -0.28 }
+  ];
   for (let i = 0; i < particleCount; i++) {
     const angle = i * 2.399963;
     const radius = 0.8 + ((i * 37) % 100) / 100 * 2.2;
     particleTargets[0][i * 3] = -5.2 + Math.cos(angle) * radius;
     particleTargets[0][i * 3 + 1] = 0.4 + Math.sin(angle * 1.7) * 1.25;
     particleTargets[0][i * 3 + 2] = Math.sin(angle) * radius * 0.72;
-    const screens = [
-      { x: 0, y: 1.75, z: 0, width: 5.8, height: 3.62, yaw: 0 },
-      { x: -4.15, y: 1.25, z: -0.5, width: 2.55, height: 1.6, yaw: 0.52 },
-      { x: 4.15, y: 1.35, z: -0.35, width: 2.55, height: 1.6, yaw: -0.52 },
-      { x: -2.9, y: -1.15, z: -0.9, width: 2.45, height: 1.54, yaw: 0.28 },
-      { x: 2.9, y: -1.1, z: -0.85, width: 2.45, height: 1.54, yaw: -0.28 }
-    ];
     const panel = screens[i % screens.length];
     const sample = Math.floor(i / screens.length);
     const u = ((sample * 37) % 97) / 96 - 0.5;

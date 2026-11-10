@@ -54,9 +54,10 @@ test('mobile menu exposes an initial accessible state', () => {
   assert.ok(html.includes('aria-expanded="false"'));
 });
 
-test('no invented contact address remains in the page', () => {
+test('no invented contact address or unavailable CTA remains in the page', () => {
   assert.ok(!html.includes('hello@skolcrm.ru'));
-  assert.ok(html.includes('Контакты для демонстрации уточняются'));
+  assert.ok(!html.includes('Контакты для демонстрации уточняются'));
+  assert.ok(html.includes('<a class="closing-cta" href="#crm-tour">Посмотреть программу'));
 });
 
 test('motion has a reduced-motion and WebGL fallback', () => {
@@ -361,6 +362,13 @@ test('the closing action links to a real product section instead of an unavailab
 test('mobile navigation exposes a control relationship and closes on outside interaction', () => {
   assert.ok(html.includes('id="primary-navigation"'));
   assert.ok(html.includes('aria-controls="primary-navigation"'));
-  assert.ok(main.includes("menu.setAttribute('aria-label', isOpen ? 'Закрыть меню' : 'Открыть меню')"));
-  assert.ok(main.includes("document.addEventListener('pointerdown'"));
+  assert.ok(js.includes("menu.setAttribute('aria-label', isOpen ? 'Закрыть меню' : 'Открыть меню')"));
+  assert.ok(js.includes("document.addEventListener('pointerdown'"));
+});
+
+
+test('CRM particle panel definitions are allocated once outside the frame initialization loop', () => {
+  const loopAt = motion.indexOf('for (let i = 0; i < particleCount; i++)');
+  const panelsAt = motion.indexOf('const screens = [');
+  assert.ok(panelsAt >= 0 && loopAt > panelsAt);
 });
