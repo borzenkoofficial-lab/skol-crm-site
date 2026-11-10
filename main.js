@@ -6,11 +6,34 @@
   const menu = document.querySelector('.menu-toggle');
   const nav = document.querySelector('.nav');
 
+  const closeMenu = (restoreFocus = false) => {
+    if (!menu || !nav) return;
+    nav.classList.remove('open');
+    menu.setAttribute('aria-expanded', 'false');
+    if (restoreFocus) menu.focus();
+  };
   if (menu && nav) menu.addEventListener('click', () => {
-    nav.classList.toggle('open');
-    menu.setAttribute('aria-expanded', String(nav.classList.contains('open')));
+    const isOpen = nav.classList.toggle('open');
+    menu.setAttribute('aria-expanded', String(isOpen));
   });
-  nav?.querySelectorAll('a').forEach(link => link.addEventListener('click', () => nav.classList.remove('open')));
+  nav?.querySelectorAll('a').forEach(link => link.addEventListener('click', () => closeMenu()));
+  document.addEventListener('keydown', event => {
+    if (event.key === 'Escape' && nav?.classList.contains('open')) closeMenu(true);
+  });
+
+  // Keep navigation state aligned with the section crossing the reading line.
+  if (nav && 'IntersectionObserver' in window) {
+    const navLinks = [...nav.querySelectorAll('a[href^="#"]')];
+    const navTargets = navLinks
+      .map(link => ({ link, section: document.querySelector(link.getAttribute('href')) }))
+      .filter(item => item.section);
+    const navObserver = new IntersectionObserver(entries => entries.forEach(entry => {
+      if (!entry.isIntersecting) return;
+      navLinks.forEach(link => link.removeAttribute('aria-current'));
+      navTargets.find(item => item.section === entry.target)?.link.setAttribute('aria-current', 'location');
+    }), { threshold: 0, rootMargin: '-36% 0px -56% 0px' });
+    navTargets.forEach(item => navObserver.observe(item.section));
+  }
 
   if ('IntersectionObserver' in window) {
     const observer = new IntersectionObserver(entries => entries.forEach(entry => {

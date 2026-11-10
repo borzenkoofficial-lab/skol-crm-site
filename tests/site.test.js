@@ -266,3 +266,46 @@ test('floating CRM screens use truthful blank values and a readable product UI t
   assert.ok(motion.includes("ctx.fillText('CRM'"));
   assert.ok(!motion.includes('₽ 684 200'));
 });
+
+
+test('floating CRM presentation is independent from the collapsing architectural model', () => {
+  assert.ok(motion.includes('const software = new THREE.Group();\n  scene.add(software);'));
+  assert.ok(!motion.includes('building.add(software)'));
+  assert.ok(motion.includes('const groups = [input, building, finance, control, software]'));
+  assert.ok(motion.includes('[[0, 0], [0.18, 0], [0.25, 0.35], [0.33, 1], [0.67, 1], [0.8, 0.72], [0.9, 0.18], [1, 0]]'));
+});
+
+test('five 3D CRM screens use workflow-specific labels without invented KPI values', () => {
+  assert.ok(motion.includes('const metricLabels = ['));
+  assert.ok(motion.includes('const workspaceTitles ='));
+  assert.ok(motion.includes('const workspaceRows = ['));
+  assert.ok(motion.includes("ctx.fillText('—'"));
+  assert.ok(!motion.includes('₽ 684 200'));
+});
+
+test('CRM tour keeps inactive screens out of the keyboard focus order', () => {
+  const tourJs = fs.readFileSync('crm-product-tour.js', 'utf8');
+  assert.ok(tourJs.includes('view.inert = !selected'));
+  assert.ok(tourJs.includes('const goTo = index =>'));
+  assert.ok(tourJs.includes("event.key === 'ArrowDown'"));
+  assert.ok(tourJs.includes("prefers-reduced-motion: reduce"));
+  assert.ok(!tourJs.includes('scrollMode'));
+});
+
+test('mobile navigation closes accessibly and restores focus on Escape', () => {
+  assert.ok(js.includes('const closeMenu = (restoreFocus = false)'));
+  assert.ok(js.includes("event.key === 'Escape'"));
+  assert.ok(js.includes("menu.setAttribute('aria-expanded', 'false')"));
+  assert.ok(js.includes("menu.focus()"));
+  assert.ok(js.includes("setAttribute('aria-current', 'location')"));
+});
+
+test('the refined CRM tour and 3D scene remain responsive and reduced-motion aware', () => {
+  const tourCss = fs.readFileSync('crm-product-tour.css', 'utf8');
+  assert.ok(css.includes('.experience-scroll{height:360vh}'));
+  assert.ok(css.includes('@media(max-width:700px){\n  .experience-scroll{height:270vh}'));
+  assert.ok(tourCss.includes('.crm-tour{\n  height:420vh;'));
+  assert.ok(tourCss.includes('.crm-tour{height:360vh}'));
+  assert.ok(tourCss.includes('@media(prefers-reduced-motion:reduce)'));
+  assert.ok(tourCss.includes('.crm-app-view.is-active{'));
+});

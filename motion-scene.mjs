@@ -225,8 +225,7 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.187.0/build/three.m
   // Keep the authored architecture as an invisible source model, then stage floating application surfaces.
   building.children.forEach(child => { child.visible = false; });
   const software = new THREE.Group();
-  building.add(software);
-  const screenMat = new THREE.MeshBasicMaterial({ color: 0xffffff, side: THREE.DoubleSide, toneMapped: false });
+  scene.add(software);
   const makeUiTexture = (title, kind = 0) => {
     const canvas = document.createElement('canvas');
     canvas.width = 1024; canvas.height = 640;
@@ -250,19 +249,34 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.187.0/build/three.m
       const x = 210 + i * (cardW + cardGap);
       ctx.fillStyle = '#ffffff'; ctx.fillRect(x, cardY, cardW, 105);
       ctx.strokeStyle = '#e3e9dc'; ctx.strokeRect(x, cardY, cardW, 105);
-      ctx.fillStyle = '#8d9882'; ctx.font = '11px Arial'; ctx.fillText(['ПОСТУПЛЕНИЯ','РАСХОДЫ','ОБЪЕКТЫ','ЗАЯВКИ'][i], x + 14, cardY + 25);
+      const metricLabels = [
+        ['ПОСТУПЛЕНИЯ','РАСХОДЫ','ОБЪЕКТЫ','ЗАЯВКИ'],
+        ['НОВЫЕ','В РАБОТЕ','НА ЗАМЕРЕ','НА СМЕТЕ'],
+        ['ДОГОВОРЫ','ОТКРЫТЫЕ','ПОЛУЧЕНО','РАСХОДЫ'],
+        ['ОБЪЁМ','СРОК','РЕСУРСЫ','СМЕТА'],
+        ['ПОСТУПЛЕНИЯ','ОПЛАЧЕНО','ОСТАТОК','ОБЯЗАТЕЛЬСТВА']
+      ];
+      ctx.fillStyle = '#8d9882'; ctx.font = '11px Arial'; ctx.fillText(metricLabels[kind][i], x + 14, cardY + 25);
       ctx.fillStyle = '#303b27'; ctx.font = '700 28px Arial'; ctx.fillText('—', x + 14, cardY + 66);
-      ctx.fillStyle = '#a7d64c'; ctx.fillRect(x + 14, cardY + 82, 38 + i * 15, 4);
+      ctx.fillStyle = '#dce6d0'; ctx.fillRect(x + 14, cardY + 82, 82, 4);
     }
     ctx.fillStyle = '#ffffff'; ctx.fillRect(210, 305, 790, 290);
     ctx.strokeStyle = '#e3e9dc'; ctx.strokeRect(210, 305, 790, 290);
-    ctx.fillStyle = '#4a5740'; ctx.font = '700 16px Arial'; ctx.fillText(kind === 1 ? 'КАРТОЧКИ ОБЪЕКТОВ' : kind === 2 ? 'ПЛАН И ФАКТ' : 'ОПЕРАЦИОННАЯ СВОДКА', 234, 340);
+    const workspaceTitles = ['СВОДКА БИЗНЕСА','ВОРОНКА ЗАЯВОК','КАРТОЧКИ ОБЪЕКТОВ','ПЛАН РЕСУРСОВ И СМЕТА','ДВИЖЕНИЕ ДЕНЕГ'];
+    const workspaceRows = [
+      ['Активные заявки','Активные объекты','Поступления и расходы','Задачи на контроле','Последние изменения'],
+      ['Новый запрос','Контакт и источник','Замер и уточнение','Подготовка сметы','Следующее действие'],
+      ['Карточка объекта','Договор и этапы','Ответственные','Документы','История изменений'],
+      ['Объём и сложность','Состав бригады','Материалы и техника','Плановая стоимость','Срок выполнения'],
+      ['Поступления','Оплаченные расходы','Денежный остаток','Обязательства','Сверка по объектам']
+    ];
+    ctx.fillStyle = '#4a5740'; ctx.font = '700 16px Arial'; ctx.fillText(workspaceTitles[kind], 234, 340);
     for (let i = 0; i < 5; i++) {
       const y = 376 + i * 39;
       ctx.fillStyle = '#f4f7ef'; ctx.fillRect(232, y, 744, 27);
       ctx.fillStyle = '#8b9680'; ctx.font = '12px Arial';
-      ctx.fillText(['Статус и следующий шаг','Ответственный и сроки','Документы объекта','Планирование ресурсов','История изменений'][i], 250, y + 18);
-      ctx.fillStyle = '#a4d448'; ctx.fillRect(850, y + 9, 85 + (i % 2) * 20, 7);
+      ctx.fillText(workspaceRows[kind][i], 250, y + 18);
+      ctx.fillStyle = '#dce6d0'; ctx.fillRect(850, y + 9, 86, 4);
     }
     const texture = new THREE.CanvasTexture(canvas);
     texture.colorSpace = THREE.SRGBColorSpace;
@@ -414,7 +428,7 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.187.0/build/three.m
   floor.material.opacity = 0.19;
   scene.add(floor);
 
-  const groups = [input, building, finance, control];
+  const groups = [input, building, finance, control, software];
   groups.forEach(group => group.traverse(obj => {
     if (!obj.material) return;
     obj.material = Array.isArray(obj.material) ? obj.material.map(material => material.clone()) : obj.material.clone();
@@ -440,20 +454,24 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.187.0/build/three.m
   const cameraPath = new THREE.CatmullRomCurve3([
     new THREE.Vector3(-8.2, 2.7, 8.2),
     new THREE.Vector3(-4.9, 1.75, 4.25),
-    new THREE.Vector3(-1.9, 3.2, 6.1),
-    new THREE.Vector3(3.55, 3.55, 3.65),
-    new THREE.Vector3(8.1, 2.35, 4.5),
+    new THREE.Vector3(0, 2.4, 8.4),
+    new THREE.Vector3(-4.25, 1.85, 4.2),
+    new THREE.Vector3(4.25, 1.95, 4.2),
+    new THREE.Vector3(-2.95, -0.05, 3.4),
+    new THREE.Vector3(2.95, 0.05, 3.3),
+    new THREE.Vector3(5.8, 2.1, 5.0),
     new THREE.Vector3(4.0, 1.55, -3.2),
-    new THREE.Vector3(-3.7, 1.95, -2.5),
     new THREE.Vector3(0.4, 3.0, 14.2)
   ], false, 'centripetal', 0.42);
   const targetPath = new THREE.CatmullRomCurve3([
     new THREE.Vector3(-5.2, 0.3, 0),
     new THREE.Vector3(-5.2, 0.5, 0),
-    new THREE.Vector3(0, 2.1, 0),
-    new THREE.Vector3(1.3, 3.0, 2.0),
+    new THREE.Vector3(0, 1.75, 0),
+    new THREE.Vector3(-4.15, 1.25, -0.5),
+    new THREE.Vector3(4.15, 1.35, -0.35),
+    new THREE.Vector3(-2.9, -1.15, -0.9),
+    new THREE.Vector3(2.9, -1.1, -0.85),
     new THREE.Vector3(5.6, 0.9, 0),
-    new THREE.Vector3(5.6, 0.65, 0),
     new THREE.Vector3(0, 0.7, -5.3),
     new THREE.Vector3(0, 0.5, 0)
   ], false, 'centripetal', 0.42);
@@ -477,9 +495,11 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.187.0/build/three.m
   const shotTrack = [
     [0, 42, -0.004, 0, 0, 0, 0, 0, 0],
     [0.12, 27, 0.012, 0.12, -0.08, -0.12, 0.12, 0.04, 0],
-    [0.29, 36, -0.008, -0.08, 0.1, 0.18, 0, 0.12, 0],
-    [0.43, 25, 0.014, 0.1, -0.06, -0.16, 0.1, 0.08, 0.08],
-    [0.58, 31, -0.012, -0.12, 0.04, 0.12, 0.08, 0, 0],
+    [0.27, 33, -0.008, -0.08, 0.1, 0.18, 0, 0.12, 0],
+    [0.36, 24, 0.014, 0.1, -0.06, -0.16, 0.1, 0.08, 0.08],
+    [0.44, 27, -0.009, -0.06, 0.06, 0.12, 0.06, 0.04, 0],
+    [0.52, 24, 0.012, 0.08, -0.04, -0.1, 0.04, 0.02, 0],
+    [0.6, 29, -0.01, -0.1, 0.04, 0.12, 0.08, 0, 0],
     [0.73, 24, 0.01, 0.08, -0.04, -0.1, 0, 0.04, 0],
     [0.88, 34, -0.006, -0.06, 0.08, 0.16, 0, 0.12, 0],
     [1, 43, 0, 0, 0, 0, 0, 0, 0]
@@ -488,7 +508,8 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.187.0/build/three.m
     [[0, 1], [0.12, 1], [0.28, 0.04], [1, 0]],
     [[0, 0.04], [0.18, 0.4], [0.3, 1], [0.47, 0.5], [0.72, 0.1], [1, 0.24]],
     [[0, 0], [0.36, 0.03], [0.48, 1], [0.63, 0.42], [1, 0.08]],
-    [[0, 0], [0.58, 0.03], [0.72, 1], [0.88, 0.82], [1, 0.72]]
+    [[0, 0], [0.58, 0.03], [0.72, 1], [0.88, 0.82], [1, 0.72]],
+    [[0, 0], [0.18, 0], [0.25, 0.35], [0.33, 1], [0.67, 1], [0.8, 0.72], [0.9, 0.18], [1, 0]]
   ];
 
   // Scroll-keyed light positions travel with the visual focus: data -> structure -> finance -> control.
@@ -563,7 +584,8 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.187.0/build/three.m
     const uiOrbit = smooth((p - 0.34) / 0.28);
     const uiGather = smooth((p - 0.78) / 0.2);
     software.rotation.y = -0.12 + uiOrbit * 0.16 - uiGather * 0.12;
-    software.position.y = Math.sin(p * Math.PI * 1.2) * 0.12;
+    software.rotation.x = Math.sin(p * Math.PI) * 0.018;
+    software.position.y = building.position.y + Math.sin(p * Math.PI * 1.2) * 0.12;
     softwareScreens.forEach(({ rig, base, rotation, phase }, index) => {
       const spread = index === 0 ? 1 : 0.28 + uiReveal * 0.72;
       const gather = 1 - uiGather * 0.48;
