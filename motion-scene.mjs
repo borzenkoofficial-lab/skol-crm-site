@@ -298,7 +298,7 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.187.0/build/three.m
   // Thin luminous links make the five product surfaces read as one connected workspace.
   for (let i = 1; i < softwareScreens.length; i++) {
     const a = softwareScreens[0].base, b = softwareScreens[i].base;
-    line(software, [[a.x, a.y, -0.12], [mix(a.x, b.x, 0.5), mix(a.y, b.y, 0.5), -0.2], [b.x, b.y, -0.12]], 0xc8f169, 0.34);
+    line(software, [[a.x, a.y, -0.12], [(a.x + b.x) * 0.5, (a.y + b.y) * 0.5, -0.2], [b.x, b.y, -0.12]], 0xc8f169, 0.34);
   }
 
 
