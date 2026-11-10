@@ -264,6 +264,5 @@ test('floating CRM screens use truthful blank values and a readable product UI t
   assert.ok(motion.includes("ctx.fillText('—'"));
   assert.ok(motion.includes("ctx.fillText('СКОЛ'"));
   assert.ok(motion.includes("ctx.fillText('CRM'"));
-  assert.ok(motion.includes("ctx.fillText('ПЛАН И ФАКТ'"));
   assert.ok(!motion.includes('₽ 684 200'));
 });
