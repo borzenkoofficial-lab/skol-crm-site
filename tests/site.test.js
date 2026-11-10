@@ -242,3 +242,10 @@ test('CRM tour does not invent customer data or claim a live database connection
   assert.ok(html.includes('Показатели не заполнены демонстрационными цифрами'));
   assert.ok(html.includes('локальной базы'));
 });
+
+test('CRM tour keeps the floating dock selection synchronized with the active product screen', () => {
+  const tourJs = fs.readFileSync('crm-product-tour.js', 'utf8');
+  assert.ok(tourJs.includes('dockIndexByStep'));
+  assert.ok(tourJs.includes("item.classList.toggle('is-active'"));
+  assert.ok(fs.readFileSync('crm-product-tour.css', 'utf8').includes('padding:clamp(82px,9vh,112px)'));
+});
