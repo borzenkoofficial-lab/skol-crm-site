@@ -232,7 +232,7 @@ test('CRM tour is a scroll-driven pinned experience with accessible manual navig
   const tourCss = fs.readFileSync('crm-product-tour.css', 'utf8');
   assert.doesNotThrow(() => new vm.Script(tourJs));
   assert.ok(tourJs.includes('requestAnimationFrame'));
-  assert.ok(tourJs.includes('scrollIntoView'));
+  assert.ok(tourJs.includes('window.scrollTo'));
   assert.ok(tourJs.includes('aria-current'));
   assert.ok(tourCss.includes('position:sticky'));
   assert.ok(tourCss.includes('prefers-reduced-motion:reduce'));
