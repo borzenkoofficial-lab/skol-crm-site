@@ -261,3 +261,18 @@
 .crm-stage-strip span:first-child{color:#6eb400}
 .crm-calc-result{background:linear-gradient(145deg,#fff,#f8fbf2)}
 .crm-tour-step:focus-visible{outline:2px solid #91e500;outline-offset:3px}
+
+
+/* Lime canvas across the CRM tour chapter; application UI stays legible and neutral. */
+.crm-tour{background:linear-gradient(130deg,#caff70 0%,#b8ff32 46%,#a7e923 100%);color:#17200c}
+.crm-tour:before{background:radial-gradient(ellipse at 80% 25%,rgba(255,255,255,.55),transparent 40%),linear-gradient(120deg,transparent 45%,rgba(255,255,255,.2))}
+.crm-tour-kicker,.crm-tour-heading h2,.crm-tour-heading>p{color:#263318}
+.crm-tour-heading h2 em{color:#527d0a}
+.crm-tour-step{color:#52643a}
+.crm-tour-step b{color:#6b7d4c}
+.crm-tour-step.is-active{background:rgba(255,255,255,.72);border-color:rgba(23,32,12,.2);color:#17200c;box-shadow:0 10px 30px rgba(46,75,9,.12)}
+.crm-tour-step.is-active b,.crm-tour-step.is-active i{color:#527d0a}
+.crm-tour-progress{background:rgba(23,32,12,.16)}
+.crm-tour-progress i{background:#17200c}
+.crm-app-frame{background:#f7f8f4;border-color:rgba(23,32,12,.22);box-shadow:0 35px 90px rgba(46,75,9,.22),0 2px 8px rgba(28,35,25,.035)}
+.crm-tour-step:focus-visible{outline:2px solid #17200c}

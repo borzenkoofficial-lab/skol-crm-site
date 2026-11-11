@@ -608,3 +608,67 @@ footer{background:#090b09;border-color:rgba(225,232,218,.12)}
 .menu-toggle:focus-visible,.nav a:focus-visible,.topbar a:focus-visible,.round-link:focus-visible,.closing-cta:focus-visible{outline-color:var(--lime)}
 ::selection{background:rgba(184,255,50,.86);color:#10140b}
 @media(prefers-reduced-motion:reduce){.closing:after{animation:none}}
+
+
+/* FULL-SITE LIME ART DIRECTION — lime is the canvas, not a small accent. */
+:root{
+ --bg:#b8ff32;--panel:#a8ec24;--ink:#17200c;--muted:#4e602e;
+ --lime:#17200c;--dark:#b8ff32;--paper:#eaffc7;--line:rgba(23,32,12,.2);
+}
+html,body{background:#b8ff32!important;color:#17200c}
+body{background:linear-gradient(180deg,#c8ff61 0%,#b8ff32 24%,#a9ed28 58%,#c4ff59 100%)!important;color:#17200c}
+.topbar{color:#17200c}
+.brand,.nav a,.top-cta{color:#17200c}
+.brand-mark{background:#17200c;color:#b8ff32}
+.nav a:after{background:#17200c}
+.top-cta{border-color:rgba(23,32,12,.42)}
+.top-cta:hover{background:#17200c;color:#b8ff32}
+.scroll-line{background:rgba(23,32,12,.12)}
+.scroll-line span{background:#17200c}
+.hero{background:linear-gradient(135deg,#caff70 0%,#b8ff32 48%,#a5e923 100%)}
+.hero:after{background:radial-gradient(circle at 50% 42%,rgba(255,255,255,.48),transparent 62%)}
+.hero-grid,.closing-grid{background-image:linear-gradient(rgba(23,32,12,.075) 1px,transparent 1px),linear-gradient(90deg,rgba(23,32,12,.075) 1px,transparent 1px)}
+.hero-title,.hero-title em,.hero-bottom p,.hero-foot,.eyebrow,.section-kicker,.stage-label,.visual-caption,.card-caption,.finance-head,.finance-foot{color:#17200c}
+.hero-title em{opacity:.62}
+.hero-stage{filter:drop-shadow(0 34px 60px rgba(42,74,5,.24))}
+.dashboard{background:linear-gradient(145deg,rgba(255,255,255,.88),rgba(239,255,209,.92));border-color:rgba(23,32,12,.22);box-shadow:0 35px 90px rgba(54,91,8,.2),0 0 0 1px rgba(255,255,255,.4)}
+.dashboard *{color:#263318}
+.dashboard .pulse,.dashboard .live-dot,.dashboard .dash-dot{background:#78bd00}
+.orbit{border-color:rgba(23,32,12,.28)}
+.pulse,.live-dot{background:#17200c;box-shadow:0 0 12px rgba(23,32,12,.25)}
+.stage-index{color:#17200c}
+.section-pad{background:linear-gradient(145deg,#b8ff32,#a9ee28)}
+.manifesto{background:radial-gradient(ellipse at 78% 32%,rgba(255,255,255,.44),transparent 42%),linear-gradient(130deg,#caff70 0%,#b8ff32 58%,#a9ee28 100%)}
+.manifesto:before,.modules:before,.feature-light:before{background-image:linear-gradient(rgba(23,32,12,.065) 1px,transparent 1px),linear-gradient(90deg,rgba(23,32,12,.065) 1px,transparent 1px)}
+.manifesto h2,.manifesto h2 span,.manifesto-aside,.manifesto-aside p,.manifesto-aside .lime-text{color:#17200c}
+.manifesto h2 span{opacity:.58}
+.manifesto-aside{background:linear-gradient(145deg,rgba(255,255,255,.56),rgba(238,255,205,.72));border-color:rgba(23,32,12,.2)}
+.manifesto-rule{background:rgba(23,32,12,.22)}
+.manifesto-rule i{background:#17200c}
+.feature,.feature-dark,.feature-light{background:linear-gradient(135deg,#caff70 0%,#b8ff32 50%,#a6e923 100%);color:#17200c}
+.feature:nth-of-type(even){background:linear-gradient(125deg,#a9ed28 0%,#c6ff5c 55%,#b8ff32 100%)}
+.feature-copy,.feature-copy h2,.feature-description,.feature-list li,.feature-list li span,.feature-number,.feature-visual .visual-caption{color:#17200c}
+.feature-copy h2 span,.feature-light h2 span{color:#527d0a}
+.feature-visual{background:radial-gradient(ellipse at 50% 50%,rgba(255,255,255,.44),transparent 68%);border-color:rgba(23,32,12,.16)}
+.feature-orb,.finance-glow{filter:saturate(1.2)}
+.workflow{background:linear-gradient(135deg,#caff70 0%,#b8ff32 48%,#a7e923 100%);color:#17200c}
+.workflow-title,.workflow-title em{color:#17200c}
+.workflow-title em{opacity:.58}
+.workflow-line{background:rgba(23,32,12,.2)}
+.workflow-line span{background:#17200c}
+.workflow-step{background:linear-gradient(145deg,rgba(255,255,255,.66),rgba(238,255,207,.72));border-color:rgba(23,32,12,.2);color:#17200c}
+.workflow-step>b{border-color:rgba(23,32,12,.35);color:#17200c}
+.workflow-step>i,.workflow-step h3,.workflow-step p{color:#263318}
+.workflow-step:hover{border-color:#17200c;box-shadow:0 22px 50px rgba(44,73,7,.16)}
+.closing{background:radial-gradient(ellipse at 72% 22%,rgba(255,255,255,.52),transparent 42%),linear-gradient(125deg,#a9ed28,#caff70 58%,#b8ff32);color:#17200c}
+.closing h2,.closing h2 em,.closing .eyebrow,.closing-bottom p,.closing-mark{color:#17200c}
+.closing h2 em{opacity:.58}
+.closing .pulse{background:#17200c}
+.closing-cta{border-color:rgba(23,32,12,.4);color:#17200c}
+.closing-cta:hover{background:#17200c;color:#b8ff32}
+.closing-cta span{color:inherit}
+footer{background:#17200c;color:#caff70;border-color:rgba(255,255,255,.18)}
+footer a,footer>span,footer small,footer .brand{color:#caff70}
+footer .brand-mark{background:#b8ff32;color:#17200c}
+::selection{background:#17200c;color:#b8ff32}
+@media(prefers-reduced-motion:reduce){.closing:after{animation:none}}
