@@ -6,11 +6,41 @@
   const menu = document.querySelector('.menu-toggle');
   const nav = document.querySelector('.nav');
 
+  const closeMenu = (restoreFocus = false) => {
+    if (!menu || !nav) return;
+    nav.classList.remove('open');
+    menu.setAttribute('aria-expanded', 'false');
+    menu.setAttribute('aria-label', 'Открыть меню');
+    if (restoreFocus) menu.focus();
+  };
   if (menu && nav) menu.addEventListener('click', () => {
-    nav.classList.toggle('open');
-    menu.setAttribute('aria-expanded', String(nav.classList.contains('open')));
+    const isOpen = nav.classList.toggle('open');
+    menu.setAttribute('aria-expanded', String(isOpen));
+    menu.setAttribute('aria-label', isOpen ? 'Закрыть меню' : 'Открыть меню');
   });
-  nav?.querySelectorAll('a').forEach(link => link.addEventListener('click', () => nav.classList.remove('open')));
+  nav?.querySelectorAll('a').forEach(link => link.addEventListener('click', () => closeMenu()));
+  document.addEventListener('keydown', event => {
+    if (event.key === 'Escape' && nav?.classList.contains('open')) closeMenu(true);
+  });
+  document.addEventListener('pointerdown', event => {
+    if (!nav?.classList.contains('open')) return;
+    if (nav.contains(event.target) || menu?.contains(event.target)) return;
+    closeMenu();
+  });
+
+  // Keep navigation state aligned with the section crossing the reading line.
+  if (nav && 'IntersectionObserver' in window) {
+    const navLinks = [...nav.querySelectorAll('a[href^="#"]')];
+    const navTargets = navLinks
+      .map(link => ({ link, section: document.querySelector(link.getAttribute('href')) }))
+      .filter(item => item.section);
+    const navObserver = new IntersectionObserver(entries => entries.forEach(entry => {
+      if (!entry.isIntersecting) return;
+      navLinks.forEach(link => link.removeAttribute('aria-current'));
+      navTargets.find(item => item.section === entry.target)?.link.setAttribute('aria-current', 'location');
+    }), { threshold: 0, rootMargin: '-36% 0px -56% 0px' });
+    navTargets.forEach(item => navObserver.observe(item.section));
+  }
 
   if ('IntersectionObserver' in window) {
     const observer = new IntersectionObserver(entries => entries.forEach(entry => {
@@ -55,27 +85,30 @@
   if (!reduceMotion && window.matchMedia('(pointer:fine)').matches) {
     document.querySelectorAll('[data-tilt]').forEach(card => {
       let frame = 0;
-      card.addEventListener('pointermove', event => {
-        const rect = card.getBoundingClientRect();
-        const x = (event.clientX - rect.left) / rect.width;
-        const y = (event.clientY - rect.top) / rect.height;
-        card.style.setProperty('--mx', (x * 100).toFixed(1) + '%');
-        card.style.setProperty('--my', (y * 100).toFixed(1) + '%');
-        if (frame) cancelAnimationFrame(frame);
-        frame = requestAnimationFrame(() => {
-          card.style.setProperty('--ry', ((x - .5) * 5.5).toFixed(2) + 'deg');
-          card.style.setProperty('--rx', ((.5 - y) * 4.5).toFixed(2) + 'deg');
-          frame = 0;
-        });
-      }, { passive: true });
-      card.addEventListener('pointerleave', () => {
+      const resetTilt = () => {
         if (frame) cancelAnimationFrame(frame);
         frame = 0;
         card.style.setProperty('--rx', '0deg');
         card.style.setProperty('--ry', '0deg');
         card.style.setProperty('--mx', '50%');
         card.style.setProperty('--my', '50%');
-      });
+      };
+      card.addEventListener('pointermove', event => {
+        const rect = card.getBoundingClientRect();
+        if (!rect.width || !rect.height) return;
+        const x = Math.max(0, Math.min(1, (event.clientX - rect.left) / rect.width));
+        const y = Math.max(0, Math.min(1, (event.clientY - rect.top) / rect.height));
+        card.style.setProperty('--mx', (x * 100).toFixed(1) + '%');
+        card.style.setProperty('--my', (y * 100).toFixed(1) + '%');
+        if (frame) cancelAnimationFrame(frame);
+        frame = requestAnimationFrame(() => {
+          card.style.setProperty('--ry', ((x - .5) * 4.8).toFixed(2) + 'deg');
+          card.style.setProperty('--rx', ((.5 - y) * 4.2).toFixed(2) + 'deg');
+          frame = 0;
+        });
+      }, { passive: true });
+      card.addEventListener('pointerleave', resetTilt);
+      card.addEventListener('pointercancel', resetTilt);
     });
   }
 

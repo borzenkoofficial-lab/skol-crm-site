@@ -1,6 +1,15 @@
-import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.187.0/build/three.module.js';
+const THREE_MODULE_URL = 'https://cdn.jsdelivr.net/npm/three@0.187.0/build/three.module.js';
 
-(() => {
+(async () => {
+  let THREE;
+  try {
+    THREE = await import(THREE_MODULE_URL);
+  } catch {
+    document.querySelector('#experience')?.classList.add('motion-fallback');
+    return;
+  }
+
+  (() => {
   const root = document.querySelector('#experience');
   const canvas = document.querySelector('#motion-canvas');
   if (!root || !canvas) return;
@@ -15,9 +24,9 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.187.0/build/three.m
   };
   const chapters = [
     { kicker: '01 / ВХОДЯЩИЙ ПОТОК', title: 'Информация<br><em>собирается.</em>', description: 'Запросы, документы и исходные данные перестают жить отдельно. Каждый элемент находит своё место.' },
-    { kicker: '02 / ОБЪЕКТ В РАЗРЕЗЕ', title: 'Структура<br><em>становится видимой.</em>', description: 'Этапы, ресурсы, задачи и ответственность соединяются в единую модель строительного объекта.' },
-    { kicker: '03 / ЭКОНОМИКА ОБЪЕКТА', title: 'Каждая цифра<br><em>имеет контекст.</em>', description: 'План, факт, расходы и поступления связаны с реальным ходом проекта.' },
-    { kicker: '04 / ЕДИНЫЙ КОНТУР', title: 'Управление<br><em>без слепых зон.</em>', description: 'Объекты, команда и экономика сходятся в одном пространстве контроля.' }
+    { kicker: '02 / РАБОЧЕЕ ПРОСТРАНСТВО', title: 'Программа<br><em>раскрывается.</em>', description: 'Камера проходит сквозь интерфейс: заявки, объекты, расчёты и финансы выходят в единое рабочее пространство.' },
+    { kicker: '03 / ЭКОНОМИКА ОБЪЕКТА', title: 'Каждый процесс<br><em>связан с цифрами.</em>', description: 'Планирование, ресурсы, поступления и расходы собираются вокруг конкретного объекта.' },
+    { kicker: '04 / ЕДИНЫЙ КОНТУР', title: 'Вся программа.<br><em>Одна система.</em>', description: 'Пять рабочих экранов собираются обратно в единый контур управления строительным бизнесом.' }
   ];
 
   let renderer;
@@ -52,13 +61,16 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.187.0/build/three.m
   backLight.position.set(-5, 2, -7);
   scene.add(backLight);
 
+  // A restrained moving key light gives each chapter its own readable material reveal.
+  const scanLight = new THREE.PointLight(0xd8f5a4, 18, 11, 2);
+  scanLight.position.set(-5.2, 3.8, 3.2);
+  scene.add(scanLight);
+
   const makeMat = (color, metalness = 0.55, roughness = 0.3, opacity = 1, emissive = 0x000000, emissiveIntensity = 0) =>
     new THREE.MeshStandardMaterial({ color, metalness, roughness, transparent: opacity < 1, opacity, emissive, emissiveIntensity, depthWrite: opacity >= 0.98 });
   const mats = {
     steel: makeMat(0x75806e, 0.88, 0.26),
     steelDark: makeMat(0x30392d, 0.92, 0.22),
-    concrete: makeMat(0x62695b, 0.28, 0.78),
-    glass: makeMat(0x9ebc75, 0.42, 0.16, 0.3, 0x5f852d, 0.4),
     lime: makeMat(0xc8f169, 0.62, 0.18, 1, 0x8ebc42, 1.25),
     white: makeMat(0xe5ebdb, 0.38, 0.3, 0.88),
     darkGlass: makeMat(0x1b2817, 0.72, 0.16, 0.94, 0x283d1b, 0.35)
@@ -67,16 +79,6 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.187.0/build/three.m
     const mesh = new THREE.Mesh(new THREE.BoxGeometry(size[0], size[1], size[2]), material);
     mesh.position.set(pos[0], pos[1], pos[2]);
     if (rot) mesh.rotation.set(rot[0], rot[1], rot[2]);
-    parent.add(mesh);
-    return mesh;
-  };
-  const beam = (parent, a, b, radius, material) => {
-    const start = new THREE.Vector3(a[0], a[1], a[2]);
-    const end = new THREE.Vector3(b[0], b[1], b[2]);
-    const delta = new THREE.Vector3().subVectors(end, start);
-    const mesh = new THREE.Mesh(new THREE.CylinderGeometry(radius, radius, delta.length(), 7), material);
-    mesh.position.copy(start).add(end).multiplyScalar(0.5);
-    mesh.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), delta.normalize());
     parent.add(mesh);
     return mesh;
   };
@@ -140,13 +142,12 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.187.0/build/three.m
   };
 
   const input = new THREE.Group();
-  const building = new THREE.Group();
   const finance = new THREE.Group();
   const control = new THREE.Group();
   input.position.set(-5.2, 0.4, 0);
   finance.position.set(5.6, 0, 0);
   control.position.set(0, 0.7, -5.3);
-  scene.add(input, building, finance, control);
+  scene.add(input, finance, control);
 
   // Chapter 01: data fragments become a connected system.
   const inputTitles = [
@@ -171,51 +172,98 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.187.0/build/three.m
   inputRing.rotation.x = Math.PI / 2.5;
   input.add(inputRing);
 
-  // Chapter 02: an architectural digital twin with a tower crane.
-  box(building, [6.4, 0.28, 4.8], [0, -0.16, 0], mats.concrete);
-  const floorY = [-0.02, 1.28, 2.56, 3.84, 5.12];
-  const xs = [-2.75, -0.92, 0.92, 2.75];
-  const zs = [-1.95, 0, 1.95];
-  for (let level = 0; level < 5; level++) {
-    const y = floorY[level];
-    box(building, [6.05, 0.12, 4.45], [0, y, 0], level === 4 ? mats.glass : mats.steelDark);
-    for (const x of xs) for (const z of zs) {
-      box(building, [0.105, 1.28, 0.105], [x, y + 0.64, z], (x === -2.75 && z === -1.95) ? mats.lime : mats.steel);
+  // Chapter 02: five separate CRM workspaces become the central 3D subject.
+  const software = new THREE.Group();
+  scene.add(software);
+  const makeUiTexture = (title, kind = 0) => {
+    const canvas = document.createElement('canvas');
+    canvas.width = 1024; canvas.height = 640;
+    const ctx = canvas.getContext('2d');
+    ctx.fillStyle = '#f5f7f1'; ctx.fillRect(0, 0, 1024, 640);
+    ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, 1024, 52);
+    ctx.fillStyle = '#9bc94b'; ctx.fillRect(22, 15, 22, 22);
+    ctx.fillStyle = '#273021'; ctx.font = '700 18px Arial'; ctx.fillText('СКОЛ', 54, 33);
+    ctx.fillStyle = '#89947e'; ctx.font = '12px Arial'; ctx.fillText('CRM', 113, 33);
+    ctx.fillStyle = '#e6ebdf'; ctx.fillRect(0, 52, 174, 588);
+    ctx.fillStyle = '#5f6b53'; ctx.font = '13px Arial';
+    ['Обзор','Заявки','Объекты','Производство','Финансы','Документы'].forEach((v, i) => {
+      if (i === kind % 6) { ctx.fillStyle = '#e4efcf'; ctx.fillRect(12, 78 + i * 43, 150, 32); ctx.fillStyle = '#5d842c'; }
+      else ctx.fillStyle = '#73806a';
+      ctx.fillText(v, 32, 99 + i * 43);
+    });
+    ctx.fillStyle = '#293222'; ctx.font = '700 32px Arial'; ctx.fillText(title, 210, 112);
+    ctx.fillStyle = '#87917c'; ctx.font = '14px Arial'; ctx.fillText('РАБОЧЕЕ ПРОСТРАНСТВО  /  ЛОКАЛЬНАЯ БАЗА', 210, 143);
+    const cardY = 176, cardW = 180, cardGap = 18;
+    for (let i = 0; i < 4; i++) {
+      const x = 210 + i * (cardW + cardGap);
+      ctx.fillStyle = '#ffffff'; ctx.fillRect(x, cardY, cardW, 105);
+      ctx.strokeStyle = '#e3e9dc'; ctx.strokeRect(x, cardY, cardW, 105);
+      const metricLabels = [
+        ['ПОСТУПЛЕНИЯ','РАСХОДЫ','ОБЪЕКТЫ','ЗАЯВКИ'],
+        ['НОВЫЕ','В РАБОТЕ','НА ЗАМЕРЕ','НА СМЕТЕ'],
+        ['ДОГОВОРЫ','ОТКРЫТЫЕ','ПОЛУЧЕНО','РАСХОДЫ'],
+        ['ОБЪЁМ','СРОК','РЕСУРСЫ','СМЕТА'],
+        ['ПОСТУПЛЕНИЯ','ОПЛАЧЕНО','ОСТАТОК','ОБЯЗАТЕЛЬСТВА']
+      ];
+      ctx.fillStyle = '#8d9882'; ctx.font = '11px Arial'; ctx.fillText(metricLabels[kind][i], x + 14, cardY + 25);
+      ctx.fillStyle = '#303b27'; ctx.font = '700 28px Arial'; ctx.fillText('—', x + 14, cardY + 66);
+      ctx.fillStyle = '#dce6d0'; ctx.fillRect(x + 14, cardY + 82, 82, 4);
     }
-    for (const z of zs) beam(building, [-2.8, y + 1.24, z], [2.8, y + 1.24, z], 0.055, mats.steel);
-    for (const x of xs) beam(building, [x, y + 1.24, -2.0], [x, y + 1.24, 2.0], 0.055, mats.steel);
-  }
-  // Glass curtain wall is isolated so it can unfold as its own cinematic beat.
-  const facade = new THREE.Group();
-  building.add(facade);
-  const facadePanels = [];
-  for (let level = 0; level < 4; level++) {
-    const y = 0.65 + level * 1.28;
-    for (let i = 0; i < 12; i++) {
-      const panel = box(facade, [0.39, 0.94, 0.025], [-2.55 + i * 0.465, y, 2.225], mats.glass);
-      panel.userData.baseX = panel.position.x;
-      facadePanels.push(panel);
+    ctx.fillStyle = '#ffffff'; ctx.fillRect(210, 305, 790, 290);
+    ctx.strokeStyle = '#e3e9dc'; ctx.strokeRect(210, 305, 790, 290);
+    const workspaceTitles = ['СВОДКА БИЗНЕСА','ВОРОНКА ЗАЯВОК','КАРТОЧКИ ОБЪЕКТОВ','ПЛАН РЕСУРСОВ И СМЕТА','ДВИЖЕНИЕ ДЕНЕГ'];
+    const workspaceRows = [
+      ['Активные заявки','Активные объекты','Поступления и расходы','Задачи на контроле','Последние изменения'],
+      ['Новый запрос','Контакт и источник','Замер и уточнение','Подготовка сметы','Следующее действие'],
+      ['Карточка объекта','Договор и этапы','Ответственные','Документы','История изменений'],
+      ['Объём и сложность','Состав бригады','Материалы и техника','Плановая стоимость','Срок выполнения'],
+      ['Поступления','Оплаченные расходы','Денежный остаток','Обязательства','Сверка по объектам']
+    ];
+    ctx.fillStyle = '#4a5740'; ctx.font = '700 16px Arial'; ctx.fillText(workspaceTitles[kind], 234, 340);
+    for (let i = 0; i < 5; i++) {
+      const y = 376 + i * 39;
+      ctx.fillStyle = '#f4f7ef'; ctx.fillRect(232, y, 744, 27);
+      ctx.fillStyle = '#8b9680'; ctx.font = '12px Arial';
+      ctx.fillText(workspaceRows[kind][i], 250, y + 18);
+      ctx.fillStyle = '#dce6d0'; ctx.fillRect(850, y + 9, 86, 4);
     }
-    for (let i = 0; i < 8; i++) {
-      const panel = box(facade, [0.025, 0.94, 0.43], [3.04, y, -1.75 + i * 0.5], mats.glass);
-      panel.userData.baseZ = panel.position.z;
-      facadePanels.push(panel);
-    }
+    const texture = new THREE.CanvasTexture(canvas);
+    texture.colorSpace = THREE.SRGBColorSpace;
+    texture.anisotropy = renderer.capabilities.getMaxAnisotropy();
+    return texture;
+  };
+  const screenSpecs = [
+    { title: 'Обзор бизнеса', kind: 0, size: [5.8, 3.62], pos: [0, 1.75, 0], rot: [0, 0, 0] },
+    { title: 'Заявки и клиенты', kind: 1, size: [2.55, 1.6], pos: [-4.15, 1.25, -0.5], rot: [0.02, 0.52, 0.02] },
+    { title: 'Объекты', kind: 2, size: [2.55, 1.6], pos: [4.15, 1.35, -0.35], rot: [-0.02, -0.52, -0.02] },
+    { title: 'ПИ · Расчёт', kind: 3, size: [2.45, 1.54], pos: [-2.9, -1.15, -0.9], rot: [-0.12, 0.28, 0.04] },
+    { title: 'Финансы', kind: 4, size: [2.45, 1.54], pos: [2.9, -1.1, -0.85], rot: [-0.12, -0.28, -0.04] }
+  ];
+  const softwareScreens = screenSpecs.map((spec, index) => {
+    const rig = new THREE.Group();
+    rig.position.set(...spec.pos);
+    rig.rotation.set(...spec.rot);
+    const w = spec.size[0], h = spec.size[1];
+    const housing = new THREE.Mesh(new THREE.BoxGeometry(w + 0.12, h + 0.12, 0.12), mats.steelDark);
+    housing.position.z = -0.045;
+    rig.add(housing);
+    const screen = new THREE.Mesh(new THREE.PlaneGeometry(w, h), new THREE.MeshBasicMaterial({ map: makeUiTexture(spec.title, spec.kind), toneMapped: false, side: THREE.DoubleSide }));
+    screen.position.z = 0.025;
+    rig.add(screen);
+    const rim = new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(w + 0.15, h + 0.15, 0.14)), new THREE.LineBasicMaterial({ color: 0xc8f169, transparent: true, opacity: index === 0 ? 0.88 : 0.42 }));
+    rig.add(rim);
+    const anchor = new THREE.Mesh(new THREE.SphereGeometry(index === 0 ? 0.055 : 0.035, 12, 12), mats.lime);
+    anchor.position.set(-w / 2 + 0.12, h / 2 - 0.12, 0.11);
+    rig.add(anchor);
+    software.add(rig);
+    return { rig, base: new THREE.Vector3(...spec.pos), rotation: new THREE.Euler(...spec.rot), phase: index * 0.7 };
+  });
+  // Thin luminous links make the five product surfaces read as one connected workspace.
+  for (let i = 1; i < softwareScreens.length; i++) {
+    const a = softwareScreens[0].base, b = softwareScreens[i].base;
+    line(software, [[a.x, a.y, -0.12], [(a.x + b.x) * 0.5, (a.y + b.y) * 0.5, -0.2], [b.x, b.y, -0.12]], 0xc8f169, 0.34);
   }
-  box(building, [0.82, 5.1, 0.82], [0.1, 2.48, -0.25], mats.concrete);
-  for (let level = 0; level < 4; level++) box(building, [1.1, 0.035, 1.1], [0.1, 0.7 + level * 1.28, -0.25], mats.lime);
-  const craneX = -4.05;
-  for (let y = 0.1; y < 8; y += 0.55) {
-    beam(building, [craneX, y, -0.2], [craneX, y + 0.55, -0.2], 0.035, mats.lime);
-    beam(building, [craneX + 0.5, y, -0.2], [craneX + 0.5, y + 0.55, -0.2], 0.035, mats.steel);
-    beam(building, [craneX, y, -0.2], [craneX + 0.5, y + 0.55, -0.2], 0.022, mats.steel);
-    beam(building, [craneX + 0.5, y, -0.2], [craneX, y + 0.55, -0.2], 0.022, mats.steel);
-  }
-  beam(building, [craneX + 0.25, 8, -0.2], [craneX + 5.2, 8, -0.2], 0.065, mats.steel);
-  beam(building, [craneX + 0.25, 8, -0.2], [craneX - 2.1, 8, -0.2], 0.07, mats.steelDark);
-  beam(building, [craneX + 4.4, 8, -0.2], [craneX + 4.4, 5.6, -0.2], 0.018, mats.lime);
-  box(building, [0.72, 0.55, 0.62], [craneX + 4.4, 5.25, -0.2], mats.lime);
-  tube(building, [[-3.1, 0.05, 2.55], [-2.2, 1.2, 2.55], [-0.4, 2.2, 2.55], [1.5, 3.4, 2.55], [3.1, 5.1, 2.55]], 0.018, mats.lime);
+
 
   // Chapter 03: finance as a physical measuring instrument.
   box(finance, [6.7, 0.12, 4.4], [0, -1.45, 0], mats.steelDark);
@@ -291,21 +339,32 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.187.0/build/three.m
     transferNodes.push(node);
   }
 
-  // Atmospheric particles and an architectural floor grid.
-  // Scroll-morphed particles: incoming data -> building structure -> project economics -> control core.
+  // Atmospheric particles morph from incoming data into CRM workspaces, project economics and the control core.
   const particleCount = mobile ? 420 : 900;
   const particleTargets = Array.from({ length: 4 }, () => new Float32Array(particleCount * 3));
   const financeHeights = [0.9, 1.3, 1.05, 1.8, 1.55, 2.3, 1.95, 2.75, 2.45, 3.2, 2.9, 3.65];
+  const screens = [
+    { x: 0, y: 1.75, z: 0, width: 5.8, height: 3.62, yaw: 0 },
+    { x: -4.15, y: 1.25, z: -0.5, width: 2.55, height: 1.6, yaw: 0.52 },
+    { x: 4.15, y: 1.35, z: -0.35, width: 2.55, height: 1.6, yaw: -0.52 },
+    { x: -2.9, y: -1.15, z: -0.9, width: 2.45, height: 1.54, yaw: 0.28 },
+    { x: 2.9, y: -1.1, z: -0.85, width: 2.45, height: 1.54, yaw: -0.28 }
+  ];
   for (let i = 0; i < particleCount; i++) {
     const angle = i * 2.399963;
     const radius = 0.8 + ((i * 37) % 100) / 100 * 2.2;
     particleTargets[0][i * 3] = -5.2 + Math.cos(angle) * radius;
     particleTargets[0][i * 3 + 1] = 0.4 + Math.sin(angle * 1.7) * 1.25;
     particleTargets[0][i * 3 + 2] = Math.sin(angle) * radius * 0.72;
-    const face = i % 4, u = ((i * 17) % 101) / 100, v = ((i * 29) % 101) / 100;
-    particleTargets[1][i * 3] = face < 2 ? (face === 0 ? -3.05 : 3.05) : -3.05 + u * 6.1;
-    particleTargets[1][i * 3 + 1] = -0.05 + v * 5.25;
-    particleTargets[1][i * 3 + 2] = face < 2 ? -2.15 + u * 4.3 : (face === 2 ? -2.15 : 2.15);
+    const panel = screens[i % screens.length];
+    const sample = Math.floor(i / screens.length);
+    const u = ((sample * 37) % 97) / 96 - 0.5;
+    const v = ((sample * 61) % 89) / 88 - 0.5;
+    const localX = u * panel.width;
+    const localY = v * panel.height;
+    particleTargets[1][i * 3] = panel.x + localX * Math.cos(panel.yaw);
+    particleTargets[1][i * 3 + 1] = panel.y + localY;
+    particleTargets[1][i * 3 + 2] = panel.z - localX * Math.sin(panel.yaw) + ((sample % 5) - 2) * 0.012;
     const bar = i % financeHeights.length, level = (Math.floor(i / financeHeights.length) % 60) / 59;
     particleTargets[2][i * 3] = 5.6 - 2.75 + bar * 0.5;
     particleTargets[2][i * 3 + 1] = -1.38 + level * financeHeights[bar];
@@ -329,7 +388,7 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.187.0/build/three.m
   floor.material.opacity = 0.19;
   scene.add(floor);
 
-  const groups = [input, building, finance, control];
+  const groups = [input, finance, control, software];
   groups.forEach(group => group.traverse(obj => {
     if (!obj.material) return;
     obj.material = Array.isArray(obj.material) ? obj.material.map(material => material.clone()) : obj.material.clone();
@@ -348,27 +407,29 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.187.0/build/three.m
     material.depthWrite = opacity > 0.92 && base > 0.95;
   });
 
-  // Seven camera beats: establish the data field, inspect the structure, skim the facade,
-  // move through the financial instrument, orbit the control core, then pull back to the whole system.
-  // Eight deliberate shots: establish -> data push-in -> architectural reveal -> facade skim
-  // -> finance close-up -> orbit the core -> release into a wide master shot.
+  // Nine deliberate shots: establish the data field, enter the overview, inspect leads and objects,
+  // skim the PI calculator and finance surfaces, then orbit the control core before the final master shot.
   const cameraPath = new THREE.CatmullRomCurve3([
     new THREE.Vector3(-8.2, 2.7, 8.2),
     new THREE.Vector3(-4.9, 1.75, 4.25),
-    new THREE.Vector3(-1.9, 3.2, 6.1),
-    new THREE.Vector3(3.55, 3.55, 3.65),
-    new THREE.Vector3(8.1, 2.35, 4.5),
+    new THREE.Vector3(0, 2.4, 8.4),
+    new THREE.Vector3(-4.25, 1.85, 4.2),
+    new THREE.Vector3(4.25, 1.95, 4.2),
+    new THREE.Vector3(-2.95, -0.05, 3.4),
+    new THREE.Vector3(2.95, 0.05, 3.3),
+    new THREE.Vector3(5.8, 2.1, 5.0),
     new THREE.Vector3(4.0, 1.55, -3.2),
-    new THREE.Vector3(-3.7, 1.95, -2.5),
     new THREE.Vector3(0.4, 3.0, 14.2)
   ], false, 'centripetal', 0.42);
   const targetPath = new THREE.CatmullRomCurve3([
     new THREE.Vector3(-5.2, 0.3, 0),
     new THREE.Vector3(-5.2, 0.5, 0),
-    new THREE.Vector3(0, 2.1, 0),
-    new THREE.Vector3(1.3, 3.0, 2.0),
+    new THREE.Vector3(0, 1.75, 0),
+    new THREE.Vector3(-4.15, 1.25, -0.5),
+    new THREE.Vector3(4.15, 1.35, -0.35),
+    new THREE.Vector3(-2.9, -1.15, -0.9),
+    new THREE.Vector3(2.9, -1.1, -0.85),
     new THREE.Vector3(5.6, 0.9, 0),
-    new THREE.Vector3(5.6, 0.65, 0),
     new THREE.Vector3(0, 0.7, -5.3),
     new THREE.Vector3(0, 0.5, 0)
   ], false, 'centripetal', 0.42);
@@ -392,22 +453,40 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.187.0/build/three.m
   const shotTrack = [
     [0, 42, -0.004, 0, 0, 0, 0, 0, 0],
     [0.12, 27, 0.012, 0.12, -0.08, -0.12, 0.12, 0.04, 0],
-    [0.29, 36, -0.008, -0.08, 0.1, 0.18, 0, 0.12, 0],
-    [0.43, 25, 0.014, 0.1, -0.06, -0.16, 0.1, 0.08, 0.08],
-    [0.58, 31, -0.012, -0.12, 0.04, 0.12, 0.08, 0, 0],
+    [0.27, 33, -0.008, -0.08, 0.1, 0.18, 0, 0.12, 0],
+    [0.36, 24, 0.014, 0.1, -0.06, -0.16, 0.1, 0.08, 0.08],
+    [0.44, 27, -0.009, -0.06, 0.06, 0.12, 0.06, 0.04, 0],
+    [0.52, 24, 0.012, 0.08, -0.04, -0.1, 0.04, 0.02, 0],
+    [0.6, 29, -0.01, -0.1, 0.04, 0.12, 0.08, 0, 0],
     [0.73, 24, 0.01, 0.08, -0.04, -0.1, 0, 0.04, 0],
     [0.88, 34, -0.006, -0.06, 0.08, 0.16, 0, 0.12, 0],
     [1, 43, 0, 0, 0, 0, 0, 0, 0]
   ];
   const visibility = [
     [[0, 1], [0.12, 1], [0.28, 0.04], [1, 0]],
-    [[0, 0.04], [0.18, 0.4], [0.3, 1], [0.47, 0.5], [0.72, 0.1], [1, 0.24]],
     [[0, 0], [0.36, 0.03], [0.48, 1], [0.63, 0.42], [1, 0.08]],
-    [[0, 0], [0.58, 0.03], [0.72, 1], [0.88, 0.82], [1, 0.72]]
+    [[0, 0], [0.58, 0.03], [0.72, 1], [0.88, 0.82], [1, 0.72]],
+    [[0, 0], [0.18, 0], [0.25, 0.35], [0.33, 1], [0.67, 1], [0.8, 0.72], [0.9, 0.18], [1, 0]]
+  ];
+
+  // Scroll-keyed light positions travel with the visual focus: data -> structure -> finance -> control.
+  const lightTrack = [
+    [0, -5.2, 3.8, 3.2, 18],
+    [0.29, -1.2, 6.2, 2.4, 25],
+    [0.52, 5.2, 4.1, 2.8, 22],
+    [0.76, 0.4, 4.8, -3.6, 28],
+    [1, 0, 3.2, 2.6, 16]
   ];
 
   const state = { progress: 0 };
-  let active = false, raf = 0, pointerX = 0, pointerY = 0, lastChapter = -1;
+  let active = false, pageVisible = !document.hidden, contextLost = false;
+  let raf = 0, pointerX = 0, pointerY = 0, targetPointerX = 0, targetPointerY = 0, lastFrameTime = 0, lastChapter = -1;
+  const canAnimate = () => active && pageVisible && !contextLost && !reduced;
+  const stopAnimation = () => {
+    if (raf) cancelAnimationFrame(raf);
+    raf = 0;
+    lastFrameTime = 0;
+  };
   const updateCopy = () => {
     const chapter = Math.min(3, Math.floor(state.progress * 4));
     if (chapter === lastChapter) return;
@@ -423,7 +502,7 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.187.0/build/three.m
     }
   };
   const render = () => {
-    if (!active) return;
+    if (!active || !pageVisible || contextLost) return;
     const p = state.progress;
     const pos = cameraPath.getPointAt(p);
     const target = targetPath.getPointAt(p);
@@ -433,29 +512,46 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.187.0/build/three.m
       pos.y + shot(4) - pointerY * (mobile ? 0.025 : 0.075),
       pos.z + shot(5)
     );
-    camera.lookAt(target.x + shot(6), target.y + shot(7), target.z + shot(8));
+    // Pointer parallax shifts the focal plane as well as the camera, creating readable depth.
+    camera.lookAt(
+      target.x + shot(6) + pointerX * (mobile ? 0.018 : 0.065),
+      target.y + shot(7) - pointerY * (mobile ? 0.012 : 0.04),
+      target.z + shot(8)
+    );
+    // Chapter-specific atmospheric depth keeps close-ups tactile and the final master shot legible.
+    scene.fog.density = mix(0.026, 0.017, smooth((p - 0.18) / 0.72));
     // Shot roll and focal length are absolute scroll-driven values, never accumulated frame-to-frame.
     camera.rotation.z = shot(2);
-    const nextFov = shot(1);
-    if (Math.abs(camera.fov - nextFov) > 0.015) {
-      camera.fov = nextFov;
+    // Mobile needs a wider field of view so the five-panel composition stays inside the frame.
+    const nextFov = shot(1) + (mobile ? 9 : 0);
+    // A restrained lens breath adds scale to the transition without changing the authored shot track.
+    const lensBreath = Math.sin(p * Math.PI * 8) * 0.32;
+    const resolvedFov = nextFov + lensBreath;
+    if (Math.abs(camera.fov - resolvedFov) > 0.015) {
+      camera.fov = resolvedFov;
       camera.updateProjectionMatrix();
     }
     groups.forEach((group, i) => setGroupOpacity(i, opacityAt(p, visibility[i])));
     input.rotation.y = -p * 1.5;
     input.rotation.z = Math.sin(p * Math.PI) * 0.08;
     input.scale.setScalar(mix(1, 0.82, smooth(p)));
-    building.rotation.y = mix(-0.12, 0.1, p);
-    building.position.y = Math.sin(p * Math.PI) * 0.12;
-    // Structural frame rises from its foundation, then the facade unfolds from the center line.
-    const frameBuild = smooth((p - 0.16) / 0.19);
-    building.scale.y = mix(0.055, 1, frameBuild);
-    const facadeOpen = smooth((p - 0.31) / 0.14);
-    facade.scale.set(0.06 + facadeOpen * 0.94, 1, 0.08 + facadeOpen * 0.92);
-    facadePanels.forEach(panel => {
-      if (panel.userData.baseX !== undefined) panel.position.x = panel.userData.baseX * (0.08 + facadeOpen * 0.92);
-      if (panel.userData.baseZ !== undefined) panel.position.z = panel.userData.baseZ * (0.08 + facadeOpen * 0.92);
+    // The CRM UI unfolds from one compact product surface into five orbiting workspaces.
+    const uiReveal = smooth((p - 0.19) / 0.16);
+    const uiOrbit = smooth((p - 0.34) / 0.28);
+    const uiGather = smooth((p - 0.78) / 0.2);
+    software.rotation.y = -0.12 + uiOrbit * 0.16 - uiGather * 0.12;
+    software.rotation.x = Math.sin(p * Math.PI) * 0.018;
+    software.position.y = Math.sin(p * Math.PI * 1.2) * 0.12;
+    softwareScreens.forEach(({ rig, base, rotation, phase }, index) => {
+      const spread = index === 0 ? 1 : 0.28 + uiReveal * 0.72;
+      const gather = 1 - uiGather * 0.48;
+      rig.position.set(base.x * spread * gather, base.y * spread + Math.sin(p * Math.PI * 2 + phase) * 0.045, base.z * (0.55 + uiReveal * 0.45));
+      rig.rotation.set(rotation.x + Math.sin(p * Math.PI + phase) * 0.018, rotation.y + (index - 2) * uiOrbit * 0.045, rotation.z);
+      const scale = index === 0 ? 0.76 + uiReveal * 0.24 : 0.78 + uiReveal * 0.22;
+      rig.scale.setScalar(scale * (1 - uiGather * 0.08));
     });
+
+    // The five UI surfaces open in sequence while camera focus travels from overview to detail.
     finance.rotation.y = -0.12 + p * 0.28;
     // Finance columns rise from a common baseline, revealing the measuring instrument.
     const financeBuild = smooth((p - 0.445) / 0.13);
@@ -494,10 +590,13 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.187.0/build/three.m
     particleField.rotation.x = Math.sin(p * Math.PI) * 0.012;
     limeLight.intensity = 26 + Math.sin(p * Math.PI * 4) * 8;
     limeLight.position.x = mix(-5, 5, p);
+    scanLight.position.set(sampleTrack(p, lightTrack, 1), sampleTrack(p, lightTrack, 2), sampleTrack(p, lightTrack, 3));
+    scanLight.intensity = sampleTrack(p, lightTrack, 4) * (0.94 + Math.sin(p * Math.PI * 6) * 0.06);
     if (copy.progress) copy.progress.style.transform = 'scaleX(' + p + ')';
     renderer.render(scene, camera);
   };
   const resize = () => {
+    if (contextLost) return;
     const width = Math.max(1, root.clientWidth);
     const height = Math.max(1, window.innerHeight);
     camera.aspect = width / height;
@@ -509,19 +608,26 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.187.0/build/three.m
   root.addEventListener('pointermove', event => {
     if (reduced || mobile) return;
     const rect = root.getBoundingClientRect();
-    pointerX = ((event.clientX - rect.left) / rect.width - 0.5) * 2;
-    pointerY = ((event.clientY - rect.top) / rect.height - 0.5) * 2;
+    targetPointerX = ((event.clientX - rect.left) / rect.width - 0.5) * 2;
+    targetPointerY = ((event.clientY - rect.top) / rect.height - 0.5) * 2;
   }, { passive: true });
-  root.addEventListener('pointerleave', () => { pointerX = 0; pointerY = 0; });
+  root.addEventListener('pointerleave', () => { targetPointerX = 0; targetPointerY = 0; });
   const animate = () => {
-    if (!active || reduced) return;
+    if (!canAnimate()) { stopAnimation(); return; }
     raf = requestAnimationFrame(animate);
-    const time = performance.now() * 0.00045;
+    const now = performance.now();
+    const delta = lastFrameTime ? Math.min((now - lastFrameTime) / 1000, 0.05) : 1 / 60;
+    lastFrameTime = now;
+    const pointerEase = 1 - Math.exp(-delta * 5.5);
+    pointerX += (targetPointerX - pointerX) * pointerEase;
+    pointerY += (targetPointerY - pointerY) * pointerEase;
+    const frameScale = delta * 60;
+    const time = now * 0.00045;
     input.children.forEach(child => {
       if (child.userData.phase !== undefined) child.position.y = child.userData.baseY + Math.sin(time * 3 + child.userData.phase) * 0.075;
     });
     control.children.forEach((child, i) => {
-      if (child.geometry && child.geometry.type === 'TorusGeometry') child.rotation.z += (i % 2 ? -1 : 1) * 0.00045;
+      if (child.geometry && child.geometry.type === 'TorusGeometry') child.rotation.z += (i % 2 ? -1 : 1) * 0.00045 * frameScale;
     });
     render();
   };
@@ -541,18 +647,42 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.187.0/build/three.m
       render();
     }, { passive: true });
   }
-  const observer = new IntersectionObserver(entries => {
-    active = entries.some(entry => entry.isIntersecting);
-    if (active && !reduced && !raf) animate();
-    if (!active && raf) { cancelAnimationFrame(raf); raf = 0; }
-    if (active && reduced) render();
-  }, { threshold: 0.01 });
-  observer.observe(root);
+  if ('IntersectionObserver' in window) {
+    const observer = new IntersectionObserver(entries => {
+      active = entries.some(entry => entry.isIntersecting);
+      if (canAnimate() && !raf) animate();
+      if (!active) stopAnimation();
+      if (active && reduced) render();
+    }, { threshold: 0.01 });
+    observer.observe(root);
+  } else {
+    active = true;
+  }
+  document.addEventListener('visibilitychange', () => {
+    pageVisible = !document.hidden;
+    if (canAnimate() && !raf) animate();
+    else if (!pageVisible) stopAnimation();
+    if (pageVisible && active) render();
+  });
+  canvas.addEventListener('webglcontextlost', event => {
+    event.preventDefault();
+    contextLost = true;
+    stopAnimation();
+    root.classList.add('motion-fallback');
+  });
+  canvas.addEventListener('webglcontextrestored', () => {
+    contextLost = false;
+    root.classList.remove('motion-fallback');
+    resize();
+    render();
+    if (canAnimate() && !raf) animate();
+  });
   window.addEventListener('resize', resize, { passive: true });
   if (reduced) { root.classList.add('motion-reduced'); state.progress = 0.31; }
   updateCopy();
   resize();
   active = true;
   render();
-  if (!reduced) animate();
+  if (canAnimate()) animate();
+  })();
 })();

@@ -8,6 +8,8 @@ const motion = fs.readFileSync('motion-scene.mjs', 'utf8');
 const css = fs.readFileSync('styles.css', 'utf8');
 const showcaseJs = fs.readFileSync('product-showcase.js', 'utf8');
 const showcaseCss = fs.readFileSync('product-showcase.css', 'utf8');
+const cinemaJs = fs.readFileSync('cinematic-sequence.js', 'utf8');
+const cinemaCss = fs.readFileSync('cinematic-sequence.css', 'utf8');
 
 test('HTML includes all main navigation targets and the WebGL experience', () => {
   for (const id of ['top', 'experience', 'system', 'control', 'workflow', 'contact']) {
@@ -41,19 +43,23 @@ test('3D information cards keep their frame attached during motion', () => {
   assert.ok(motion.includes('return rig'));
 });
 
-test('scene includes a detailed architectural construction model', () => {
-  assert.ok(motion.includes('tower crane'));
-  assert.ok(motion.includes('Glass curtain wall'));
-  assert.ok(motion.includes('level < 5'));
+test('3D scene allocates product and workflow geometry without unused architecture', () => {
+  assert.ok(motion.includes('const software = new THREE.Group()'));
+  assert.ok(motion.includes('const input = new THREE.Group()'));
+  assert.ok(motion.includes('const finance = new THREE.Group()'));
+  assert.ok(!motion.includes('const building = new THREE.Group()'));
+  assert.ok(!motion.includes('tower crane'));
+  assert.ok(!motion.includes('facadePanels'));
 });
 
 test('mobile menu exposes an initial accessible state', () => {
   assert.ok(html.includes('aria-expanded="false"'));
 });
 
-test('no invented contact address remains in the page', () => {
+test('no invented contact address or unavailable CTA remains in the page', () => {
   assert.ok(!html.includes('hello@skolcrm.ru'));
-  assert.ok(html.includes('Контакты для демонстрации уточняются'));
+  assert.ok(!html.includes('Контакты для демонстрации уточняются'));
+  assert.ok(html.includes('<a class="closing-cta" href="#crm-tour">Посмотреть программу'));
 });
 
 test('motion has a reduced-motion and WebGL fallback', () => {
@@ -111,7 +117,8 @@ test('marketing visuals do not imply fabricated object IDs, margin values or liv
 
 test('cinematic camera uses distinct close-up and wide master-shot lenses', () => {
   assert.ok(motion.includes('[0.12, 27'));
-  assert.ok(motion.includes('[0.43, 25'));
+  assert.ok(motion.includes('[0.36, 24'));
+  assert.ok(motion.includes('[0.52, 24'));
   assert.ok(motion.includes('[0.73, 24'));
   assert.ok(motion.includes('[1, 43'));
   assert.ok(motion.includes('sampleTrack(p, shotTrack, column)'));
@@ -122,11 +129,12 @@ test('camera framing includes restrained pointer parallax and no cumulative tran
   assert.ok(!motion.includes('camera.rotation.z +='));
 });
 
-test('architectural frame and glass facade unfold in separate scroll beats', () => {
-  assert.ok(motion.includes('const frameBuild = smooth((p - 0.16) / 0.19)'));
-  assert.ok(motion.includes('const facadeOpen = smooth((p - 0.31) / 0.14)'));
-  assert.ok(motion.includes('facadePanels.forEach'));
-  assert.ok(motion.includes('building.scale.y = mix(0.055, 1, frameBuild)'));
+test('CRM workspace particles morph into five distinct screen surfaces', () => {
+  assert.ok(motion.includes('const screens = ['));
+  assert.ok(motion.includes('const panel = screens[i % screens.length]'));
+  assert.ok(motion.includes('particleTargets[1][i * 3 + 1] = panel.y + localY'));
+  assert.ok(motion.includes('const uiReveal = smooth((p - 0.19) / 0.16)'));
+  assert.ok(!motion.includes('frameBuild'));
 });
 test('finance columns rise and transfer paths progressively connect to the control core', () => {
   assert.ok(motion.includes('const financeBuild = smooth((p - 0.445) / 0.13)'));
@@ -154,4 +162,249 @@ test('global cinematic interaction layer is pointer-safe and reduced-motion awar
   assert.ok(css.includes('@keyframes finance-sweep'));
   assert.ok(css.includes('@keyframes closing-aura'));
   assert.ok(css.includes('@media(prefers-reduced-motion:reduce){.pointer-aura'));
+});
+
+
+test('WebGL animation pauses when the tab is hidden and recovers after context restoration', () => {
+  assert.ok(motion.includes("document.addEventListener('visibilitychange'"));
+  assert.ok(motion.includes("canvas.addEventListener('webglcontextlost'"));
+  assert.ok(motion.includes("canvas.addEventListener('webglcontextrestored'"));
+  assert.ok(motion.includes('const canAnimate = () => active && pageVisible && !contextLost && !reduced'));
+});
+
+
+test('camera pointer response is damped and frame-rate independent', () => {
+  assert.ok(motion.includes('targetPointerX'));
+  assert.ok(motion.includes('const pointerEase = 1 - Math.exp(-delta * 5.5)'));
+  assert.ok(motion.includes('const frameScale = delta * 60'));
+  assert.ok(motion.includes('0.00045 * frameScale'));
+});
+
+test('cinematic key light follows the four chapter focus points without frame accumulation', () => {
+  assert.ok(motion.includes('const scanLight = new THREE.PointLight'));
+  assert.ok(motion.includes('const lightTrack = ['));
+  assert.ok(motion.includes('scanLight.position.set(sampleTrack(p, lightTrack, 1)'));
+  assert.ok(motion.includes('scanLight.intensity = sampleTrack(p, lightTrack, 4)'));
+});
+
+test('cinematic depth uses restrained focal-plane parallax, atmospheric falloff and bounded lens breathing', () => {
+  assert.ok(motion.includes('target.x + shot(6) + pointerX *'));
+  assert.ok(motion.includes('target.y + shot(7) - pointerY *'));
+  assert.ok(motion.includes('scene.fog.density = mix(0.026, 0.017'));
+  assert.ok(motion.includes('const lensBreath = Math.sin(p * Math.PI * 8) * 0.32'));
+  assert.ok(motion.includes('const resolvedFov = nextFov + lensBreath'));
+});
+
+test('all editorial sections share the cinematic graphite, lime and glass visual system', () => {
+  for (const token of [
+    'Unified cinematic design language',
+    '.manifesto,.modules,.feature-light',
+    '.manifesto-aside{',
+    '.module-card{',
+    '.workflow-step{',
+    'backdrop-filter:blur(16px)',
+    'prefers-reduced-motion:reduce'
+  ]) assert.ok(css.includes(token), 'missing design-system rule: ' + token);
+  assert.ok(css.includes('footer{'));
+  assert.ok(css.includes('background:#090d09'));
+  assert.ok(css.includes('.closing{'));
+});
+
+
+test('interactive cards clamp pointer coordinates and reset safely on pointer cancellation', () => {
+  assert.ok(js.includes('Math.max(0, Math.min(1, (event.clientX - rect.left) / rect.width))'));
+  assert.ok(js.includes('Math.max(0, Math.min(1, (event.clientY - rect.top) / rect.height))'));
+  assert.ok(js.includes("card.addEventListener('pointercancel', resetTilt)"));
+  assert.ok(js.includes('if (!rect.width || !rect.height) return'));
+});
+
+test('workflow cards participate in the same accessible pointer-tilt system', () => {
+  for (const step of ['01','02','03','04']) assert.ok(html.includes('workflow-step reveal" data-tilt><b>'+step+'</b>'));
+  assert.ok(css.includes('.workflow-step.reveal.is-visible{transform:perspective(900px)'));
+  assert.ok(css.includes('.workflow-step:before'));
+  assert.ok(css.includes('@media(prefers-reduced-motion:reduce)'));
+});
+
+test('CRM product tour presents five distinct screens matching the supplied desktop workflow', () => {
+  for (const label of ['Обзор бизнеса', 'Заявки и клиенты', 'Объекты', 'ПИ · расчёт объекта', 'Радар заказов']) assert.ok(html.includes(label), 'missing CRM tour stage: ' + label);
+  for (let i = 0; i < 5; i++) {
+    assert.ok(html.includes('data-crm-step="' + i + '"'));
+    assert.ok(html.includes('data-crm-view="' + i + '"'));
+  }
+  assert.ok(html.includes('Центр привлечения заказов'));
+  assert.ok(html.includes('ЕИС / закупки'));
+  assert.ok(html.includes('crm-app-dock'));
+});
+test('CRM tour is a scroll-driven pinned experience with accessible manual navigation', () => {
+  const tourJs = fs.readFileSync('crm-product-tour.js', 'utf8');
+  const tourCss = fs.readFileSync('crm-product-tour.css', 'utf8');
+  assert.doesNotThrow(() => new vm.Script(tourJs));
+  assert.ok(tourJs.includes('requestAnimationFrame'));
+  assert.ok(tourJs.includes('window.scrollTo'));
+  assert.ok(tourJs.includes('aria-current'));
+  assert.ok(tourCss.includes('position:sticky'));
+  assert.ok(tourCss.includes('prefers-reduced-motion:reduce'));
+});
+test('CRM tour does not invent customer data or claim a live database connection', () => {
+  for (const forbidden of ['ООО Ромашка', 'БЦ Север', '₽ 684 200', '100 000 000']) assert.ok(!html.includes(forbidden));
+  assert.ok(html.includes('Показатели не заполнены демонстрационными цифрами'));
+  assert.ok(html.includes('локальной базы'));
+});
+
+test('CRM tour keeps the floating dock selection synchronized with the active product screen', () => {
+  const tourJs = fs.readFileSync('crm-product-tour.js', 'utf8');
+  assert.ok(tourJs.includes('dockIndexByStep'));
+  assert.ok(tourJs.includes("item.classList.toggle('is-active'"));
+  assert.ok(fs.readFileSync('crm-product-tour.css', 'utf8').includes('padding:clamp(82px,9vh,112px)'));
+});
+
+test('3D product chapter stages five floating CRM workspaces instead of relying only on an architectural building', () => {
+  for (const label of ['Обзор бизнеса', 'Заявки и клиенты', 'Объекты', 'ПИ · Расчёт', 'Финансы']) assert.ok(motion.includes("title: '" + label + "'"), 'missing floating CRM screen: ' + label);
+  assert.ok(motion.includes('const software = new THREE.Group()'));
+  assert.ok(motion.includes('new THREE.PlaneGeometry(w, h)'));
+  assert.ok(motion.includes('makeUiTexture'));
+  assert.ok(motion.includes('softwareScreens.forEach'));
+  assert.ok(motion.includes('const uiReveal = smooth((p - 0.19) / 0.16)'));
+  assert.ok(motion.includes('const uiGather = smooth((p - 0.78) / 0.2)'));
+  assert.ok(motion.includes('Thin luminous links make the five product surfaces read as one connected workspace'));
+});
+test('floating CRM screens use truthful blank values and a readable product UI texture', () => {
+  assert.ok(motion.includes("ctx.fillText('—'"));
+  assert.ok(motion.includes("ctx.fillText('СКОЛ'"));
+  assert.ok(motion.includes("ctx.fillText('CRM'"));
+  assert.ok(!motion.includes('₽ 684 200'));
+});
+
+
+test('floating CRM presentation is independent from the collapsing architectural model', () => {
+  assert.ok(motion.includes('const software = new THREE.Group();\n  scene.add(software);'));
+  assert.ok(!motion.includes('building.add(software)'));
+  assert.ok(motion.includes('const groups = [input, finance, control, software]'));
+  assert.ok(motion.includes('[[0, 0], [0.18, 0], [0.25, 0.35], [0.33, 1], [0.67, 1], [0.8, 0.72], [0.9, 0.18], [1, 0]]'));
+});
+
+test('five 3D CRM screens use workflow-specific labels without invented KPI values', () => {
+  assert.ok(motion.includes('const metricLabels = ['));
+  assert.ok(motion.includes('const workspaceTitles ='));
+  assert.ok(motion.includes('const workspaceRows = ['));
+  assert.ok(motion.includes("ctx.fillText('—'"));
+  assert.ok(!motion.includes('₽ 684 200'));
+});
+
+test('CRM tour keeps inactive screens out of the keyboard focus order', () => {
+  const tourJs = fs.readFileSync('crm-product-tour.js', 'utf8');
+  assert.ok(tourJs.includes('view.inert = !selected'));
+  assert.ok(tourJs.includes('const goTo = index =>'));
+  assert.ok(tourJs.includes("event.key === 'ArrowDown'"));
+  assert.ok(tourJs.includes("prefers-reduced-motion: reduce"));
+  assert.ok(!tourJs.includes('scrollMode'));
+});
+
+test('mobile navigation closes accessibly and restores focus on Escape', () => {
+  assert.ok(js.includes('const closeMenu = (restoreFocus = false)'));
+  assert.ok(js.includes("event.key === 'Escape'"));
+  assert.ok(js.includes("menu.setAttribute('aria-expanded', 'false')"));
+  assert.ok(js.includes("menu.focus()"));
+  assert.ok(js.includes("setAttribute('aria-current', 'location')"));
+});
+
+test('the refined CRM tour and 3D scene remain responsive and reduced-motion aware', () => {
+  const tourCss = fs.readFileSync('crm-product-tour.css', 'utf8');
+  assert.ok(css.includes('.experience-scroll{height:360vh}'));
+  assert.ok(css.includes('@media(max-width:700px){\n  .experience-scroll{height:270vh}'));
+  assert.ok(tourCss.includes('.crm-tour{\n  height:420vh;'));
+  assert.ok(tourCss.includes('.crm-tour{height:360vh}'));
+  assert.ok(tourCss.includes('@media(prefers-reduced-motion:reduce)'));
+  assert.ok(tourCss.includes('.crm-app-view.is-active{'));
+});
+
+
+test('CRM product spotlight tracks the frame pointer without per-event layout writes', () => {
+  const tourJs = fs.readFileSync('crm-product-tour.js', 'utf8');
+  assert.ok(tourJs.includes("appFrame.addEventListener('pointermove'"));
+  assert.ok(tourJs.includes("appFrame.style.setProperty('--crm-pointer-x', pointerX)"));
+  assert.ok(tourJs.includes("appFrame.addEventListener('pointerleave'"));
+  assert.ok(tourJs.includes('if (pointerFrame) return'));
+});
+test('all browser interaction modules are included in the JavaScript syntax gate', () => {
+  const pkg = JSON.parse(fs.readFileSync('package.json', 'utf8'));
+  assert.ok(pkg.scripts['check:js'].includes('node --check main.js'));
+  assert.ok(pkg.scripts['check:js'].includes('node --check product-showcase.js'));
+  assert.ok(pkg.scripts['check:js'].includes('node --check crm-product-tour.js'));
+  assert.ok(pkg.scripts['check:js'].includes('node --check motion-scene.mjs'));
+});
+
+
+test('Three.js CDN failure produces a static CRM presentation instead of a blank scene', () => {
+  assert.ok(motion.includes('const THREE_MODULE_URL ='));
+  assert.ok(motion.includes('THREE = await import(THREE_MODULE_URL)'));
+  assert.ok(motion.includes("classList.add('motion-fallback')"));
+  assert.ok(html.includes('motion-static-fallback'));
+  assert.ok(css.includes('.motion-fallback .motion-static-fallback{display:block}'));
+  assert.ok(html.includes('Структура программы остаётся доступна в следующих разделах'));
+});
+
+test('the hero scroll affordance continues into the cinematic scene', () => {
+  assert.ok(html.includes('href="#experience" aria-label="Перейти к 3D-презентации системы"'));
+  assert.ok(html.includes('id="experience"'));
+});
+
+test('all CRM tour controls have explicit relationships to their product screens', () => {
+  for (let i = 0; i < 5; i++) {
+    assert.ok(html.includes('data-crm-step="' + i + '" aria-controls="crm-view-' + i + '"'));
+    assert.ok(html.includes('id="crm-view-' + i + '" data-crm-view="' + i + '"'));
+  }
+});
+
+test('the closing action links to a real product section instead of an unavailable contact placeholder', () => {
+  assert.ok(html.includes('<a class="closing-cta" href="#crm-tour">Посмотреть программу'));
+  assert.ok(!html.includes('Контакты для демонстрации уточняются'));
+});
+
+test('mobile navigation exposes a control relationship and closes on outside interaction', () => {
+  assert.ok(html.includes('id="primary-navigation"'));
+  assert.ok(html.includes('aria-controls="primary-navigation"'));
+  assert.ok(js.includes("menu.setAttribute('aria-label', isOpen ? 'Закрыть меню' : 'Открыть меню')"));
+  assert.ok(js.includes("document.addEventListener('pointerdown'"));
+});
+
+
+test('CRM particle panel definitions are allocated once outside the frame initialization loop', () => {
+  const loopAt = motion.indexOf('for (let i = 0; i < particleCount; i++)');
+  const panelsAt = motion.indexOf('const screens = [');
+  assert.ok(panelsAt >= 0 && loopAt > panelsAt);
+});
+
+
+test('mobile camera widens the lens to keep CRM panels inside the viewport', () => {
+  assert.ok(motion.includes('const nextFov = shot(1) + (mobile ? 9 : 0)'));
+});
+test('responsive finish preserves the hero, CRM tour and content hierarchy on narrow screens', () => {
+  for (const token of ['@media(max-width:420px)', '.hero-stage{height:39%;bottom:80px}', '.workflow-track{grid-template-columns:1fr}', 'scroll-behavior:auto']) assert.ok(css.includes(token), 'missing responsive rule: ' + token);
+  const tourCss = fs.readFileSync('crm-product-tour.css', 'utf8');
+  for (const token of ['grid-template-columns:repeat(5,minmax(0,1fr))', '.crm-app-search{display:none}', '@media(max-width:380px)']) assert.ok(tourCss.includes(token), 'missing CRM tour responsive rule: ' + token);
+});
+
+
+test('cinematic sequencing covers every chapter from the hero through the footer', () => {
+  for (const index of ['01','02','03','04','05','06','07','08','09','10']) assert.ok(html.includes('data-cinema-index="'+index+'"'), 'missing cinematic chapter '+index);
+  assert.ok(html.includes('id="cinema-scene-number"'));
+  assert.ok(html.includes('id="cinema-scene-label"'));
+  assert.ok(html.includes('href="/cinematic-sequence.css"'));
+  assert.ok(html.includes('src="/cinematic-sequence.js"'));
+});
+
+test('cinematic sequencing is scroll-driven and reduced-motion aware', () => {
+  assert.doesNotThrow(() => new vm.Script(cinemaJs));
+  for (const token of ['getBoundingClientRect()', '--cinema-progress', 'IntersectionObserver', 'prefers-reduced-motion', 'requestAnimationFrame']) assert.ok(cinemaJs.includes(token), 'missing runtime behavior '+token);
+  for (const token of ['.cinema-atmosphere', '.cinema-chapter-marker', '.feature-visual', '.crm-app-frame', '.module-card', '.workflow-step', 'prefers-reduced-motion:reduce']) assert.ok(cinemaCss.includes(token), 'missing visual treatment '+token);
+});
+
+
+test('cinematic transforms use precomputed values rather than unsupported CSS multiplication', () => {
+  assert.ok(cinemaJs.includes('--cinema-frame-tilt'));
+  assert.ok(cinemaJs.includes('--cinema-dashboard-tilt'));
+  assert.ok(cinemaJs.includes('--cinema-scale'));
+  assert.ok(!cinemaCss.includes('calc(var(--cinema-tilt) *'));
+  assert.ok(!cinemaCss.includes('calc(1 + var(--cinema-progress) *'));
 });

@@ -53,3 +53,22 @@
 .product-finance-labels{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin:18px 0 28px}
 .product-finance-labels span{padding:10px 8px;background:rgba(164,213,47,.11);border:1px solid rgba(164,213,47,.2);color:#667455;font-size:8px;line-height:1.4}
 .product-object-divider{height:1px;background:rgba(200,241,105,.28);margin:0 0 16px}
+
+
+/* Consistent lime accent across the product-window mockups. */
+.product-window{box-shadow:0 45px 120px rgba(0,0,0,.5),0 0 0 1px rgba(184,255,50,.2)}
+.product-window .dash-dot,.product-window .metric .up{background:#9fe900;color:#70b900}
+.product-window .side-active,.product-screen-tab.is-active{color:#65ad00}
+.product-screen-tab.is-active{border-color:#9fe900}
+.product-finance-panel .finance-bars i b{background:#a8f000}
+.product-finance-labels span{background:rgba(184,255,50,.12);border-color:rgba(132,205,0,.24);color:#527b13}
+.product-object-divider{background:rgba(132,205,0,.32)}
+
+
+/* Showcase UI polish */
+.product-window{border-radius:14px;overflow:hidden;box-shadow:0 42px 100px rgba(35,58,7,.24),0 0 0 1px rgba(255,255,255,.62)}
+.product-window .dash-head{font-weight:700}
+.product-screen-tab{border-radius:6px;font-weight:700;transition:background .2s,color .2s}
+.product-screen-tab.is-active{background:#e8f5d0;color:#34570a}
+.product-screen-card,.product-finance-grid>div,.product-pipeline>div{border-radius:8px;box-shadow:0 3px 10px rgba(31,47,13,.04)}
+.product-screen-card b,.product-screen-note,.product-pipeline b{letter-spacing:.035em}
