@@ -276,3 +276,41 @@
 .crm-tour-progress i{background:#17200c}
 .crm-app-frame{background:#f7f8f4;border-color:rgba(23,32,12,.22);box-shadow:0 35px 90px rgba(46,75,9,.22),0 2px 8px rgba(28,35,25,.035)}
 .crm-tour-step:focus-visible{outline:2px solid #17200c}
+
+
+/* CRM chapter: dimensional lime stage, high-contrast readable type and restrained controls. */
+.crm-tour{
+ background:
+  radial-gradient(ellipse at 10% 12%,rgba(255,255,255,.68),transparent 40%),
+  radial-gradient(ellipse at 92% 86%,rgba(103,160,0,.19),transparent 48%),
+  linear-gradient(128deg,#d0ff7b 0%,#b8ff32 48%,#a5e925 100%)!important;
+ color:#17240a;
+}
+.crm-tour:before{
+ background-image:linear-gradient(rgba(24,40,8,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(24,40,8,.07) 1px,transparent 1px);
+ mask-image:radial-gradient(ellipse at center,black,transparent 88%);opacity:.55;
+}
+.crm-tour-kicker,.crm-tour-heading h2{color:#17240a!important}
+.crm-tour-heading h2{font-weight:760;letter-spacing:-.055em}
+.crm-tour-heading>p{color:#3c5024!important}
+.crm-tour-step{
+ border:1px solid transparent;border-radius:9px;font-weight:650;color:#43582b!important;
+ transition:background .2s,border-color .2s,transform .2s,box-shadow .2s;
+}
+.crm-tour-step.is-active{
+ background:rgba(255,255,255,.82)!important;border-color:rgba(26,43,9,.17)!important;
+ box-shadow:0 8px 24px rgba(39,62,8,.1),inset 0 1px 0 #fff!important;
+}
+.crm-tour-step.is-active span,.crm-tour-step.is-active b{color:#243b0b!important}
+.crm-tour-progress{background:rgba(27,45,9,.18)}
+.crm-tour-progress i{background:#253c0b}
+.crm-app-frame{
+ border-radius:14px;overflow:hidden;border:1px solid rgba(25,40,9,.22)!important;
+ box-shadow:0 38px 90px rgba(35,57,7,.24),0 2px 5px rgba(30,42,19,.08),inset 0 1px 0 #fff!important;
+}
+.crm-app-topbar{background:linear-gradient(#fff,#f6f8f3)}
+.crm-view-action{border-radius:7px;font-weight:750;letter-spacing:-.02em;transition:transform .2s,box-shadow .2s}
+.crm-view-action:hover{transform:translateY(-1px);box-shadow:0 7px 16px rgba(94,146,0,.2)}
+.crm-kpi-grid>div,.crm-object-summary>div,.crm-table-card,.crm-detail-card,.crm-object-board,.crm-calc-form,.crm-calc-result,.crm-radar-block{
+ border-radius:8px;box-shadow:0 2px 8px rgba(27,40,15,.035);
+}
