@@ -43,6 +43,9 @@
       scene.style.setProperty('--cinema-shift', ((.5 - progress) * 34).toFixed(2) + 'px');
       scene.style.setProperty('--cinema-angle', ((progress - .5) * 1.4).toFixed(2) + 'deg');
       scene.style.setProperty('--cinema-tilt', ((.5 - progress) * (finePointer ? 5.2 : 2.8)).toFixed(2) + 'deg');
+      scene.style.setProperty('--cinema-frame-tilt', ((.5 - progress) * -1.15).toFixed(2) + 'deg');
+      scene.style.setProperty('--cinema-dashboard-tilt', ((.5 - progress) * .94).toFixed(2) + 'deg');
+      scene.style.setProperty('--cinema-scale', (1 + progress * .025).toFixed(4));
       scene.style.setProperty('--cinema-lift', ((.5 - progress) * 18).toFixed(2) + 'px');
       scene.style.setProperty('--cinema-title-shift', ((.5 - progress) * 13).toFixed(2) + 'px');
       scene.querySelectorAll('.module-card, .workflow-step').forEach(card => {

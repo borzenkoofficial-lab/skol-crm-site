@@ -9,10 +9,10 @@
 .cinema-chapter-marker>small{writing-mode:vertical-rl;max-height:72px;overflow:hidden}
 .cinema-scene .feature-visual{transform:perspective(1400px) rotateY(var(--cinema-tilt)) translateY(var(--cinema-lift));transform-origin:center;will-change:transform}
 .cinema-scene .manifesto-layout,.cinema-scene .modules-heading,.cinema-scene .workflow-title{transform:translate3d(0,var(--cinema-title-shift),0);will-change:transform}
-.cinema-scene .crm-app-frame{transform:perspective(1800px) rotateX(calc(var(--cinema-tilt) * -.22)) translateY(var(--cinema-lift));transform-origin:50% 45%;will-change:transform}
-.cinema-scene .dashboard{transform:perspective(1600px) rotateX(calc(var(--cinema-tilt) * .18));transform-origin:50% 55%}
+.cinema-scene .crm-app-frame{transform:perspective(1800px) rotateX(var(--cinema-frame-tilt,0deg)) translateY(var(--cinema-lift));transform-origin:50% 45%;will-change:transform}
+.cinema-scene .dashboard{transform:perspective(1600px) rotateX(var(--cinema-dashboard-tilt,0deg));transform-origin:50% 55%}
 .cinema-scene .module-card:not(:hover),.cinema-scene .workflow-step:not(:hover){transform:perspective(1100px) rotateX(var(--cinema-card-tilt,0deg)) translateY(var(--cinema-card-lift,0px))}
-.cinema-scene .closing-mark{transform:translate3d(0,var(--cinema-title-shift),0) scale(calc(1 + var(--cinema-progress) * .025));transform-origin:center}
+.cinema-scene .closing-mark{transform:translate3d(0,var(--cinema-title-shift),0) scale(var(--cinema-scale,1));transform-origin:center}
 .cinema-scene-ready .cinema-atmosphere{contain:paint}
 @media(max-width:900px){.cinema-chapter-marker{right:10px;width:38px;padding:10px 5px;opacity:.78}}
 @media(max-width:700px){.cinema-chapter-marker{display:none}.cinema-scene .feature-visual,.cinema-scene .crm-app-frame,.cinema-scene .dashboard{transform:none;will-change:auto}.cinema-scene .module-card:not(:hover),.cinema-scene .workflow-step:not(:hover){transform:translateY(var(--cinema-card-lift,0px))}}

@@ -399,3 +399,12 @@ test('cinematic sequencing is scroll-driven and reduced-motion aware', () => {
   for (const token of ['getBoundingClientRect()', '--cinema-progress', 'IntersectionObserver', 'prefers-reduced-motion', 'requestAnimationFrame']) assert.ok(cinemaJs.includes(token), 'missing runtime behavior '+token);
   for (const token of ['.cinema-atmosphere', '.cinema-chapter-marker', '.feature-visual', '.crm-app-frame', '.module-card', '.workflow-step', 'prefers-reduced-motion:reduce']) assert.ok(cinemaCss.includes(token), 'missing visual treatment '+token);
 });
+
+
+test('cinematic transforms use precomputed values rather than unsupported CSS multiplication', () => {
+  assert.ok(cinemaJs.includes('--cinema-frame-tilt'));
+  assert.ok(cinemaJs.includes('--cinema-dashboard-tilt'));
+  assert.ok(cinemaJs.includes('--cinema-scale'));
+  assert.ok(!cinemaCss.includes('calc(var(--cinema-tilt) *'));
+  assert.ok(!cinemaCss.includes('calc(1 + var(--cinema-progress) *'));
+});
