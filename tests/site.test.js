@@ -372,3 +372,13 @@ test('CRM particle panel definitions are allocated once outside the frame initia
   const panelsAt = motion.indexOf('const screens = [');
   assert.ok(panelsAt >= 0 && loopAt > panelsAt);
 });
+
+
+test('mobile camera widens the lens to keep CRM panels inside the viewport', () => {
+  assert.ok(motion.includes('const nextFov = shot(1) + (mobile ? 9 : 0)'));
+});
+test('responsive finish preserves the hero, CRM tour and content hierarchy on narrow screens', () => {
+  for (const token of ['@media(max-width:420px)', '.hero-stage{height:39%;bottom:80px}', '.workflow-track{grid-template-columns:1fr}', 'scroll-behavior:auto']) assert.ok(css.includes(token), 'missing responsive rule: ' + token);
+  const tourCss = fs.readFileSync('crm-product-tour.css', 'utf8');
+  for (const token of ['grid-template-columns:repeat(5,minmax(0,1fr))', '.crm-app-search{display:none}', '@media(max-width:380px)']) assert.ok(tourCss.includes(token), 'missing CRM tour responsive rule: ' + token);
+});

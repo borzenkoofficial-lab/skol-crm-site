@@ -178,3 +178,48 @@
   .crm-app-view.is-active .crm-calc-result,
   .crm-app-view.is-active .crm-radar-block{animation:none!important}
 }
+
+
+/* Readability pass for narrow product-tour viewports. */
+@media(max-width:700px){
+  .crm-tour-sticky{height:100svh;min-height:560px}
+  .crm-tour-heading>p{display:none}
+  .crm-tour-layout{grid-template-columns:1fr;grid-template-rows:auto minmax(0,1fr);gap:8px}
+  .crm-tour-nav{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:4px;align-content:start}
+  .crm-tour-step{display:flex;flex-direction:column;justify-content:center;gap:3px;min-width:0;min-height:42px;padding:5px 2px;border-radius:6px;text-align:center}
+  .crm-tour-step b{font-size:7px}
+  .crm-tour-step span{font-size:clamp(6px,1.7vw,8px);line-height:1.15;overflow-wrap:anywhere}
+  .crm-tour-step i,.crm-tour-nav-foot{display:none}
+  .crm-tour-step.is-active{transform:none;box-shadow:inset 0 -2px #9acb40,0 4px 12px rgba(45,57,30,.06)}
+  .crm-app-frame{min-height:0;border-radius:8px;transform:none}
+  .crm-app-topbar{height:34px;flex-basis:34px;padding:0 9px;gap:8px}
+  .crm-app-brand{font-size:9px}
+  .crm-app-brand>span{width:17px;height:17px}
+  .crm-app-breadcrumb{font-size:8px}
+  .crm-app-search{display:none}
+  .crm-app-view{padding:9px 9px 37px}
+  .crm-view-heading{gap:6px;margin-bottom:8px}
+  .crm-view-heading h3{font-size:clamp(14px,4vw,19px)}
+  .crm-view-heading p{font-size:7px}
+  .crm-view-action{font-size:6px;padding:6px 7px}
+  .crm-kpi-grid,.crm-object-summary{gap:4px}
+  .crm-kpi-grid>div,.crm-object-summary>div{padding:6px;gap:4px}
+  .crm-kpi-grid small,.crm-object-summary small{font-size:5px}
+  .crm-kpi-grid b,.crm-object-summary b{font-size:15px}
+  .crm-kpi-grid i{font-size:6px}
+  .crm-view-footnote{font-size:6px}
+  .crm-app-dock{bottom:4px;gap:1px;padding:3px 5px}
+  .crm-app-dock span{width:16px;height:16px;font-size:8px}
+  .crm-tour-bottom{font-size:5px}
+}
+@media(max-width:380px){
+  .crm-tour-sticky{padding-inline:8px}
+  .crm-tour-step span{font-size:6px}
+  .crm-app-view{padding-inline:7px}
+  .crm-view-action{max-width:82px;white-space:normal;text-align:center}
+  .crm-object-columns{font-size:5px;gap:3px;padding-inline:7px}
+  .crm-radar-fields{grid-template-columns:1fr 1fr}
+}
+@media(prefers-reduced-motion:reduce){
+  .crm-tour-step:before{transition:none}
+}

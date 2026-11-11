@@ -522,7 +522,8 @@ const THREE_MODULE_URL = 'https://cdn.jsdelivr.net/npm/three@0.187.0/build/three
     scene.fog.density = mix(0.026, 0.017, smooth((p - 0.18) / 0.72));
     // Shot roll and focal length are absolute scroll-driven values, never accumulated frame-to-frame.
     camera.rotation.z = shot(2);
-    const nextFov = shot(1);
+    // Mobile needs a wider field of view so the five-panel composition stays inside the frame.
+    const nextFov = shot(1) + (mobile ? 9 : 0);
     // A restrained lens breath adds scale to the transition without changing the authored shot track.
     const lensBreath = Math.sin(p * Math.PI * 8) * 0.32;
     const resolvedFov = nextFov + lensBreath;
