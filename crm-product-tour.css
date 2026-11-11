@@ -223,3 +223,41 @@
 @media(prefers-reduced-motion:reduce){
   .crm-tour-step:before{transition:none}
 }
+
+
+/* CRM product tour — clean neutral application canvas with unmistakable lime accents. */
+.crm-tour{
+  background:#f3f4f1;color:#20231f;
+}
+.crm-tour:before{
+  background:radial-gradient(ellipse at 78% 38%,rgba(184,255,50,.12),transparent 38%),linear-gradient(120deg,transparent 45%,rgba(255,255,255,.82));
+}
+.crm-tour-kicker{color:#687263}
+.crm-tour-heading h2 em{color:#78c900}
+.crm-tour-heading>p{color:#747b70}
+.crm-tour-step{color:#747b70}
+.crm-tour-step b{color:#969d91}
+.crm-tour-step.is-active{background:#fff;border-color:#e2e6df;color:#20251e;box-shadow:0 10px 30px rgba(24,35,17,.07)}
+.crm-tour-step.is-active b,.crm-tour-step.is-active i{color:#72c400}
+.crm-tour-progress{background:#e1e5de}
+.crm-tour-progress i{background:#9df000}
+.crm-app-frame{border-color:#dfe4dc;box-shadow:0 35px 90px rgba(28,35,25,.12),0 2px 8px rgba(28,35,25,.035)}
+.crm-app-content{background:#f7f8f6}
+.crm-app-brand>span{background:#b8ff32;color:#20300c}
+.crm-app-breadcrumb i{background:#a4ec16}
+.crm-app-avatar{background:#eff8df;color:#568d00}
+.crm-view-action{background:#b8ff32;color:#20300c;box-shadow:0 4px 12px rgba(126,194,0,.16)}
+.crm-overview-hero{background:linear-gradient(105deg,#fff 0%,#fbfcf9 65%,#f4f9e9 100%);border-color:#e7ebe3}
+.crm-overview-hero small{color:#718064}
+.crm-overview-mark{border-color:rgba(132,205,0,.32);color:#82ce00}
+.crm-overview-mark:before,.crm-overview-mark:after{border-color:rgba(132,205,0,.27)}
+.crm-kpi-grid>div,.crm-object-summary>div,.crm-table-card,.crm-detail-card,.crm-object-board,.crm-calc-form,.crm-calc-result,.crm-radar-block{border-color:#e5e9e3}
+.crm-kpi-grid small,.crm-object-summary small,.crm-view-heading small,.crm-view-section-title span,.crm-calc-form-head span,.crm-radar-block-head span{color:#858d80}
+.crm-filter-row span:first-child{background:#f1f9e5;border-color:#dcedc4;color:#5d9700}
+.crm-table-head,.crm-object-columns{background:#f6f8f3;color:#77836e}
+.crm-table-empty i,.crm-object-glyph{color:#83ce00}
+.crm-object-glyph{background:#f1f8e6}
+.crm-object-tabs span.is-active{color:#69ad00;border-color:#a8ef19}
+.crm-stage-strip span:first-child{color:#6eb400}
+.crm-calc-result{background:linear-gradient(145deg,#fff,#f8fbf2)}
+.crm-tour-step:focus-visible{outline:2px solid #91e500;outline-offset:3px}
