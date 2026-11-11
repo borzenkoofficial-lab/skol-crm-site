@@ -8,6 +8,8 @@ const motion = fs.readFileSync('motion-scene.mjs', 'utf8');
 const css = fs.readFileSync('styles.css', 'utf8');
 const showcaseJs = fs.readFileSync('product-showcase.js', 'utf8');
 const showcaseCss = fs.readFileSync('product-showcase.css', 'utf8');
+const cinemaJs = fs.readFileSync('cinematic-sequence.js', 'utf8');
+const cinemaCss = fs.readFileSync('cinematic-sequence.css', 'utf8');
 
 test('HTML includes all main navigation targets and the WebGL experience', () => {
   for (const id of ['top', 'experience', 'system', 'control', 'workflow', 'contact']) {
@@ -381,4 +383,19 @@ test('responsive finish preserves the hero, CRM tour and content hierarchy on na
   for (const token of ['@media(max-width:420px)', '.hero-stage{height:39%;bottom:80px}', '.workflow-track{grid-template-columns:1fr}', 'scroll-behavior:auto']) assert.ok(css.includes(token), 'missing responsive rule: ' + token);
   const tourCss = fs.readFileSync('crm-product-tour.css', 'utf8');
   for (const token of ['grid-template-columns:repeat(5,minmax(0,1fr))', '.crm-app-search{display:none}', '@media(max-width:380px)']) assert.ok(tourCss.includes(token), 'missing CRM tour responsive rule: ' + token);
+});
+
+
+test('cinematic sequencing covers every chapter from the hero through the footer', () => {
+  for (const index of ['01','02','03','04','05','06','07','08','09','10']) assert.ok(html.includes('data-cinema-index="'+index+'"'), 'missing cinematic chapter '+index);
+  assert.ok(html.includes('id="cinema-scene-number"'));
+  assert.ok(html.includes('id="cinema-scene-label"'));
+  assert.ok(html.includes('href="/cinematic-sequence.css"'));
+  assert.ok(html.includes('src="/cinematic-sequence.js"'));
+});
+
+test('cinematic sequencing is scroll-driven and reduced-motion aware', () => {
+  assert.doesNotThrow(() => new vm.Script(cinemaJs));
+  for (const token of ['getBoundingClientRect()', '--cinema-progress', 'IntersectionObserver', 'prefers-reduced-motion', 'requestAnimationFrame']) assert.ok(cinemaJs.includes(token), 'missing runtime behavior '+token);
+  for (const token of ['.cinema-atmosphere', '.cinema-chapter-marker', '.feature-visual', '.crm-app-frame', '.module-card', '.workflow-step', 'prefers-reduced-motion:reduce']) assert.ok(cinemaCss.includes(token), 'missing visual treatment '+token);
 });

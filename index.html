@@ -17,12 +17,14 @@
   <link rel="stylesheet" href="/styles.css">
   <link rel="stylesheet" href="/product-showcase.css">
   <link rel="stylesheet" href="/crm-product-tour.css">
+  <link rel="stylesheet" href="/cinematic-sequence.css">
 </head>
 <body>
   <div class="pointer-aura" id="pointer-aura" aria-hidden="true"></div>
   <div class="cursor-reticle" id="cursor-reticle" aria-hidden="true"><i></i><b></b></div>
   <div class="noise" aria-hidden="true"></div>
   <div class="scroll-line" aria-hidden="true"><span id="scroll-progress"></span></div>
+  <aside class="cinema-chapter-marker" aria-hidden="true"><span>SCENE</span><b id="cinema-scene-number">01</b><i></i><small id="cinema-scene-label">ВХОД</small></aside>
   <header class="topbar">
     <a class="brand" href="#top" aria-label="СКОЛ CRM — главная"><span class="brand-mark">С</span><span>СКОЛ<span class="brand-light">CRM</span></span></a>
     <nav class="nav" id="primary-navigation" aria-label="Основная навигация">
@@ -33,7 +35,7 @@
   </header>
 
   <main id="top">
-    <section class="hero">
+    <section class="hero cinema-scene" data-cinema-scene data-cinema-index="01" data-cinema-label="ВХОД">
       <div class="hero-grid"></div>
       <div class="hero-copy">
         <p class="eyebrow reveal"><span class="pulse"></span> СИСТЕМА УПРАВЛЕНИЯ СТРОИТЕЛЬНЫМ БИЗНЕСОМ</p>
@@ -89,7 +91,7 @@
     </section>
 
 
-    <section class="experience-scroll" id="experience" aria-label="Интерактивная 3D-сцена СКОЛ CRM">
+    <section class="experience-scroll cinema-scene" id="experience" data-cinema-scene data-cinema-index="02" data-cinema-label="СИСТЕМА" aria-label="Интерактивная 3D-сцена СКОЛ CRM">
       <div class="experience-sticky">
         <canvas id="motion-canvas" aria-hidden="true"></canvas>
         <div class="motion-static-fallback" aria-hidden="true">
@@ -117,7 +119,7 @@
     </section>
 
     
-    <section class="crm-tour" id="crm-tour" aria-label="Интерактивная демонстрация СКОЛ CRM">
+    <section class="crm-tour cinema-scene" id="crm-tour" data-cinema-scene data-cinema-index="03" data-cinema-label="ИНТЕРФЕЙС" aria-label="Интерактивная демонстрация СКОЛ CRM">
       <div class="crm-tour-sticky">
         <div class="crm-tour-heading">
           <div><span class="crm-tour-kicker">СКОЛ CRM / ИНТЕРФЕЙС ПРОГРАММЫ</span><h2>Не концепт.<br><em>Рабочая структура.</em></h2></div>
@@ -173,7 +175,7 @@
       </div>
     </section>
 
-    <section class="manifesto section-pad" id="system">
+    <section class="manifesto section-pad cinema-scene" id="system" data-cinema-scene data-cinema-index="04" data-cinema-label="ФИЛОСОФИЯ">
       <div class="section-kicker reveal"><span>01 / ФИЛОСОФИЯ</span><span>ОДНА СИСТЕМА — ЕДИНАЯ КАРТИНА</span></div>
       <div class="manifesto-layout">
         <h2 class="reveal">Стройте<br>объекты.<br><span>Не хаос.</span></h2>
@@ -182,7 +184,7 @@
       <div class="manifesto-rule"><span>ОТ ПЕРВОГО ЗАПРОСА</span><i></i><span>ДО ЗАКРЫТИЯ ОБЪЕКТА</span></div>
     </section>
 
-    <section class="feature feature-dark" id="control">
+    <section class="feature feature-dark cinema-scene" id="control" data-cinema-scene data-cinema-index="05" data-cinema-label="ОБЪЕКТЫ">
       <div class="feature-visual">
         <div class="feature-orb"></div><div class="feature-number">01</div>
         <div class="stack-card stack-back"><span>КАРТОЧКА ОБЪЕКТА</span><b>История изменений</b><i>Документы и события</i></div>
@@ -197,7 +199,7 @@
       </div>
     </section>
 
-    <section class="feature feature-light">
+    <section class="feature feature-light cinema-scene" data-cinema-scene data-cinema-index="06" data-cinema-label="ЭКОНОМИКА">
       <div class="feature-copy">
         <div class="section-kicker"><span>03 / ЭКОНОМИКА</span><span>02—04</span></div>
         <p class="eyebrow reveal">ЦИФРЫ БЕЗ ИЛЛЮЗИЙ</p><h2 class="reveal">Знать цифры.<br><span>Управлять</span><br>результатом.</h2>
@@ -216,7 +218,7 @@
     </section>
 
 
-    <section class="modules section-pad" id="modules">
+    <section class="modules section-pad cinema-scene" id="modules" data-cinema-scene data-cinema-index="07" data-cinema-label="МОДУЛИ">
       <div class="section-kicker reveal"><span>04 / РАБОЧИЕ МОДУЛИ</span><span>ОДИН ОБЪЕКТ — СВЯЗАННЫЕ ДАННЫЕ</span></div>
       <div class="modules-heading">
         <h2 class="reveal">Каждая часть<br><em>работает вместе.</em></h2>
@@ -266,7 +268,7 @@
       </div>
     </section>
 
-    <section class="workflow section-pad" id="workflow">
+    <section class="workflow section-pad cinema-scene" id="workflow" data-cinema-scene data-cinema-index="08" data-cinema-label="ПРОЦЕСС">
       <div class="section-kicker reveal"><span>05 / ПРОЦЕСС</span><span>ОТ ЗАПРОСА ДО РЕЗУЛЬТАТА</span></div>
       <h2 class="workflow-title reveal">Работа движется.<br><em>Вы видите каждый шаг.</em></h2>
       <div class="workflow-track">
@@ -278,17 +280,18 @@
       </div>
     </section>
 
-    <section class="closing" id="contact">
+    <section class="closing cinema-scene" id="contact" data-cinema-scene data-cinema-index="09" data-cinema-label="ФИНАЛ">
       <div class="closing-grid"></div><p class="eyebrow reveal"><span class="pulse"></span> СКОЛ CRM / ВАШ СЛЕДУЮЩИЙ УРОВЕНЬ</p>
       <h2 class="reveal">Пора навести<br><em>порядок.</em></h2>
       <div class="closing-bottom reveal"><p>Пять экранов показывают основной контур работы: от заявки и расчёта до исполнения и поиска заказов.</p><a class="closing-cta" href="#crm-tour">Посмотреть программу <span>↗</span></a></div>
       <div class="closing-mark">СКОЛ</div>
     </section>
   </main>
-  <footer><a class="brand" href="#top"><span class="brand-mark">С</span><span>СКОЛ<span class="brand-light">CRM</span></span></a><span>СИСТЕМА УПРАВЛЕНИЯ СТРОИТЕЛЬНЫМИ ПРОЕКТАМИ</span><a href="#top">НАВЕРХ ↑</a><small>© 2026 СКОЛ CRM</small></footer>
+  <footer class="cinema-scene" data-cinema-scene data-cinema-index="10" data-cinema-label="СКОЛ CRM"><a class="brand" href="#top"><span class="brand-mark">С</span><span>СКОЛ<span class="brand-light">CRM</span></span></a><span>СИСТЕМА УПРАВЛЕНИЯ СТРОИТЕЛЬНЫМИ ПРОЕКТАМИ</span><a href="#top">НАВЕРХ ↑</a><small>© 2026 СКОЛ CRM</small></footer>
   <script src="/main.js" defer></script>
   <script src="/product-showcase.js" defer></script>
   <script src="/crm-product-tour.js" defer></script>
+  <script src="/cinematic-sequence.js" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.1/dist/gsap.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.1/dist/ScrollTrigger.min.js"></script>
   <script type="module" src="/motion-scene.mjs"></script>
